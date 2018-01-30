@@ -1,0 +1,18 @@
+{
+  "name": "satoshibot",
+  "version": "1.0.0",
+  "description": "bot to do trade on tradeSatoshi",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "crypto": "~0.0.3",
+    "microtime": "^2.1.7",
+    "request": "~2.51.0",
+    "underscore": "~1.7.0",
+    "verror": "~1.6.0"
+  },
+  "author": "Justin Schellenberg",
+  "license": "ISC"
+}
