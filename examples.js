@@ -7,13 +7,13 @@ var since1Minute = new Date().getTime() / 1000 -  60, // convert to seconds then
 var publicClient = new TradeSatoshi();
 
 publicClient.getTicker(console.log, 'LTC_BTC');
-//publicClient.getCurrencies(console.log);
+publicClient.getCurrencies(console.log);
 
-// publicClient.getOrderBook(console.log, 'BTCCNY');
+publicClient.getOrderBook(console.log, 'BTCCNY');
 
-// publicClient.getTrades(console.log);
+publicClient.getTrades(console.log);
 
-// publicClient.getHistoryData(console.log, {});
+publicClient.getHistoryData(console.log, {});
 
 // get 100 trades since trade id 20500000
 //publicClient.getHistoryData(console.log, {limit: 100, since: 20500000 });

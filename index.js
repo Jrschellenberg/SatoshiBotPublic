@@ -164,29 +164,71 @@ function constructParamArray(args, maxArgs)
 // Public Functions
 //
 
+/*
+Description
+Uri: https://tradesatoshi.com/api/public/getcurrencies
+Parameters: None
+ */
+TradeSatoshi.prototype.getCurrencies = function getCurrencies(callback)
+{
+	this.publicRequest('getcurrencies', {}, callback);
+};
+
+/*
+Description
+Uri: https://tradesatoshi.com/api/public/getticker?market=LTC_BTC
+Parameters:
+market: The market name e.g. 'LTC_BTC' (required)
+ */
 TradeSatoshi.prototype.getTicker = function getTicker(callback, market)
 {
     this.publicRequest('getticker', {market: market}, callback);
 };
 
-TradeSatoshi.prototype.getCurrencies = function getTicker(callback)
+/*
+Description
+Uri: https://tradesatoshi.com/api/public/getmarkethistory?market=LTC_BTC&count=20
+Parameters:
+market: The market name e.g. 'LTC_BTC' (required)
+count: The max amount of records to return (optional, default: 20)
+ */
+TradeSatoshi.prototype.getMarketHistory = function getMarketHistory(callback, params)
 {
-	this.publicRequest('getcurrencies', {}, callback);
+	this.publicRequest('getmarkethistory', params, callback);
 };
 
-TradeSatoshi.prototype.getOrderBook = function getOrderBook(callback, market)
+/*
+Description
+Uri: https://tradesatoshi.com/api/public/getmarketsummary?market=LTC_BTC
+Parameters:
+market: The market name e.g. 'LTC_BTC' (required)
+ */
+TradeSatoshi.prototype.getMarketSummary = function getMarketSummary(callback, market)
 {
-    this.publicRequest('orderbook', {market: market}, callback);
+    this.publicRequest('getmarketsummary', {market: market}, callback);
 };
 
-TradeSatoshi.prototype.getHistoryData = function getHistoryData(callback, params)
+/*
+Description
+Uri: https://tradesatoshi.com/api/public/getmarketsummaries
+Parameters: None
+ */
+TradeSatoshi.prototype.getMarketSummaries = function getMarketSummary(callback)
 {
-    this.publicRequest('historydata', params, callback);
+	this.publicRequest('getmarketsummaries', {}, callback);
 };
 
-TradeSatoshi.prototype.getTrades = function getTrades(callback)
+/*
+Description
+Uri: https://tradesatoshi.com/api/public/getorderbook?market=LTC_BTC&type=both&depth=20
+Parameters:
+market: The market name e.g. 'LTC_BTC' (required)
+type: The order book type 'buy', 'sell', 'both' (optional, default: 'both')
+depth: Max of records to return (optional, default: 20)
+ */
+TradeSatoshi.prototype.getOrderBook = function getOrderBook(callback, params)
 {
-    this.publicRequest('trades', {}, callback);
+	this.publicRequest('getorderbook', params, callback);
 };
 
 //
