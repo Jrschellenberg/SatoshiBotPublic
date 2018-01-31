@@ -154,23 +154,27 @@ let TradeSatoshi = () => {
                 return Promise.reject("submitWithdraw(), You must supply a valid Amount, e.g. Amount: '123.00000000'!");
             }
             options.API_PATH = "submitwithdraw";
-            return privateRequest(reqOpts);
+            return privateRequest(params);
         },
+        getDeposits: async (params = {}) => {
+	          options.API_PATH = "getdeposits";
+	          return privateRequest(params);
+        },
+        getWithdrawals: async (params = {}) => {
+	          options.API_PATH = "getwithdrawals";
+	          return privateRequest(params);
+        },
+      
         submitTransfer: async (params = {}) => {
-            if (!params.Currency && !params.CurrencyId) {
-                return Promise.reject("submitTransfer(), You must supply a valid Currency, e.g. 'BTC' OR you must supply a valid Currency ID, e.g. '2'!");
-            } else if (params.CurrencyId && typeof params.CurrencyId !== 'number') {
-                return Promise.reject("submitTransfer(), You must supply a valid Currency ID, e.g. '2'!");
-            } else if (params.Currency && typeof params.Currency !== 'string') {
-                return Promise.reject("submitTransfer(), You must supply a valid Currency, e.g. 'BTC'!");
-            } else if (!params.UserName) {
+            if (!params.currency && typeof params.Currency !== 'string') {
+                return Promise.reject("submitTransfer(), You must supply a valid Currency, e.g. 'BTC'");
+            } else if (!params.userName) {
                 return Promise.reject("submitTransfer(), You must supply a valid TradeSatoshi UserName, e.g. 'bigdaddy438'!");
-            } else if (!params.Amount || typeof params.Amount !== 'number') {
+            } else if (!params.amount || typeof params.Amount !== 'number') {
                 return Promise.reject("submitTransfer(), You must supply a valid Amount, e.g. Amount: '123.00000000'!");
             }
-
-            options.API_PATH = "SubmitTransfer";
-            return privateRequest(reqOpts);
+            options.API_PATH = "submittransfer";
+            return privateRequest(params);
         },
       
       /*

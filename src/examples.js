@@ -57,11 +57,15 @@ TradeSatoshi .setOptions(options);
         // const submitTip = await TradeSatoshi.getTradeHistory({market: "GRLC_BTC"});
         // console.log(submitTip); //String with results of the Tip request from API
         //
-	      const genAddress = await TradeSatoshi.generateAddress({currency: "GRIM"});
-	      console.log(genAddress); //String with results of the Tip request from API
+        // const genAddress = await TradeSatoshi.generateAddress({currency: "GRIM"});
+        // console.log(genAddress); //String with results of the Tip request from API
       
         // const submitWithdraw = await TradeSatoshi.submitWithdraw({Currency: 'DOGE', Address: 'Inset TradeSatoshi  Address!', PaymentId: 'Monies4U-12345-78', Amount: 123.000000000});
-        // console.log(submitWithdraw); //Integer as the OrderId from API
+	      // console.log(submitWithdraw); //Integer as the OrderId from API
+			  // const getDeposits = await TradeSatoshi.getDeposits();
+			  // console.log(getDeposits); //Integer as the OrderId from API
+			  // const getWithdrawls = await TradeSatoshi.getWithdrawals();
+			  // console.log(getWithdrawls); //Integer as the OrderId from API
         //
         // const submitTransfer = await TradeSatoshi.submitTransfer({Currency: 'DOGE', UserName: 'bigdaddy234', Amount: 123.000000000});
         // console.log(submitTransfer); //String with results of the Transfer from API
