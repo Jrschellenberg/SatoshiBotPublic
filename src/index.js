@@ -229,68 +229,31 @@ let TradeSatoshi = () => {
         },
         getMarketHistory: async (params = {}) => {
             if(!params.market){
-                return Promise.reject("You must supply a valid market or trade pair Id!");
+                return Promise.reject("getMarketHistory(), You must supply a valid market or trade pair Id!");
             }
             options.API_PATH = "getmarkethistory";
 	          let urlParams = buildURL(params);
             return publicRequest(urlParams);
         },
-        getMarket: async (params = {}) => {
-            let urlParams = "";
-            if (params.Market && params.Hours) {
-                urlParams = "/" + params.Market + "/" + params.Hours;
-            } else {
-                urlParams = "/" + params.Market;
+        getMarketSummary: async (params = {}) => {
+            if(!params.market){
+              return Promise.reject("getMarketSummary(), You must supply a valid market or trade pair Id!");
             }
-            options.API_PATH = "GetMarket";
-
-            let reqOpts = {
-                url: options.HOST_URL + "/" + options.API_PATH + urlParams
-            };
-
-            return publicRequest(reqOpts);
+            options.API_PATH = "getmarketsummary";
+	          let urlParams = buildURL(params);
+	          return publicRequest(urlParams);
         },
-        // getMarketHistory: async (params = {}) => {
-        //     if (!params.Market) {
-        //         return Promise.reject("You must supply a valid Market or Trade Pair Id");
-        //     }
-        //
-        //     let urlParams = "";
-        //
-        //     if (params.Market && params.Hours) {
-        //         urlParams = "/" + params.Market + "/" + params.Hours;
-        //     } else {
-        //         urlParams = "/" + params.Market;
-        //     }
-        //
-        //     options.API_PATH = "GetMarketHistory";
-        //
-        //     let reqOpts = {
-        //         url: options.HOST_URL + "/" + options.API_PATH + urlParams
-        //     };
-        //
-        //     return publicRequest(reqOpts);
-        // },
-        getMarketOrders: async (params = {}) => {
-            if (!params.Market) {
-                return Promise.reject("getMarketOrders(), You must supply a valid Market or Trade Pair Id, e.g. 'BTC_LTC' or '100'!");
+        getMarketSummaries: async () => {
+            options.API_PATH = "getmarketsummaries";
+            return publicRequest(null);
+        },
+        getOrderBook: async (params = {})  => {
+            if (!params.market) {
+	            return Promise.reject("getOrderBook(), You must supply a valid Market or Trade Pair Id, e.g. 'BTC_LTC' or '100'!");
             }
-
-            let urlParams = "";
-
-            if (params.Market && params.Count) {
-                urlParams = "/" + params.Market + "/" + params.Count;
-            } else {
-                urlParams = "/" + params.Market;
-            }
-
-            options.API_PATH = "GetMarketOrders";
-
-            let reqOpts = {
-                url: options.HOST_URL + "/" + options.API_PATH + urlParams
-            };
-
-            return publicRequest(reqOpts);
+            options.API_PATH = "getorderbook";
+	          let urlParams = buildURL(params);
+            return publicRequest(urlParams);
         },
         getMarketOrderGroups: async (params = {}) => {
             if (!params.Market || Array.isArray(params.Market) === false) {
