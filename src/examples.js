@@ -1,80 +1,67 @@
-var TradeSatoshi = require('./index.js');
+require("babel-polyfill");
+const Cryptopia = require('./index')();
 import {API_CREDENTIALS} from "./secret";
+const options = {
+    API_KEY: API_CREDENTIALS.KEY,
+    API_SECRET: API_CREDENTIALS.SECRET
+};
+Cryptopia.setOptions(options);
 
-console.log(API_CREDENTIALS.KEY);
+(async function () {
+    try {
+        //Public
+        // const currencies = await Cryptopia.getCurrencies();
+        // console.log(currencies); //Array of available Currencies from API
+        //
+        // const tradePairs = await Cryptopia.getTradePairs();
+        // console.log(tradePairs); //Array of available Trade Pairs from API
+        //
+        // const markets = await Cryptopia.getMarkets({Market: 'ETH', Hours: 12});
+        // console.log(markets); //Array of Markets for 24hrs OR specific Market within 1-24 Hours from API
+        //
+        // const market = await Cryptopia.getMarket({Market: 'ETH_BTC', Hours: 4});
+        // console.log(market); //Array of a specific Market's data for 24hrs OR within 1-24 Hours from API
+        //
+        // const marketHistory = await Cryptopia.getMarketHistory({Market: 'ETH_BTC', Hours: 72});
+        // console.log(marketHistory); //Array of a specific Market's data for 24hrs OR within 1-168 (7 days) Hours from API
+        //
+        // const marketOrders = await Cryptopia.getMarketOrders({Market: 'LTC_BTC', Count: 69});
+        // console.log(marketOrders); //Object with 'Buy' and 'Sell' as arrays with specified Count limit from API
+        //
+        // const marketOrderGroups = await Cryptopia.getMarketOrderGroups({Market: ['ETH_BTC', 'ETH_USDT'], Count: 100});
+        // console.log(marketOrderGroups); //Array of objects for each Market listed from API
 
-var since1Minute = new Date().getTime() / 1000 -  60, // convert to seconds then take off 60 seconds
-    since1Day = new Date().getTime() / 1000 -  60 * 60 * 24 // convert to seconds then take off 1 day
+        // Private
+        const balance = await Cryptopia.getBalance({Currency: 'BTC'});
+        console.log(balance); //Array of available Balances from API
 
-// Test public data APIs
-var publicClient = new TradeSatoshi();
-
-//publicClient.getTicker(console.log, 'LTC_BTC');
-// publicClient.getCurrencies(console.log);
-//
-// publicClient.getOrderBook(console.log, 'BTCCNY');
-
-//publicClient.getOrderBook(console.log, {market: 'LTC_BTC', type: "buy", depth: 5});
-
-
-// get 100 trades since trade id 20500000
-//publicClient.getHistoryData(console.log, {limit: 100, since: 20500000 });
-
-// get 2 trades since 1 minute ago
-//publicClient.getHistoryData(console.log, {limit: 2, since: since1Minute, sincetype: 'time' });
-
-// Either pass your API key and secret as the first and second parameters to examples.js. eg
-// node examples.js your-api-key your-api-secret
-//
-// Or enter them below.
-// WARNING never commit your API keys into a public repository.
-var key = process.argv[2] || 'your-api-key';
-var secret = process.argv[3] || 'your-api-secret';
-
-var privateClient = new TradeSatoshi(key, secret);
-
-// uncomment the API you want to test.
-// Be sure to check the parameters so you don't do any unwanted live trades
-
-// privateClient.getAccountInfo(console.log);
-// privateClient.getAccountInfo(console.log, 'all');
-// privateClient.getAccountInfo(console.log, 'profile');
-// privateClient.getAccountInfo(console.log, 'loan');
-// privateClient.getAccountInfo(console.log, 'balance');
-
-// privateClient.buyOrder2(console.log, 1000, 0.001, 'BTCCNY');
-// privateClient.sellOrder2(console.log, 9000, 0.0001);
-// privateClient.createOrder2(console.log, 'buy', 999, 0.0001, 'BTCCNY');
-// privateClient.createOrder2(console.log, 'sell', 8888, 0.0002, 'BTCCNY');
-// market order
-// privateClient.createOrder2(console.log, 'buy', null, 0.0001, 'BTCCNY');
-
-// privateClient.cancelOrder(console.log, 1);
-
-// privateClient.getOrders(console.log);
-// privateClient.getOrders(console.log, false);
-// privateClient.getOrders(console.log, false, 'BTCCNY', 2, 0, since1Day, true);
-// privateClient.getOrders(console.log, false, 'BTCCNY', 2, 0, since1Day, true);
-
-// privateClient.getOrder(console.log, "75479188");
-// privateClient.getOrder(console.log, 1);
-// privateClient.getOrder(console.log, 1, 'BTCCNY', true);
-
-// privateClient.getTransactions(console.log);
-// privateClient.getTransactions(console.log, 'all', 10);
-// privateClient.getTransactions(console.log, 'fundmoney', 2);
-// privateClient.getTransactions(console.log, 'all', 5, 0, since1Day, 'time');
-
-// privateClient.getMarketDepth2(console.log);
-// privateClient.getMarketDepth2(console.log, 3);
-// privateClient.getMarketDepth2(console.log, 5, 'LTCCNY');
-
-// privateClient.getDeposits(console.log, 'BTC');
-// privateClient.getDeposits(console.log, 'BTC', false);
-
-// privateClient.getWithdrawals(console.log, 'BTC');
-// privateClient.getWithdrawals(console.log, 'BTC', false);
-
-// privateClient.getWithdrawal(console.log, 1);
-
-// privateClient.requestWithdrawal(console.log, 'BTC', 0.01);
+        // const depositAddress = await Cryptopia.getDepositAddress({Currency: 'BTC'});
+        // console.log(depositAddress); //Object with Deposit Address data from API
+        //
+        // const tradeHistory = await Cryptopia.getTradeHistory({Market: 'ETH/BTC'});
+        // console.log(tradeHistory); //Array of available Trade History for Market from API
+        //
+        // const transactions = await Cryptopia.getTransactions({Type: 'Withdraw'});
+        // console.log(transactions); //Array of available Transactions with Type from API
+        //
+        // const openOrders = await Cryptopia.getOpenOrders({Market: 'ETH/BTC', Count: 10});
+        // console.log(openOrders); //Array of available Open Orders in Market from API
+        //
+        // const submitTrade = await Cryptopia.submitTrade({Market: 'ETH/BTC', Type: 'Buy', Rate: 0.00050000, Amount: 123.000000000});
+        // console.log(submitTrade); //Object with OrderId and FilledOrders array from API
+        //
+        // const cancelTrade = await Cryptopia.cancelTrade({Type: 'Trade', OrderId: 12354});
+        // console.log(cancelTrade); //Array of Cancelled OrderIds from API
+        //
+        // const submitTip = await Cryptopia.submitTip({Currency: 'LTC', ActiveUsers: 23, Amount: 123.000000000});
+        // console.log(submitTip); //String with results of the Tip request from API
+        //
+        // const submitWithdraw = await Cryptopia.submitWithdraw({Currency: 'DOGE', Address: 'Inset Cryptopia Address!', PaymentId: 'Monies4U-12345-78', Amount: 123.000000000});
+        // console.log(submitWithdraw); //Integer as the OrderId from API
+        //
+        // const submitTransfer = await Cryptopia.submitTransfer({Currency: 'DOGE', UserName: 'bigdaddy234', Amount: 123.000000000});
+        // console.log(submitTransfer); //String with results of the Transfer from API
+    } catch (err) {
+        console.error(err);
+    }
+})();
