@@ -33,8 +33,8 @@ TradeSatoshi .setOptions(options);
         //
 
         // Private
-        const balance = await TradeSatoshi.getBalance({currency: 'BTC'});
-        console.log(balance); //Array of available Balances from API
+        // const balance = await TradeSatoshi.getBalance({currency: 'BTC'});
+        // console.log(balance); //Array of available Balances from API
 
         // const depositAddress = await TradeSatoshi.getBalances();
         // console.log(depositAddress); //Object with Deposit Address data from API
@@ -51,12 +51,15 @@ TradeSatoshi .setOptions(options);
         // const submitTrade = await TradeSatoshi.submitTrade({Market: 'ETH/BTC', Type: 'Buy', Rate: 0.00050000, Amount: 123.000000000});
         // console.log(submitTrade); //Object with OrderId and FilledOrders array from API
         //
-        // const cancelTrade = await TradeSatoshi.cancelTrade({Type: 'Trade', OrderId: 12354});
+        // const cancelTrade = await TradeSatoshi.cancelOrder({type: 'single', orderId: 9619369});
         // console.log(cancelTrade); //Array of Cancelled OrderIds from API
         //
-        // const submitTip = await TradeSatoshi.submitTip({Currency: 'LTC', ActiveUsers: 23, Amount: 123.000000000});
+        // const submitTip = await TradeSatoshi.getTradeHistory({market: "GRLC_BTC"});
         // console.log(submitTip); //String with results of the Tip request from API
         //
+	      const genAddress = await TradeSatoshi.generateAddress({currency: "GRIM"});
+	      console.log(genAddress); //String with results of the Tip request from API
+      
         // const submitWithdraw = await TradeSatoshi.submitWithdraw({Currency: 'DOGE', Address: 'Inset TradeSatoshi  Address!', PaymentId: 'Monies4U-12345-78', Amount: 123.000000000});
         // console.log(submitWithdraw); //Integer as the OrderId from API
         //

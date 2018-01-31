@@ -79,18 +79,18 @@ let TradeSatoshi = () => {
             return privateRequest(params);
         },
         getBalances: async (params = {}) => {
-            options.API_PATH = "private/getbalances";
+            options.API_PATH = "getbalances";
             return privateRequest(params);
         },
         getOrder: async (params = {}) => {
             if (!params.orderId) {
                 return Promise.reject("getOrder(), You must supply a valid OrderId, e.g. '100'");
             }
-            options.API_PATH = "private/getorder";
+            options.API_PATH = "getorder";
             return privateRequest(params);
         },
         getOrders: async (params = {}) => {
-            options.API_PATH = "private/getorders";
+            options.API_PATH = "getorders";
             return privateRequest(params);
         },
         submitOrder: async (params = {}) => {
@@ -103,28 +103,21 @@ let TradeSatoshi = () => {
             }   else if (!params.price || typeof params.price !== 'number' ) {
 	              return Promise.reject("submitOrder(), You must supply a valid price, e.g. price: '0.00000034'");
             }
-            options.API_PATH = "private/submitorder";
+            options.API_PATH = "submitorder";
             return privateRequest(params);
         },
         cancelOrder: async (params = {}) => {
-            if (!params.Market && !params.TradePairId) {
-                return Promise.reject("submitTrade(), You must supply a valid Market, e.g. 'BTC/USDT' OR you must supply a valid Trade Pair ID, e.g. '100'!");
-            } else if (params.TradePairId && typeof params.TradePairId !== 'number') {
-                return Promise.reject("submitTrade(), You must supply a valid Trade Pair ID, e.g. '100'!");
-            } else if (params.Market && typeof params.Market !== 'string') {
-                return Promise.reject("submitTrade(), You must supply a valid Market, e.g. 'DOT/BTC'!");
-            } else if (!params.Type) {
-                return Promise.reject("submitTrade(), You must supply a valid Type, e.g. 'Buy' or 'Sell'!");
-            } else if (params.Type && params.Type !== 'Buy' && params.Type !== 'Sell') {
-                return Promise.reject("submitTrade(), You must supply a valid Type, e.g. 'Buy' or 'Sell'!");
-            } else if (!params.Rate || !params.Amount) {
-                return Promise.reject("submitTrade(), You must supply a valid Rate and Amount, e.g. Rate: '0.00000034' or Amount: '123.00000000'!");
-            } else if (typeof params.Rate !== 'number' || typeof params.Amount !== 'number') {
-                return Promise.reject("submitTrade(), You must supply a valid Rate and Amount, e.g. Rate: '0.00000034' or Amount: '123.00000000'!");
+            console.log(params.type);
+            if (!params.type || (params.type.toLowerCase() != 'single' && params.type.toLowerCase() != 'market' && params.type.toLowerCase() != 'marketsells'
+	            && params.type.toLowerCase() != 'marketbuys' && params.type.toLowerCase() != 'allsells' && params.type.toLowerCase() != 'all')) {
+                return Promise.reject("cancelOrder(), You must supply a valid type, e.g. 'Single', 'Market', Etc");
+            } else if (params.type.toLowerCase() == 'single' && !params.orderId) {
+                return Promise.reject("cancelOrder(), You must supply a valid OrderId when type is selected as 'Single'");
+            } else if ((params.type.toLowerCase() == 'market' || params.type.toLowerCase() == 'marketbuys' || params.type.toLowerCase() == 'marketsells' ) && !params.market)  {
+                return Promise.reject("cancelOrder(), You must supply a valid Market when type is selected as 'Market', 'MarketBuys', or 'MarketSells'!");
             }
-
-            options.API_PATH = "private/cancelOrder";
-            return privateRequest(reqOpts);
+            options.API_PATH = "cancelorder";
+            return privateRequest(params);
         },
         cancelTrade: async (params = {}) => {
             if (!params.Type) {
@@ -137,45 +130,30 @@ let TradeSatoshi = () => {
                 return Promise.reject("cancelTrade(), You must supply a valid TradePairId, e.g. '100'!");
             }
 
-            options.API_PATH = "CancelTrade";
+            options.API_PATH = "canceltrade";
             return privateRequest(reqOpts);
         },
-        submitTip: async (params = {}) => {
-            if (!params.Currency && !params.CurrencyId) {
-                return Promise.reject("submitTip(), You must supply a valid Currency, e.g. 'BTC' OR you must supply a valid Currency ID, e.g. '2'!");
-            } else if (params.CurrencyId && typeof params.CurrencyId !== 'number') {
-                return Promise.reject("submitTip(), You must supply a valid Currency ID, e.g. '2'!");
-            } else if (params.Currency && typeof params.Currency !== 'string') {
-                return Promise.reject("submitTip(), You must supply a valid Currency, e.g. 'BTC'!");
-            } else if (!params.ActiveUsers) {
-                return Promise.reject("submitTip(), You must supply a valid Active User count, e.g. between '2' and '100'!");
-            } else if (params.ActiveUsers && (typeof params.ActiveUsers !== 'number' || params.ActiveUsers < 2 || params.ActiveUsers > 100)) {
-                return Promise.reject("submitTip(), You must supply a valid Active User count, e.g. between '2' and '100'!");
-            } else if (!params.Amount) {
-                return Promise.reject("submitTip(), You must supply a valid Amount, e.g. Amount: '123.00000000'!");
-            } else if (typeof params.Amount !== 'number') {
-                return Promise.reject("submitTip(), You must supply a valid Rate and Amount, e.g. Amount: '123.00000000'!");
+        getTradeHistory: async (params = {}) => {
+            options.API_PATH = "gettradehistory";
+            return privateRequest(params);
+        },
+        generateAddress: async (params = {}) => {
+            if(!params.currency){
+	            return Promise.reject("generateAddress(), You must supply a valid Currency, e.g. 'BTC'");
             }
-
-            options.API_PATH = "SubmitTip";
-            return privateRequest(reqOpts);
+	          options.API_PATH = "generateaddress";
+	          return privateRequest(params);
         },
+      
         submitWithdraw: async (params = {}) => {
-            if (!params.Currency && !params.CurrencyId) {
-                return Promise.reject("submitWithdraw(), You must supply a valid Currency, e.g. 'BTC' OR you must supply a valid Currency ID, e.g. '2'!");
-            } else if (params.CurrencyId && typeof params.CurrencyId !== 'number') {
-                return Promise.reject("submitWithdraw(), You must supply a valid Currency ID, e.g. '2'!");
-            } else if (params.Currency && typeof params.Currency !== 'string') {
-                return Promise.reject("submitWithdraw(), You must supply a valid Currency, e.g. 'BTC'!");
-            } else if (!params.Address) {
+            if (!params.currency && typeof params.currency !== 'string') {
+                return Promise.reject("submitWithdraw(), You must supply a valid Currency, e.g. 'BTC'");
+            }else if (!params.address) {
                 return Promise.reject("submitWithdraw(), You must supply a valid Address that exists within your AddressBook!");
-            } else if (!params.PaymentId) {
-                return Promise.reject("submitWithdraw(), You must supply a valid Payment ID! *The unique paymentid to identify the payment. (PaymentId for CryptoNote coins.)!");
-            } else if (!params.Amount || typeof params.Amount !== 'number') {
+            } else if (!params.amount || typeof params.amount !== 'number') {
                 return Promise.reject("submitWithdraw(), You must supply a valid Amount, e.g. Amount: '123.00000000'!");
             }
-
-            options.API_PATH = "SubmitWithdraw";
+            options.API_PATH = "submitwithdraw";
             return privateRequest(reqOpts);
         },
         submitTransfer: async (params = {}) => {
