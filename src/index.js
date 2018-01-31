@@ -3,7 +3,7 @@ const request = require('request-promise');
 
 const HOST_URL = "https://tradesatoshi.com/api";
 
-let Cryptopia = () => {
+let TradeSatoshi = () => {
     let options = {
         API_KEY: null,
         API_SECRET: null,
@@ -19,7 +19,7 @@ let Cryptopia = () => {
             response = JSON.parse(response);
             console.log(response);
 
-            return response.Success ? response : Promise.reject(response.Error);
+            return response.success ? response.result : Promise.reject(response.message);
         } catch (err) {
             return Promise.reject('privateRequest(), Error on privateRequest: ' + err)
         }
@@ -27,6 +27,7 @@ let Cryptopia = () => {
 
     //HTTPS Public Request
     async function publicRequest(opts) {
+        opts.url = options.HOST_URL + "/public/" + options.API_PATH;
         opts.headers = {
             'Content-Type': 'application/json; charset=utf-8'
         };
@@ -283,7 +284,7 @@ let Cryptopia = () => {
             } else if (params.Currency && typeof params.Currency !== 'string') {
                 return Promise.reject("submitTransfer(), You must supply a valid Currency, e.g. 'BTC'!");
             } else if (!params.UserName) {
-                return Promise.reject("submitTransfer(), You must supply a valid Cryptopia UserName, e.g. 'bigdaddy438'!");
+                return Promise.reject("submitTransfer(), You must supply a valid TradeSatoshi UserName, e.g. 'bigdaddy438'!");
             } else if (!params.Amount || typeof params.Amount !== 'number') {
                 return Promise.reject("submitTransfer(), You must supply a valid Amount, e.g. Amount: '123.00000000'!");
             }
@@ -303,16 +304,12 @@ let Cryptopia = () => {
         },
         //Public APIs
         getCurrencies: async () => {
-            options.API_PATH = "public/getcurrencies";
-            console.log(options.HOST_URL + "/" + options.API_PATH);
-
+            options.API_PATH = "getcurrencies";
             let reqOpts = {
-                url: options.HOST_URL + "/" + options.API_PATH,
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8'
                 }
             };
-
             return publicRequest(reqOpts);
         },
         getTradePairs: async () => {
@@ -442,4 +439,4 @@ let Cryptopia = () => {
     }
 };
 
-module.exports = exports = Cryptopia;
+module.exports = exports = TradeSatoshi;

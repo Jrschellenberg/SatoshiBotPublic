@@ -1,65 +1,65 @@
 require("babel-polyfill");
-const Cryptopia = require('./index')();
+const TradeSatoshi = require('./index')();
 import {API_CREDENTIALS} from "./secret";
 const options = {
     API_KEY: API_CREDENTIALS.KEY,
     API_SECRET: API_CREDENTIALS.SECRET
 };
-Cryptopia.setOptions(options);
+TradeSatoshi .setOptions(options);
 
 (async function () {
     try {
         //Public
-        // const currencies = await Cryptopia.getCurrencies();
+        // const currencies = await TradeSatoshi.getCurrencies();
         // console.log(currencies); //Array of available Currencies from API
         //
-        // const tradePairs = await Cryptopia.getTradePairs();
+        // const tradePairs = await TradeSatoshi .getTradePairs();
         // console.log(tradePairs); //Array of available Trade Pairs from API
         //
-        // const markets = await Cryptopia.getMarkets({Market: 'ETH', Hours: 12});
+        // const markets = await TradeSatoshi .getMarkets({Market: 'ETH', Hours: 12});
         // console.log(markets); //Array of Markets for 24hrs OR specific Market within 1-24 Hours from API
         //
-        // const market = await Cryptopia.getMarket({Market: 'ETH_BTC', Hours: 4});
+        // const market = await TradeSatoshi .getMarket({Market: 'ETH_BTC', Hours: 4});
         // console.log(market); //Array of a specific Market's data for 24hrs OR within 1-24 Hours from API
         //
-        // const marketHistory = await Cryptopia.getMarketHistory({Market: 'ETH_BTC', Hours: 72});
+        // const marketHistory = await TradeSatoshi .getMarketHistory({Market: 'ETH_BTC', Hours: 72});
         // console.log(marketHistory); //Array of a specific Market's data for 24hrs OR within 1-168 (7 days) Hours from API
         //
-        // const marketOrders = await Cryptopia.getMarketOrders({Market: 'LTC_BTC', Count: 69});
+        // const marketOrders = await TradeSatoshi .getMarketOrders({Market: 'LTC_BTC', Count: 69});
         // console.log(marketOrders); //Object with 'Buy' and 'Sell' as arrays with specified Count limit from API
         //
-        // const marketOrderGroups = await Cryptopia.getMarketOrderGroups({Market: ['ETH_BTC', 'ETH_USDT'], Count: 100});
+        // const marketOrderGroups = await TradeSatoshi .getMarketOrderGroups({Market: ['ETH_BTC', 'ETH_USDT'], Count: 100});
         // console.log(marketOrderGroups); //Array of objects for each Market listed from API
 
         // Private
-        const balance = await Cryptopia.getBalance({Currency: 'BTC'});
+        const balance = await TradeSatoshi.getBalance({Currency: 'BTC'});
         console.log(balance); //Array of available Balances from API
 
-        // const depositAddress = await Cryptopia.getDepositAddress({Currency: 'BTC'});
+        // const depositAddress = await TradeSatoshi .getDepositAddress({Currency: 'BTC'});
         // console.log(depositAddress); //Object with Deposit Address data from API
         //
-        // const tradeHistory = await Cryptopia.getTradeHistory({Market: 'ETH/BTC'});
+        // const tradeHistory = await TradeSatoshi .getTradeHistory({Market: 'ETH/BTC'});
         // console.log(tradeHistory); //Array of available Trade History for Market from API
         //
-        // const transactions = await Cryptopia.getTransactions({Type: 'Withdraw'});
+        // const transactions = await TradeSatoshi .getTransactions({Type: 'Withdraw'});
         // console.log(transactions); //Array of available Transactions with Type from API
         //
-        // const openOrders = await Cryptopia.getOpenOrders({Market: 'ETH/BTC', Count: 10});
+        // const openOrders = await TradeSatoshi .getOpenOrders({Market: 'ETH/BTC', Count: 10});
         // console.log(openOrders); //Array of available Open Orders in Market from API
         //
-        // const submitTrade = await Cryptopia.submitTrade({Market: 'ETH/BTC', Type: 'Buy', Rate: 0.00050000, Amount: 123.000000000});
+        // const submitTrade = await TradeSatoshi .submitTrade({Market: 'ETH/BTC', Type: 'Buy', Rate: 0.00050000, Amount: 123.000000000});
         // console.log(submitTrade); //Object with OrderId and FilledOrders array from API
         //
-        // const cancelTrade = await Cryptopia.cancelTrade({Type: 'Trade', OrderId: 12354});
+        // const cancelTrade = await TradeSatoshi .cancelTrade({Type: 'Trade', OrderId: 12354});
         // console.log(cancelTrade); //Array of Cancelled OrderIds from API
         //
-        // const submitTip = await Cryptopia.submitTip({Currency: 'LTC', ActiveUsers: 23, Amount: 123.000000000});
+        // const submitTip = await TradeSatoshi .submitTip({Currency: 'LTC', ActiveUsers: 23, Amount: 123.000000000});
         // console.log(submitTip); //String with results of the Tip request from API
         //
-        // const submitWithdraw = await Cryptopia.submitWithdraw({Currency: 'DOGE', Address: 'Inset Cryptopia Address!', PaymentId: 'Monies4U-12345-78', Amount: 123.000000000});
+        // const submitWithdraw = await TradeSatoshi .submitWithdraw({Currency: 'DOGE', Address: 'Inset TradeSatoshi  Address!', PaymentId: 'Monies4U-12345-78', Amount: 123.000000000});
         // console.log(submitWithdraw); //Integer as the OrderId from API
         //
-        // const submitTransfer = await Cryptopia.submitTransfer({Currency: 'DOGE', UserName: 'bigdaddy234', Amount: 123.000000000});
+        // const submitTransfer = await TradeSatoshi .submitTransfer({Currency: 'DOGE', UserName: 'bigdaddy234', Amount: 123.000000000});
         // console.log(submitTransfer); //String with results of the Transfer from API
     } catch (err) {
         console.error(err);
