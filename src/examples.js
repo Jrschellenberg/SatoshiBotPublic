@@ -33,16 +33,16 @@ TradeSatoshi .setOptions(options);
         //
 
         // Private
-        // const balance = await TradeSatoshi.getBalance({Currency: 'BTC'});
-        // console.log(balance); //Array of available Balances from API
+        const balance = await TradeSatoshi.getBalance({currency: 'BTC'});
+        console.log(balance); //Array of available Balances from API
 
-        // const depositAddress = await TradeSatoshi.getDepositAddress({Currency: 'BTC'});
+        // const depositAddress = await TradeSatoshi.getBalances();
         // console.log(depositAddress); //Object with Deposit Address data from API
-        //
-        // const tradeHistory = await TradeSatoshi.getTradeHistory({Market: 'ETH/BTC'});
+
+        // const tradeHistory = await TradeSatoshi.getOrder({orderId: '9619369'});
         // console.log(tradeHistory); //Array of available Trade History for Market from API
         //
-        // const transactions = await TradeSatoshi.getTransactions({Type: 'Withdraw'});
+        // const transactions = await TradeSatoshi.getOrders();
         // console.log(transactions); //Array of available Transactions with Type from API
         //
         // const openOrders = await TradeSatoshi.getOpenOrders({Market: 'ETH/BTC', Count: 10});

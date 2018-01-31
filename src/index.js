@@ -72,60 +72,41 @@ let TradeSatoshi = () => {
 			==================================================================================================================
 			 */
         getBalance: async (params = {}) => {
+            if(!params.currency){
+	            return Promise.reject("getBalance(), You must supply a valid Currency, e.g. 'BTC'");
+            }
             options.API_PATH = "private/getbalance";
             return privateRequest(params);
         },
-        getDepositAddress: async (params = {}) => {
-            if (!params.Currency && !params.CurrencyId) {
-                return Promise.reject("getDepositAddress(), You must supply a valid Currency, e.g. 'BTC' OR you must supply a valid Currency ID, e.g. '2'!");
-            } else if (params.CurrencyId && typeof params.CurrencyId !== 'number') {
-                return Promise.reject("getDepositAddress(), You must supply a valid Currency ID, e.g. '2'!");
-            } else if (params.Currency && typeof params.Currency !== 'string') {
-                return Promise.reject("getDepositAddress(), You must supply a valid Currency, e.g. 'BTC'!");
-            }
-            options.API_PATH = "GetDepositAddress";
+        getBalances: async (params = {}) => {
+            options.API_PATH = "private/getbalances";
             return privateRequest(params);
         },
-        getOpenOrders: async (params = {}) => {
-            if (!params.Market && !params.TradePairId) {
-                return Promise.reject("getOpenOrders(), You must supply a valid Market, e.g. 'BTC/USDT' OR you must supply a valid Trade Pair ID, e.g. '100'!");
-            } else if (params.TradePairId && typeof params.TradePairId !== 'number') {
-                return Promise.reject("getOpenOrders(), You must supply a valid Trade Pair ID, e.g. '100'!");
-            } else if (params.Market && typeof params.Market !== 'string') {
-                return Promise.reject("getOpenOrders(), You must supply a valid Market, e.g. 'DOT/BTC'!");
-            } else if (params.Count && typeof params.Count !== 'number') {
-                return Promise.reject("getOpenOrders(), You must supply a valid Count, e.g. between '1' and '100' !");
+        getOrder: async (params = {}) => {
+            if (!params.orderId) {
+                return Promise.reject("getOrder(), You must supply a valid OrderId, e.g. '100'");
             }
-            options.API_PATH = "GetOpenOrders";
+            options.API_PATH = "private/getorder";
             return privateRequest(params);
         },
-        getTradeHistory: async (params = {}) => {
-            if (!params.Market && !params.TradePairId) {
-                return Promise.reject("getTradeHistory(), You must supply a valid Market, e.g. 'BTC/USDT' OR you must supply a valid Trade Pair ID, e.g. '100'!");
-            } else if (params.TradePairId && typeof params.TradePairId !== 'number') {
-                return Promise.reject("getTradeHistory(), You must supply a valid Trade Pair ID, e.g. '100'!");
-            } else if (params.Market && typeof params.Market !== 'string') {
-                return Promise.reject("getTradeHistory(), You must supply a valid Market, e.g. 'DOT/BTC'!");
-            } else if (params.Count && typeof params.Count !== 'number') {
-                return Promise.reject("getTradeHistory(), You must supply a valid Count, e.g. between '1' and '100' !");
-            }
-
-            options.API_PATH = "GetTradeHistory";
-            return privateRequest(reqOpts);
+        getOrders: async (params = {}) => {
+            options.API_PATH = "private/getorders";
+            return privateRequest(params);
         },
-        getTransactions: async (params = {}) => {
-            if (!params.Type) {
-                return Promise.reject("getTransactions(), You must supply a valid Type, e.g. 'Deposit' or 'Withdraw'!");
-            } else if (params.Type && params.Type !== 'Deposit' && params.Type !== 'Withdraw') {
-                return Promise.reject("getTransactions(), You must supply a valid Type, e.g. 'Deposit' or 'Withdraw'!");
-            } else if (params.Count && typeof params.Count !== 'number') {
-                return Promise.reject("getTransactions(), You must supply a valid Count, e.g. between '1' and '100'!");
+        submitOrder: async (params = {}) => {
+            if (!params.market) {
+                return Promise.reject("submitOrder(), You must supply a valid market or trade pair Id!");
+            } else if (params.type && params.type !== 'Buy' && params.type !== 'Sel') {
+                return Promise.reject("submitOrder(), You must supply a valid Type, e.g. 'Sell' or 'Buy'!");
+            }  else if (!params.amount || typeof params.amount !== 'number') {
+	              return Promise.reject("submitOrder(), You must supply a valid Amount, e.g. Amount: '123.00000000'!");
+            }   else if (!params.price || typeof params.price !== 'number' ) {
+	              return Promise.reject("submitOrder(), You must supply a valid price, e.g. price: '0.00000034'");
             }
-
-            options.API_PATH = "GetTransactions";
-            return privateRequest(reqOpts);
+            options.API_PATH = "private/submitorder";
+            return privateRequest(params);
         },
-        submitTrade: async (params = {}) => {
+        cancelOrder: async (params = {}) => {
             if (!params.Market && !params.TradePairId) {
                 return Promise.reject("submitTrade(), You must supply a valid Market, e.g. 'BTC/USDT' OR you must supply a valid Trade Pair ID, e.g. '100'!");
             } else if (params.TradePairId && typeof params.TradePairId !== 'number') {
@@ -142,7 +123,7 @@ let TradeSatoshi = () => {
                 return Promise.reject("submitTrade(), You must supply a valid Rate and Amount, e.g. Rate: '0.00000034' or Amount: '123.00000000'!");
             }
 
-            options.API_PATH = "SubmitTrade";
+            options.API_PATH = "private/cancelOrder";
             return privateRequest(reqOpts);
         },
         cancelTrade: async (params = {}) => {
@@ -254,32 +235,6 @@ let TradeSatoshi = () => {
             options.API_PATH = "getorderbook";
 	          let urlParams = buildURL(params);
             return publicRequest(urlParams);
-        },
-        getMarketOrderGroups: async (params = {}) => {
-            if (!params.Market || Array.isArray(params.Market) === false) {
-                return Promise.reject("getMarketOrderGroups(), You must supply a valid Market or Trade Pair Id as an array, e.g. ['BTC_LTC', 'DOGE_USDT']!");
-            }
-
-            let urlParams = "";
-
-            for (let i = 0; i < params.Market.length; i++) {
-                urlParams += params.Market[i];
-                if (i !== params.Market.length - 1) {
-                    urlParams += "-";
-                }
-            }
-
-            if (params.Count) {
-                urlParams = "/" + params.Count;
-            }
-
-            options.API_PATH = "GetMarketOrderGroups";
-
-            let reqOpts = {
-                url: options.HOST_URL + "/" + options.API_PATH + urlParams
-            };
-
-            return publicRequest(reqOpts);
         },
         //Set Options for API
         setOptions: (opts) => {
