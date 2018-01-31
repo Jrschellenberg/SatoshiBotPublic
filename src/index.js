@@ -12,13 +12,18 @@ let TradeSatoshi = () => {
     };
 
     //HTTPS Private Request
-    async function privateRequest(opts) {
-        console.log(opts);
+    async function privateRequest(params) {
+	    let reqOpts = {
+		    url: options.HOST_URL + "/" + options.API_PATH,
+		    headers: {
+			    'Authorization': buildAuth(params, options),
+			    'Content-Type': 'application/json; charset=utf-8'
+		    },
+		    body: JSON.stringify(params)
+	    };
         try {
-            let response = await request.post(opts);
+            let response = await request.post(reqOpts);
             response = JSON.parse(response);
-            console.log(response);
-
             return response.success ? response.result : Promise.reject(response.message);
         } catch (err) {
             return Promise.reject('privateRequest(), Error on privateRequest: ' + err)
@@ -61,16 +66,7 @@ let TradeSatoshi = () => {
         //Private APIs
         getBalance: async (params = {}) => {
             options.API_PATH = "private/getbalance";
-
-            let reqOpts = {
-                url: options.HOST_URL + "/" + options.API_PATH,
-                headers: {
-                    'Authorization': buildAuth(params, options),
-                    'Content-Type': 'application/json; charset=utf-8'
-                },
-                body: JSON.stringify(params)
-            };
-            return privateRequest(reqOpts);
+            return privateRequest(params);
         },
         getDepositAddress: async (params = {}) => {
             if (!params.Currency && !params.CurrencyId) {
@@ -80,19 +76,8 @@ let TradeSatoshi = () => {
             } else if (params.Currency && typeof params.Currency !== 'string') {
                 return Promise.reject("getDepositAddress(), You must supply a valid Currency, e.g. 'BTC'!");
             }
-
             options.API_PATH = "GetDepositAddress";
-
-            let reqOpts = {
-                url: options.HOST_URL + "/" + options.API_PATH,
-                headers: {
-                    'Authorization': buildAuth(params, options),
-                    'Content-Type': 'application/json; charset=utf-8'
-                },
-                body: JSON.stringify(params)
-            };
-
-            return privateRequest(reqOpts);
+            return privateRequest(params);
         },
         getOpenOrders: async (params = {}) => {
             if (!params.Market && !params.TradePairId) {
@@ -104,19 +89,8 @@ let TradeSatoshi = () => {
             } else if (params.Count && typeof params.Count !== 'number') {
                 return Promise.reject("getOpenOrders(), You must supply a valid Count, e.g. between '1' and '100' !");
             }
-
             options.API_PATH = "GetOpenOrders";
-
-            let reqOpts = {
-                url: options.HOST_URL + "/" + options.API_PATH,
-                headers: {
-                    'Authorization': buildAuth(params, options),
-                    'Content-Type': 'application/json; charset=utf-8'
-                },
-                body: JSON.stringify(params)
-            };
-
-            return privateRequest(reqOpts);
+            return privateRequest(params);
         },
         getTradeHistory: async (params = {}) => {
             if (!params.Market && !params.TradePairId) {
@@ -130,16 +104,6 @@ let TradeSatoshi = () => {
             }
 
             options.API_PATH = "GetTradeHistory";
-
-            let reqOpts = {
-                url: options.HOST_URL + "/" + options.API_PATH,
-                headers: {
-                    'Authorization': buildAuth(params, options),
-                    'Content-Type': 'application/json; charset=utf-8'
-                },
-                body: JSON.stringify(params)
-            };
-
             return privateRequest(reqOpts);
         },
         getTransactions: async (params = {}) => {
@@ -152,16 +116,6 @@ let TradeSatoshi = () => {
             }
 
             options.API_PATH = "GetTransactions";
-
-            let reqOpts = {
-                url: options.HOST_URL + "/" + options.API_PATH,
-                headers: {
-                    'Authorization': buildAuth(params, options),
-                    'Content-Type': 'application/json; charset=utf-8'
-                },
-                body: JSON.stringify(params)
-            };
-
             return privateRequest(reqOpts);
         },
         submitTrade: async (params = {}) => {
@@ -182,16 +136,6 @@ let TradeSatoshi = () => {
             }
 
             options.API_PATH = "SubmitTrade";
-
-            let reqOpts = {
-                url: options.HOST_URL + "/" + options.API_PATH,
-                headers: {
-                    'Authorization': buildAuth(params, options),
-                    'Content-Type': 'application/json; charset=utf-8'
-                },
-                body: JSON.stringify(params)
-            };
-
             return privateRequest(reqOpts);
         },
         cancelTrade: async (params = {}) => {
@@ -206,16 +150,6 @@ let TradeSatoshi = () => {
             }
 
             options.API_PATH = "CancelTrade";
-
-            let reqOpts = {
-                url: options.HOST_URL + "/" + options.API_PATH,
-                headers: {
-                    'Authorization': buildAuth(params, options),
-                    'Content-Type': 'application/json; charset=utf-8'
-                },
-                body: JSON.stringify(params)
-            };
-
             return privateRequest(reqOpts);
         },
         submitTip: async (params = {}) => {
@@ -236,16 +170,6 @@ let TradeSatoshi = () => {
             }
 
             options.API_PATH = "SubmitTip";
-
-            let reqOpts = {
-                url: options.HOST_URL + "/" + options.API_PATH,
-                headers: {
-                    'Authorization': buildAuth(params, options),
-                    'Content-Type': 'application/json; charset=utf-8'
-                },
-                body: JSON.stringify(params)
-            };
-
             return privateRequest(reqOpts);
         },
         submitWithdraw: async (params = {}) => {
@@ -264,16 +188,6 @@ let TradeSatoshi = () => {
             }
 
             options.API_PATH = "SubmitWithdraw";
-
-            let reqOpts = {
-                url: options.HOST_URL + "/" + options.API_PATH,
-                headers: {
-                    'Authorization': buildAuth(params, options),
-                    'Content-Type': 'application/json; charset=utf-8'
-                },
-                body: JSON.stringify(params)
-            };
-
             return privateRequest(reqOpts);
         },
         submitTransfer: async (params = {}) => {
@@ -290,26 +204,18 @@ let TradeSatoshi = () => {
             }
 
             options.API_PATH = "SubmitTransfer";
-
-            let reqOpts = {
-                url: options.HOST_URL + "/" + options.API_PATH,
-                headers: {
-                    'Authorization': buildAuth(params, options),
-                    'Content-Type': 'application/json; charset=utf-8'
-                },
-                body: JSON.stringify(params)
-            };
-
             return privateRequest(reqOpts);
         },
         //Public APIs
         getCurrencies: async () => {
             options.API_PATH = "getcurrencies";
             let reqOpts = {
+                // url: options.HOST_URL + "/" + options.API_PATH,
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8'
                 }
             };
+
             return publicRequest(reqOpts);
         },
         getTradePairs: async () => {
