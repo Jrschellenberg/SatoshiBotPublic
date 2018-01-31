@@ -16,8 +16,11 @@ TradeSatoshi .setOptions(options);
         // const tradePairs = await TradeSatoshi .getTradePairs();
         // console.log(tradePairs); //Array of available Trade Pairs from API
         //
-        // const markets = await TradeSatoshi .getMarkets({Market: 'ETH', Hours: 12});
+        // const markets = await TradeSatoshi .getTicker({market: 'LTC_BTC'});
         // console.log(markets); //Array of Markets for 24hrs OR specific Market within 1-24 Hours from API
+        //
+        const markets = await TradeSatoshi .getMarketHistory({market: 'LTC_BTC', count: 4});
+        console.log(markets); //Array of Markets for 24hrs OR specific Market within 1-24 Hours from API
         //
         // const market = await TradeSatoshi .getMarket({Market: 'ETH_BTC', Hours: 4});
         // console.log(market); //Array of a specific Market's data for 24hrs OR within 1-24 Hours from API
@@ -32,8 +35,8 @@ TradeSatoshi .setOptions(options);
         // console.log(marketOrderGroups); //Array of objects for each Market listed from API
 
         // Private
-        const balance = await TradeSatoshi.getBalance({Currency: 'BTC'});
-        console.log(balance); //Array of available Balances from API
+        // const balance = await TradeSatoshi.getBalance({Currency: 'BTC'});
+        // console.log(balance); //Array of available Balances from API
 
         // const depositAddress = await TradeSatoshi .getDepositAddress({Currency: 'BTC'});
         // console.log(depositAddress); //Object with Deposit Address data from API

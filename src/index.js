@@ -31,19 +31,16 @@ let TradeSatoshi = () => {
     }
 
     //HTTPS Public Request
-    async function publicRequest(opts) {
-        opts.url = options.HOST_URL + "/public/" + options.API_PATH;
-        opts.headers = {
-            'Content-Type': 'application/json; charset=utf-8'
-        };
-        opts.json = true;
-        
-        // console.log(opts);
-
+    async function publicRequest(urlParams) {
+	    let reqOpts = {
+		    url: urlParams ? options.HOST_URL + "/public/" + options.API_PATH+"?"+urlParams : options.HOST_URL + "/public/" + options.API_PATH,
+		    headers: {
+			    'Content-Type': 'application/json; charset=utf-8'
+		    },
+		    json: true
+	    };
         try {
-            const response = await request.get(opts);
-            // console.log(response);
-
+            const response = await request.get(reqOpts);
             return response.success ? response.result : Promise.reject(response.message);
         } catch (err) {
             return Promise.reject('publicRequest(), Error on publicRequest: ' + err)
@@ -60,10 +57,20 @@ let TradeSatoshi = () => {
         let hmacsignature = crypto.createHmac('sha512', new Buffer(opts.API_SECRET, "base64")).update(signature).digest().toString('base64');
         return "amx " + opts.API_KEY + ":" + hmacsignature + ":" + nonce;
     }
+    
+    function buildURL(params){
+          let ret = [];
+          for (let p in params)
+            ret.push(encodeURIComponent(p) + '=' + encodeURIComponent(params[p]));
+          return ret.join('&');
+    }
 
     //Client Functions
     return {
-        //Private APIs
+	    /*
+			=========================================Private APIs=============================================================
+			==================================================================================================================
+			 */
         getBalance: async (params = {}) => {
             options.API_PATH = "private/getbalance";
             return privateRequest(params);
@@ -206,46 +213,27 @@ let TradeSatoshi = () => {
             options.API_PATH = "SubmitTransfer";
             return privateRequest(reqOpts);
         },
-        //Public APIs
+      
+      /*
+      =========================================Public APIs==============================================================
+      ==================================================================================================================
+       */
         getCurrencies: async () => {
             options.API_PATH = "getcurrencies";
-            let reqOpts = {
-                // url: options.HOST_URL + "/" + options.API_PATH,
-                headers: {
-                    'Content-Type': 'application/json; charset=utf-8'
-                }
-            };
-
-            return publicRequest(reqOpts);
+            return publicRequest(null);
         },
-        getTradePairs: async () => {
-            options.API_PATH = "GetTradePairs";
-
-            let reqOpts = {
-                url: options.HOST_URL + "/" + options.API_PATH,
-                headers: {
-                    'Content-Type': 'application/json; charset=utf-8'
-                }
-            };
-
-            return publicRequest(reqOpts);
+        getTicker: async (params = {}) => {
+            options.API_PATH = "getticker";           
+            let urlParams = buildURL(params);
+            return publicRequest(urlParams);
         },
-        getMarkets: async (params = {}) => {
-            let urlParams = "";
-            if (params.BaseMarket && params.Hours) {
-                urlParams = "/" + params.BaseMarket + "/" + params.Hours;
-            } else if (params.Hours) {
-                urlParams = "/" + params.Hours;
-            } else if (params.BaseMarket) {
-                urlParams = "/" + params.BaseMarket;
+        getMarketHistory: async (params = {}) => {
+            if(!params.market){
+                return Promise.reject("You must supply a valid market or trade pair Id!");
             }
-            options.API_PATH = "GetMarkets";
-
-            let reqOpts = {
-                url: options.HOST_URL + "/" + options.API_PATH + urlParams
-            };
-
-            return publicRequest(reqOpts);
+            options.API_PATH = "getmarkethistory";
+	          let urlParams = buildURL(params);
+            return publicRequest(urlParams);
         },
         getMarket: async (params = {}) => {
             let urlParams = "";
@@ -262,27 +250,27 @@ let TradeSatoshi = () => {
 
             return publicRequest(reqOpts);
         },
-        getMarketHistory: async (params = {}) => {
-            if (!params.Market) {
-                return Promise.reject("You must supply a valid Market or Trade Pair Id");
-            }
-
-            let urlParams = "";
-
-            if (params.Market && params.Hours) {
-                urlParams = "/" + params.Market + "/" + params.Hours;
-            } else {
-                urlParams = "/" + params.Market;
-            }
-
-            options.API_PATH = "GetMarketHistory";
-
-            let reqOpts = {
-                url: options.HOST_URL + "/" + options.API_PATH + urlParams
-            };
-
-            return publicRequest(reqOpts);
-        },
+        // getMarketHistory: async (params = {}) => {
+        //     if (!params.Market) {
+        //         return Promise.reject("You must supply a valid Market or Trade Pair Id");
+        //     }
+        //
+        //     let urlParams = "";
+        //
+        //     if (params.Market && params.Hours) {
+        //         urlParams = "/" + params.Market + "/" + params.Hours;
+        //     } else {
+        //         urlParams = "/" + params.Market;
+        //     }
+        //
+        //     options.API_PATH = "GetMarketHistory";
+        //
+        //     let reqOpts = {
+        //         url: options.HOST_URL + "/" + options.API_PATH + urlParams
+        //     };
+        //
+        //     return publicRequest(reqOpts);
+        // },
         getMarketOrders: async (params = {}) => {
             if (!params.Market) {
                 return Promise.reject("getMarketOrders(), You must supply a valid Market or Trade Pair Id, e.g. 'BTC_LTC' or '100'!");
