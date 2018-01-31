@@ -14,7 +14,7 @@ let TradeSatoshi = () => {
     //HTTPS Private Request
     async function privateRequest(params) {
 	    let reqOpts = {
-		    url: options.HOST_URL + "/" + options.API_PATH,
+		    url: options.HOST_URL + "/private/" + options.API_PATH,
 		    headers: {
 			    'Authorization': buildAuth(params, options),
 			    'Content-Type': 'application/json; charset=utf-8'
@@ -53,7 +53,7 @@ let TradeSatoshi = () => {
         // let md5 = crypto.createHash('md5').update(JSON.stringify(params)).digest();  //May not need this for trade satoshi.
         // let requestContentBase64String = md5.toString('base64');
         let requestContentBase64String = new Buffer(JSON.stringify(params)).toString('base64');
-        let signature = opts.API_KEY + "POST" + encodeURIComponent(opts.HOST_URL + "/" + opts.API_PATH).toLowerCase() + nonce + requestContentBase64String;
+        let signature = opts.API_KEY + "POST" + encodeURIComponent(opts.HOST_URL + "/private/" + opts.API_PATH).toLowerCase() + nonce + requestContentBase64String;
         let hmacsignature = crypto.createHmac('sha512', new Buffer(opts.API_SECRET, "base64")).update(signature).digest().toString('base64');
         return "amx " + opts.API_KEY + ":" + hmacsignature + ":" + nonce;
     }
@@ -75,7 +75,7 @@ let TradeSatoshi = () => {
             if(!params.currency){
 	            return Promise.reject("getBalance(), You must supply a valid Currency, e.g. 'BTC'");
             }
-            options.API_PATH = "private/getbalance";
+            options.API_PATH = "getbalance";
             return privateRequest(params);
         },
         getBalances: async (params = {}) => {
