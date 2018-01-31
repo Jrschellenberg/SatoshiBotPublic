@@ -1,4 +1,7 @@
 var TradeSatoshi = require('./index.js');
+import {API_CREDENTIALS} from "./secret";
+
+console.log(API_CREDENTIALS.KEY);
 
 var since1Minute = new Date().getTime() / 1000 -  60, // convert to seconds then take off 60 seconds
     since1Day = new Date().getTime() / 1000 -  60 * 60 * 24 // convert to seconds then take off 1 day
@@ -6,14 +9,13 @@ var since1Minute = new Date().getTime() / 1000 -  60, // convert to seconds then
 // Test public data APIs
 var publicClient = new TradeSatoshi();
 
-publicClient.getTicker(console.log, 'LTC_BTC');
-publicClient.getCurrencies(console.log);
+//publicClient.getTicker(console.log, 'LTC_BTC');
+// publicClient.getCurrencies(console.log);
+//
+// publicClient.getOrderBook(console.log, 'BTCCNY');
 
-publicClient.getOrderBook(console.log, 'BTCCNY');
+//publicClient.getOrderBook(console.log, {market: 'LTC_BTC', type: "buy", depth: 5});
 
-publicClient.getTrades(console.log);
-
-publicClient.getHistoryData(console.log, {});
 
 // get 100 trades since trade id 20500000
 //publicClient.getHistoryData(console.log, {limit: 100, since: 20500000 });
