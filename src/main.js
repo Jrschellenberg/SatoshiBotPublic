@@ -27,17 +27,17 @@ Market pairings Documentation
  */
 
 let marketPairings = [["LTC", "BTC", "GRLC"],
-											// ["BTC", "LTC", "GRLC"],
-											// ["DOGE", "LTC", "GRLC"],
-											// ["DOGE", "BTC", "GRLC"],
-											// ["LTC", "DOGE", "GRLC"],
-											// ["BTC", "DOGE", "GRLC"],
-											//
-											//
-											// ["BTC", "LTC", "DOGE"],
-											// ["LTC", "BTC", "DOGE"],
-											// ["BCH", "LTC", "GRLC"],
-											// ["LTC", "BCH", "GRLC"],
+											["BTC", "LTC", "GRLC"],
+											["DOGE", "LTC", "GRLC"],
+											["DOGE", "BTC", "GRLC"],
+											["LTC", "DOGE", "GRLC"],
+											["BTC", "DOGE", "GRLC"],
+
+
+											["BTC", "LTC", "DOGE"],
+											["LTC", "BTC", "DOGE"],
+											["BCH", "LTC", "GRLC"],
+											["LTC", "BCH", "GRLC"],
 	
 										
 											];

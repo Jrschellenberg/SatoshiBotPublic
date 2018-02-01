@@ -77,7 +77,8 @@ export default class SatoshiTrader{
 				callback(null, markets);
 			},
 			four: async  (callback) =>{
-				const markets = await	TradeSatoshi.getOrderBook({market: satoshiTrader.pair4, depth: 1}); //GRLC_LTC
+				const markets = await	TradeSatoshi.getOrderBook({market: satoshiTrader.pair4, depth: 1});  //GRLC_LTC
+	
 				callback(null, markets);
 			},
 		}, (err, markets) => {
@@ -99,6 +100,7 @@ export default class SatoshiTrader{
 			let pair2Price = marketTwo.rate;                        //Selling price USD
 			let amountSpent = marketThree.rate * pair2Price;        //Selling price USD
 			let tradeFee = amountSpent * TradeSatoshiFeePrice;
+			amountEarned -=  tradeFee;
 			amountSpent += tradeFee;
 			
 			console.log(`Amount spent is ${amountSpent}`);
