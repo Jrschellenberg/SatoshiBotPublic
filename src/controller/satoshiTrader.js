@@ -89,6 +89,7 @@ export default class SatoshiTrader{
 	}
 	
 	isProfitableTrade(next, markets){
+		let satoshiTrader = this;
 		if(markets){ // Make sure we actually have data
 			let marketOne = markets.one.buy[0],
 				marketTwo = markets.two.sell[0],
@@ -109,13 +110,38 @@ export default class SatoshiTrader{
 			if(amountEarned > amountSpent){
 				let profit = amountEarned - amountSpent;
 				console.log("This trade is profitable");
-				this.log.info({informatoin: markets, profit: profit }, `We Found a profitable Trade! Yay!`);
+				this.log.info({information: markets, market1: satoshiTrader.pair1, 
+					market2: satoshiTrader.pair2, market3: satoshiTrader.pair3, market4: satoshiTrader.pair4, profit: profit }, `We Found a profitable Trade! Yay!`);
+				
+				this.calculateProfits(markets);
 			}
 			else{
 				//this.log.info({information: markets }, "Test");
+				//this.log.info({information: markets})
 				console.log("This trade is not profitable");
+				//this.calculateProfits(markets);
 			}
 		}
 		next(); //Use this to restart the loop..
 	}
+	
+	calculateProfits(markets){
+		let marketOneRate = markets.one.buy[0].rate;
+		let marketTwoRate = markets.two.sell[0].rate;
+		let marketOnePrice, marketTwoPrice, marketThreePrice, marketFourPrice;
+		
+		marketOnePrice = marketOneRate * markets.one.buy[0].quantity;
+		marketTwoPrice = marketTwoRate * markets.two.sell[0].quantity;
+		marketThreePrice = markets.three.sell[0].rate * markets.three.sell[0].quantity * marketTwoRate;
+		marketFourPrice = markets.four.buy[0].rate * markets.four.buy[0].quantity * marketOneRate;
+		
+		console.log(marketOnePrice);
+		console.log(marketTwoPrice);
+		console.log(marketThreePrice);
+		console.log(marketFourPrice);
+		let lowest = Math.min(marketOnePrice, marketTwoPrice, marketThreePrice, marketFourPrice);
+		console.log(lowest);
+		
+	}
+	
 }

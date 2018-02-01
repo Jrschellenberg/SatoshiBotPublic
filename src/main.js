@@ -32,30 +32,15 @@ let marketPairings = [["LTC", "BTC", "GRLC"],
 											["DOGE", "BTC", "GRLC"],
 											["LTC", "DOGE", "GRLC"],
 											["BTC", "DOGE", "GRLC"],
-
-
+	
 											["BTC", "LTC", "DOGE"],
 											["LTC", "BTC", "DOGE"],
 											["BCH", "LTC", "GRLC"],
 											["LTC", "BCH", "GRLC"],
+											
 	
 										
 											];
 for(let i=0; i<marketPairings.length; i++){
 	new SatoshiTrader(marketPairings[i], log);
 }
-
-
-
-//let marketPairings = ["LTC_USDT", "BTC_USDT", "GRLC_LTC", "GRLC_BTC" ];
-
-// new SatoshiTrader(marketPairings, log);
-// new SatoshiTrader(marketPairings1, log);
-// new SatoshiTrader(marketPairings2, log);
-// new SatoshiTrader(marketPairings3, log);
-// new SatoshiTrader(marketPairings4, log);
-// new SatoshiTrader(marketPairings5, log);
-
-//new SatoshiTrader(marketPairings);
-
-
