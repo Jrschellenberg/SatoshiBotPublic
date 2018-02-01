@@ -3,3 +3,4 @@ node_modules/
 secret.js
 lib/
 package-lock.json
+profitable.log

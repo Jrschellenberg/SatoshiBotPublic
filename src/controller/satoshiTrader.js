@@ -4,6 +4,8 @@ import {API_CREDENTIALS} from "../service/secret";
 
 const TradeSatoshi = require('../service/satoshiAPI')();
 const TradeSatoshiFeePrice = 0.002;
+const API_TIMEOUT = 4000;
+
 //Setting up Service
 const options = {
 	API_KEY: API_CREDENTIALS.KEY,
@@ -24,20 +26,15 @@ function sleep(ms = 0) {
 //May need queue to handle collisions of events.
 export default class SatoshiTrader{
 	constructor(marketPairings, logger){
-		//this.satoshi = TradeSatoshi;
 		this.log = logger;
 		this.pair1 = marketPairings[0]+'_USDT';
 		this.pair2 = marketPairings[1]+'_USDT';
 		this.pair3 = marketPairings[2]+'_'+marketPairings[1];
 		this.pair4 = marketPairings[2]+'_'+marketPairings[0];
-		this.marketPairings = marketPairings;
 		this.process();
-	//	this.updatePrices();
-		this.API_REQUEST_TIMEOUT = 2000;
 	}
 	
 	process(){
-		const API_TIMEOUT = this.API_REQUEST_TIMEOUT;
 		console.log("hello from satoshitrader!");
 		let satoshiTrader = this;
 		(async () => {
@@ -45,12 +42,9 @@ export default class SatoshiTrader{
 				//satoshiTrader.currencyExchangeCalls();
 				async.forever((next)=>
 					{
-						sleep(4000).then(()=>{
-							console.log("Starting over..........");
+						sleep(API_TIMEOUT).then(()=>{
+							//console.log("Starting over..........");
 							satoshiTrader.currencyExchangeCalls(next);
-						});
-						sleep(6000).then(()=>{
-							
 						});
 					},
 					(err) =>{
@@ -87,49 +81,39 @@ export default class SatoshiTrader{
 				callback(null, markets);
 			},
 		}, (err, markets) => {
-			console.log("hitting end!");
-			console.log(markets);
+			// console.log("hitting end!");
+			// console.log(markets);
 			satoshiTrader.isProfitableTrade(next, markets);
-			
-			//return true;
-			//this.process();
-			// results is now equal to: {one: 1, two: 2}
 		})
 	}
 	
 	isProfitableTrade(next, markets){
-		let marketOne = markets.one,
-			marketTwo = markets.two,
-			marketThree = markets.three,
-			marketFour = markets.four;
-		
-		let pair1Price = marketOne.bid;
-		let amountEarned = marketFour.bid * pair1Price;
-		
-		let pair2Price = marketTwo.ask;
-		
-		let amountSpent = marketThree.ask * pair2Price;
-		
-		let tradeFee = amountSpent * TradeSatoshiFeePrice;
-		
-		amountSpent += tradeFee;
-		
-		console.log(`Amount spent is ${amountSpent}`);
-	
-		console.log(`Amount Earned is ${amountEarned}`);
-		
-		if(amountEarned > amountSpent){
-			let profit = amountEarned - amountSpent;
-			console.log("This trade is profitable");
-			this.log.info({informatoin: markets, profit: profit }, `We Found a profitable Trade! Yay!`);
-		}
-		else{
-			//this.log.info({information: markets }, "Test");
-			console.log("This trade is not profitable");
+		if(markets){ // Make sure we actually have data
+			let marketOne = markets.one,
+				marketTwo = markets.two,
+				marketThree = markets.three,
+				marketFour = markets.four;
+			
+			let pair1Price = marketOne.bid;
+			let amountEarned = marketFour.bid * pair1Price;
+			let pair2Price = marketTwo.ask;
+			let amountSpent = marketThree.ask * pair2Price;
+			let tradeFee = amountSpent * TradeSatoshiFeePrice;
+			amountSpent += tradeFee;
+			
+			console.log(`Amount spent is ${amountSpent}`);
+			console.log(`Amount Earned is ${amountEarned}`);
+			
+			if(amountEarned > amountSpent){
+				let profit = amountEarned - amountSpent;
+				console.log("This trade is profitable");
+				this.log.info({informatoin: markets, profit: profit }, `We Found a profitable Trade! Yay!`);
+			}
+			else{
+				//this.log.info({information: markets }, "Test");
+				console.log("This trade is not profitable");
+			}
 		}
 		next(); //Use this to restart the loop..
 	}
-	
-	
-	
 }
