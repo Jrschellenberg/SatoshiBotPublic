@@ -86,7 +86,8 @@ export default class SatoshiTrader{
 	
 	isProfitable(next){
 		console.log("inside the is profitable method.");
-		next();
+		next(); //Use this to restart the loop..
+		
 		
 	}
 	
