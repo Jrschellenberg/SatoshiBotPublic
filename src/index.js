@@ -119,20 +119,6 @@ let TradeSatoshi = () => {
             options.API_PATH = "cancelorder";
             return privateRequest(params);
         },
-        cancelTrade: async (params = {}) => {
-            if (!params.Type) {
-                return Promise.reject("cancelTrade(), You must supply a valid Type, e.g. 'All', 'Trade', or 'TradePair'!");
-            } else if (params.Type && params.Type !== 'All' && params.Type !== 'Trade' && params.Type !== 'TradePair') {
-                return Promise.reject("cancelTrade(), You must supply a valid Type, e.g. 'All', 'Trade', or 'TradePair'!");
-            } else if (params.Type === 'Trade' && typeof params.OrderId !== 'number') {
-                return Promise.reject("cancelTrade(), You must supply a valid OrderId, e.g. '19523'!");
-            } else if (params.Type === 'TradePair' && typeof params.TradePairId !== 'number') {
-                return Promise.reject("cancelTrade(), You must supply a valid TradePairId, e.g. '100'!");
-            }
-
-            options.API_PATH = "canceltrade";
-            return privateRequest(reqOpts);
-        },
         getTradeHistory: async (params = {}) => {
             options.API_PATH = "gettradehistory";
             return privateRequest(params);
