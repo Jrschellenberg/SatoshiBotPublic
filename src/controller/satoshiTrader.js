@@ -35,12 +35,12 @@ export default class SatoshiTrader{
 		let satoshiTrader = this;
 		(async () => {
 			try {
+				//satoshiTrader.currencyExchangeCalls();
 				async.forever((next)=>
 					{
-						sleep(1000).then(()=>{
-							if(satoshiTrader.currencyExchangeCalls()){
-								next();
-							}
+						sleep(4000).then(()=>{
+							console.log("Starting over..........");
+							satoshiTrader.currencyExchangeCalls(next);
 						})
 					},
 					(err) =>{
@@ -58,9 +58,38 @@ export default class SatoshiTrader{
 	/*
 	Function used to send out API Calls to the 3 currencies we are monitoring.
 	 */
-	currencyExchangeCalls(){
-		console.log("hello");
-		return true;
+	currencyExchangeCalls(next){
+		let satoshiTrader = this;
+		async.series({
+			one: (callback) => {
+				setTimeout(() => {
+					console.log("Hitting #1");
+					callback(null, 1);
+				}, 2000);
+			},
+			two: (callback) =>{
+				setTimeout(() => {
+					console.log("hitting #2");
+					callback(null, 2);
+				}, 1000);
+			}
+		}, (err, results) => {
+			console.log("hitting end!");
+			console.log(results);
+			satoshiTrader.isProfitable(next);
+			
+			//return true;
+			//this.process();
+			// results is now equal to: {one: 1, two: 2}
+		})
 	}
+	
+	isProfitable(next){
+		console.log("inside the is profitable method.");
+		next();
+		
+	}
+	
+	
 	
 }
