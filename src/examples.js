@@ -13,11 +13,8 @@ TradeSatoshi.setOptions(options);
         const currencies = await TradeSatoshi.getCurrencies();
         console.log(currencies); //Array of available Currencies from API
         //
-        // const tradePairs = await TradeSatoshi.getTradePairs();
-        // console.log(tradePairs); //Array of available Trade Pairs from API
-        //
-        // const markets = await TradeSatoshi.getTicker({market: 'LTC_BTC'});
-        // console.log(markets); //Array of Markets for 24hrs OR specific Market within 1-24 Hours from API
+        const markets = await TradeSatoshi.getTicker({market: 'LTC_BTC'});
+        console.log(markets); 
         //
         // const markets = await TradeSatoshi.getMarketHistory({market: 'LTC_BTC', count: 4});
         // console.log(markets); //Array of Markets for 24hrs OR specific Market within 1-24 Hours from API
@@ -52,7 +49,7 @@ TradeSatoshi.setOptions(options);
         // console.log(submitTrade); //Object with OrderId and FilledOrders array from API
         //
         // const cancelOrder = await TradeSatoshi.cancelOrder({type: 'single', orderId: 9619369});
-        // console.log(cancelOrder); //Array of Cancelled OrderIds from API
+        // console.log(cancelOrder); //Array of Cancelled OrderIds from APIgr
         //
         // const getTradeHistory = await TradeSatoshi.getTradeHistory({market: "GRLC_BTC"});
         // console.log(getTradeHistory); //String with results of the Tip request from API

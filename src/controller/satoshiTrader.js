@@ -3,6 +3,7 @@ import timeout from 'async/timeout';
 import {API_CREDENTIALS} from "../service/secret";
 
 const TradeSatoshi = require('../service/satoshiAPI')();
+const TradeSatoshiFeePrice = 0.002;
 //Setting up Service
 const options = {
 	API_KEY: API_CREDENTIALS.KEY,
@@ -22,10 +23,16 @@ function sleep(ms = 0) {
 //Master does trade, verifies trade went smoothly. Continues listening for events.
 //May need queue to handle collisions of events.
 export default class SatoshiTrader{
-	constructor(currencies){
-		this.satoshi = TradeSatoshi;
-		this.currencies = currencies;
+	constructor(marketPairings, logger){
+		//this.satoshi = TradeSatoshi;
+		this.log = logger;
+		this.pair1 = marketPairings[0]+'_USDT';
+		this.pair2 = marketPairings[1]+'_USDT';
+		this.pair3 = marketPairings[2]+'_'+marketPairings[1];
+		this.pair4 = marketPairings[2]+'_'+marketPairings[0];
+		this.marketPairings = marketPairings;
 		this.process();
+	//	this.updatePrices();
 		this.API_REQUEST_TIMEOUT = 2000;
 	}
 	
@@ -41,7 +48,10 @@ export default class SatoshiTrader{
 						sleep(4000).then(()=>{
 							console.log("Starting over..........");
 							satoshiTrader.currencyExchangeCalls(next);
-						})
+						});
+						sleep(6000).then(()=>{
+							
+						});
 					},
 					(err) =>{
 						console.log(err);
@@ -51,7 +61,6 @@ export default class SatoshiTrader{
 				console.error(err);
 			}
 		})();
-		
 	}
 	
 	
@@ -61,22 +70,26 @@ export default class SatoshiTrader{
 	currencyExchangeCalls(next){
 		let satoshiTrader = this;
 		async.series({
-			one: (callback) => {
-				setTimeout(() => {
-					console.log("Hitting #1");
-					callback(null, 1);
-				}, 2000);
+			one: async (callback) => {
+					const markets = await	TradeSatoshi.getTicker({market: satoshiTrader.pair1}); //LTC_USDT
+					callback(null, markets);
 			},
-			two: (callback) =>{
-				setTimeout(() => {
-					console.log("hitting #2");
-					callback(null, 2);
-				}, 1000);
-			}
-		}, (err, results) => {
+			two: async (callback) =>{
+					const markets = await	TradeSatoshi.getTicker({market: satoshiTrader.pair2}); // BTC_USDT
+					callback(null, markets);
+			},
+			three: async  (callback) =>{
+				const markets = await	TradeSatoshi.getTicker({market: satoshiTrader.pair3});  // GRLC_BTC
+				callback(null, markets);
+			},
+			four: async  (callback) =>{
+				const markets = await	TradeSatoshi.getTicker({market: satoshiTrader.pair4}); //GRLC_LTC
+				callback(null, markets);
+			},
+		}, (err, markets) => {
 			console.log("hitting end!");
-			console.log(results);
-			satoshiTrader.isProfitable(next);
+			console.log(markets);
+			satoshiTrader.isProfitableTrade(next, markets);
 			
 			//return true;
 			//this.process();
@@ -84,11 +97,37 @@ export default class SatoshiTrader{
 		})
 	}
 	
-	isProfitable(next){
-		console.log("inside the is profitable method.");
+	isProfitableTrade(next, markets){
+		let marketOne = markets.one,
+			marketTwo = markets.two,
+			marketThree = markets.three,
+			marketFour = markets.four;
+		
+		let pair1Price = marketOne.bid;
+		let amountEarned = marketFour.bid * pair1Price;
+		
+		let pair2Price = marketTwo.ask;
+		
+		let amountSpent = marketThree.ask * pair2Price;
+		
+		let tradeFee = amountSpent * TradeSatoshiFeePrice;
+		
+		amountSpent += tradeFee;
+		
+		console.log(`Amount spent is ${amountSpent}`);
+	
+		console.log(`Amount Earned is ${amountEarned}`);
+		
+		if(amountEarned > amountSpent){
+			let profit = amountEarned - amountSpent;
+			console.log("This trade is profitable");
+			this.log.info({informatoin: markets, profit: profit }, `We Found a profitable Trade! Yay!`);
+		}
+		else{
+			//this.log.info({information: markets }, "Test");
+			console.log("This trade is not profitable");
+		}
 		next(); //Use this to restart the loop..
-		
-		
 	}
 	
 	
