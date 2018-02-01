@@ -65,19 +65,19 @@ export default class SatoshiTrader{
 		let satoshiTrader = this;
 		async.series({
 			one: async (callback) => {
-					const markets = await	TradeSatoshi.getTicker({market: satoshiTrader.pair1}); //LTC_USDT
+					const markets = await	TradeSatoshi.getOrderBook({market: satoshiTrader.pair1, depth: 1}); //LTC_USDT
 					callback(null, markets);
 			},
 			two: async (callback) =>{
-					const markets = await	TradeSatoshi.getTicker({market: satoshiTrader.pair2}); // BTC_USDT
+					const markets = await	TradeSatoshi.getOrderBook({market: satoshiTrader.pair2, depth: 1}); // BTC_USDT
 					callback(null, markets);
 			},
 			three: async  (callback) =>{
-				const markets = await	TradeSatoshi.getTicker({market: satoshiTrader.pair3});  // GRLC_BTC
+				const markets = await	TradeSatoshi.getOrderBook({market: satoshiTrader.pair3, depth: 1});  // GRLC_BTC
 				callback(null, markets);
 			},
 			four: async  (callback) =>{
-				const markets = await	TradeSatoshi.getTicker({market: satoshiTrader.pair4}); //GRLC_LTC
+				const markets = await	TradeSatoshi.getOrderBook({market: satoshiTrader.pair4, depth: 1}); //GRLC_LTC
 				callback(null, markets);
 			},
 		}, (err, markets) => {
@@ -89,15 +89,15 @@ export default class SatoshiTrader{
 	
 	isProfitableTrade(next, markets){
 		if(markets){ // Make sure we actually have data
-			let marketOne = markets.one,
-				marketTwo = markets.two,
-				marketThree = markets.three,
-				marketFour = markets.four;
+			let marketOne = markets.one.buy[0],
+				marketTwo = markets.two.sell[0],
+				marketThree = markets.three.sell[0],
+				marketFour = markets.four.buy[0];
 			
-			let pair1Price = marketOne.bid;
-			let amountEarned = marketFour.bid * pair1Price;
-			let pair2Price = marketTwo.ask;
-			let amountSpent = marketThree.ask * pair2Price;
+			let pair1Price = marketOne.rate;                       // Buying price USD
+			let amountEarned = marketFour.rate * pair1Price;        //Buying price USD
+			let pair2Price = marketTwo.rate;                        //Selling price USD
+			let amountSpent = marketThree.rate * pair2Price;        //Selling price USD
 			let tradeFee = amountSpent * TradeSatoshiFeePrice;
 			amountSpent += tradeFee;
 			
