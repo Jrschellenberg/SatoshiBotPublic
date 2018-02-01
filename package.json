@@ -6,15 +6,19 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "./node_modules/.bin/babel src -d lib",
-    "start": "npm run build && node lib/examples.js"
+    "start": "npm run build && node lib/main.js"
   },
   "dependencies": {
+    "async": "^2.6.0",
+    "async-es": "^2.6.0",
     "crypto": "~0.0.3",
     "crypto-js": "^3.1.9-1",
     "microtime": "^2.1.7",
     "nonce": "^1.0.4",
+    "promise-retry": "^1.1.1",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
+    "requestretry": "^1.13.0",
     "underscore": "~1.7.0",
     "verror": "~1.6.0"
   },

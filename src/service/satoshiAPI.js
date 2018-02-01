@@ -1,5 +1,7 @@
 const crypto = require('crypto');
+//const request = require('requestretry');
 const request = require('request-promise');
+const promiseRetry = require('promise-retry');
 
 const HOST_URL = "https://tradesatoshi.com/api";
 
@@ -26,6 +28,7 @@ let TradeSatoshi = () => {
             response = JSON.parse(response);
             return response.success ? response.result : Promise.reject(response.message);
         } catch (err) {
+            console.log(err);
             return Promise.reject('privateRequest(), Error on privateRequest: ' + err)
         }
     }
@@ -43,6 +46,7 @@ let TradeSatoshi = () => {
             const response = await request.get(reqOpts);
             return response.success ? response.result : Promise.reject(response.message);
         } catch (err) {
+            console.log(err);
             return Promise.reject('publicRequest(), Error on publicRequest: ' + err)
         }
     }
@@ -218,5 +222,6 @@ let TradeSatoshi = () => {
         }
     }
 };
+
 
 module.exports = exports = TradeSatoshi;

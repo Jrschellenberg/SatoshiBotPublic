@@ -1,17 +1,17 @@
 require("babel-polyfill");
-const TradeSatoshi = require('./index')();
-import {API_CREDENTIALS} from "./secret";
+const TradeSatoshi = require('./service/satoshiAPI')();
+import {API_CREDENTIALS} from "./service/secret";
 const options = {
     API_KEY: API_CREDENTIALS.KEY,
     API_SECRET: API_CREDENTIALS.SECRET
 };
-TradeSatoshi .setOptions(options);
+TradeSatoshi.setOptions(options);
 
 (async function () {
     try {
         //Public
-        // const currencies = await TradeSatoshi.getCurrencies();
-        // console.log(currencies); //Array of available Currencies from API
+        const currencies = await TradeSatoshi.getCurrencies();
+        console.log(currencies); //Array of available Currencies from API
         //
         // const tradePairs = await TradeSatoshi.getTradePairs();
         // console.log(tradePairs); //Array of available Trade Pairs from API
