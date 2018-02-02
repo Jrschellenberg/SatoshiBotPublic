@@ -128,6 +128,7 @@ export default class SatoshiTrader{
 					this.calculateProfits(markets, profit);
 				}
 				else{
+					console.log('nothing, lets try again!');
 					//this.log.info({information: markets }, "Test");
 					//this.log.info({information: markets})
 				//	console.log("This trade is not profitable");
