@@ -1,5 +1,6 @@
 export default class TradeSatoshiCurrencies {
 		static balance = {};
+		static profit = 0;
 		
 	static async getAccountBalance() {
 		return await TradeSatoshiCurrencies.balance;
@@ -12,5 +13,8 @@ export default class TradeSatoshiCurrencies {
 				TradeSatoshiCurrencies.balance[key] = coins[i].total;
 			}
 		}
+	}
+	static tallyProfitableTrade(amount){
+		TradeSatoshiCurrencies.profit += amount;
 	}
 }

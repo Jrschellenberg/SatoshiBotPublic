@@ -9,7 +9,6 @@ import Trade from "../model/trade";
 const TradeSatoshi = require('../service/satoshiAPI')();
 const TradeSatoshiFeePrice = 0.002;
 const API_TIMEOUT = 4000;
-let singletonInstance = null;
 
 //Setting up Service
 const options = {
@@ -17,7 +16,6 @@ const options = {
 	API_SECRET: API_CREDENTIALS.SECRET
 };
 TradeSatoshi.setOptions(options);
-
 
 function sleep(ms = 0) {
 	return new Promise(r => setTimeout(r, ms));
