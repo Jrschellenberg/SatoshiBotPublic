@@ -31,8 +31,9 @@ function sleep(ms = 0) {
 //Master does trade, verifies trade went smoothly. Continues listening for events.
 //May need queue to handle collisions of events.
 export default class SatoshiTrader{
-	constructor(marketPairings, logger){
-		this.log = logger;
+	constructor(marketPairings, profitLog, errorLog){
+		this.errorLog = errorLog;
+		this.profitLog = profitLog;
 		this.pair1 = marketPairings[0]+'_USDT';
 		this.pair2 = marketPairings[1]+'_USDT';
 		this.pair3 = marketPairings[2]+'_'+marketPairings[1];
@@ -47,7 +48,6 @@ export default class SatoshiTrader{
 		let satoshiTrader = this;
 		(async () => {
 			try {
-				//satoshiTrader.currencyExchangeCalls();
 				async.forever((next)=>
 					{
 						sleep(API_TIMEOUT).then(()=>{
@@ -90,8 +90,6 @@ export default class SatoshiTrader{
 				callback(null, markets);
 			},
 		}, (err, markets) => {
-			// console.log("hitting end!");
-			// console.log(markets);
 			satoshiTrader.isProfitableTrade(next, markets);
 		})
 	}
@@ -120,7 +118,7 @@ export default class SatoshiTrader{
 				if(amountEarned > amountSpent){ //Is a profitable trade...
 					let profit = amountEarned - amountSpent;
 					console.log("This trade is profitable");
-					this.log.info({information: markets, market1: satoshiTrader.pair1,
+					this.profitLog.info({information: markets, market1: satoshiTrader.pair1,
 						market2: satoshiTrader.pair2, market3: satoshiTrader.pair3, market4: satoshiTrader.pair4, profit: profit }, `We Found a profitable Trade! Yay!`);
 					
 					this.calculateProfits(markets);
@@ -135,7 +133,7 @@ export default class SatoshiTrader{
 			}
 			catch(err){
 				console.log(err);
-				this.log.error({pair: satoshiTrader.currencies});
+				this.errorLog.error({pair: satoshiTrader.currencies});
 			}
 			
 		}

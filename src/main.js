@@ -4,19 +4,25 @@ import SatoshiTrader from "./controller/satoshiTrader";
 //import TradeSatoshiCurrencies from "./model/tradeSatoshiAccountBalance";
 
 
-let log = bunyan.createLogger({
+let profitLog = bunyan.createLogger({
 	name: "myapp",
 	streams: [
 		{
 			level: 'info',
 			path: './profitable.log'
-		},
+		}
+	]
+});
+let errorLog = bunyan.createLogger({
+	name: "myapp",
+	streams: [
 		{
 			level: 'error',
 			path: './error.log'
 		}
 	]
 });
+		
 
 
 
@@ -54,7 +60,7 @@ let marketPairings = [["LTC", "BTC", "GRLC"],
 
 											];
 for(let i=0; i<marketPairings.length; i++){
-	new SatoshiTrader(marketPairings[i], log);
+	new SatoshiTrader(marketPairings[i], profitLog, errorLog);
 }
 
 	
