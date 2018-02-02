@@ -27,7 +27,7 @@ let Cryptopia = () => {
 		try {
 			let response = await request.post(reqOpts);
 			response = JSON.parse(response.body);
-			return response.success ? Promise.resolve(response.result) : Promise.reject(response.message);
+			return response.Success ? Promise.resolve(response.Data) : Promise.reject(response.Message);
 			
 		} catch (err) {
 			return Promise.reject('privateRequest(), Error on privateRequest: ' + err)
@@ -48,10 +48,10 @@ let Cryptopia = () => {
 		//And here...
 		try {
 			let response = await request.get(reqOpts);
-			// console.log(response);
+			 //console.log(response);
 			response = response.body;
 			//console.log(response);
-			return response.success ? response.result : Promise.reject(response.message);
+			return response.Success ? response.Data : Promise.reject(response.Mssage);
 		} catch (err) {
 			// console.log(err);
 			return Promise.reject('publicRequest(), Error on publicRequest: ' + err)
