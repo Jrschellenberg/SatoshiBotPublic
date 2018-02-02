@@ -12,8 +12,8 @@ Cryptopia.setOptions(options);
 (async function () {
 	try {
 		//Public
-		const currencies = await Cryptopia.getCurrencies();
-		console.log(currencies); //Array of available Currencies from API
+		// const currencies = await Cryptopia.getCurrencies();
+		// console.log(currencies); //Array of available Currencies from API
 		//
 		// const tradePairs = await Cryptopia.getTradePairs();
 		// console.log(tradePairs); //Array of available Trade Pairs from API
@@ -27,8 +27,8 @@ Cryptopia.setOptions(options);
 		// const marketHistory = await Cryptopia.getMarketHistory({Market: 'ETH_BTC', Hours: 72});
 		// console.log(marketHistory); //Array of a specific Market's data for 24hrs OR within 1-168 (7 days) Hours from API
 		//
-		// const marketOrders = await Cryptopia.getMarketOrders({Market: 'LTC_BTC', Count: 69});
-		// console.log(marketOrders); //Object with 'Buy' and 'Sell' as arrays with specified Count limit from API
+		//const marketOrders = await Cryptopia.getMarketOrders({Market: 'LTC_BTC', Count: 69});
+	//	console.log(marketOrders); //Object with 'Buy' and 'Sell' as arrays with specified Count limit from API
 		//
 		// const marketOrderGroups = await Cryptopia.getMarketOrderGroups({Market: ['ETH_BTC', 'ETH_USDT'], Count: 100});
 		// console.log(marketOrderGroups); //Array of objects for each Market listed from API

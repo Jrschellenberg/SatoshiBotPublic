@@ -229,12 +229,24 @@ let Cryptopia = () => {
 			return publicRequest(null);
 		},
 		getMarkets: async (params = {}) => {
-			let urlParams = buildURL(params);
+			let urlParams = "";
+			if (params.BaseMarket && params.Hours) {
+				urlParams = "/" + params.BaseMarket + "/" + params.Hours;
+			} else if (params.Hours) {
+				urlParams = "/" + params.Hours;
+			} else if (params.BaseMarket) {
+				urlParams = "/" + params.BaseMarket;
+			}
 			options.API_PATH = "GetMarkets";
 			return publicRequest(urlParams);
 		},
 		getMarket: async (params = {}) => {
-			let urlParams = buildURL(params);
+			let urlParams = "";
+			if (params.Market && params.Hours) {
+				urlParams = "/" + params.Market + "/" + params.Hours;
+			} else {
+				urlParams = "/" + params.Market;
+			}
 			options.API_PATH = "GetMarket";
 			return publicRequest(urlParams);
 		},
@@ -242,15 +254,29 @@ let Cryptopia = () => {
 			if (!params.Market) {
 				return Promise.reject("You must supply a valid Market or Trade Pair Id");
 			}
+			
 			options.API_PATH = "GetMarketHistory";
-			let urlParams = buildURL(params);
+			let urlParams = "";
+			
+			if (params.Market && params.Hours) {
+				urlParams = "/" + params.Market + "/" + params.Hours;
+			} else {
+				urlParams = "/" + params.Market;
+			}
 			return publicRequest(urlParams);
 		},
 		getMarketOrders: async (params = {}) => {
 			if (!params.Market) {
 				return Promise.reject("getMarketOrders(), You must supply a valid Market or Trade Pair Id, e.g. 'BTC_LTC' or '100'!");
 			}
-			let urlParams = buildURL(params);
+			
+			let urlParams = "";
+			
+			if (params.Market && params.Count) {
+				urlParams = "/" + params.Market + "/" + params.Count;
+			} else {
+				urlParams = "/" + params.Market;
+			}
 			options.API_PATH = "GetMarketOrders";
 			return publicRequest(urlParams);
 		},
@@ -258,7 +284,18 @@ let Cryptopia = () => {
 			if (!params.Market || Array.isArray(params.Market) === false) {
 				return Promise.reject("getMarketOrderGroups(), You must supply a valid Market or Trade Pair Id as an array, e.g. ['BTC_LTC', 'DOGE_USDT']!");
 			}
-			let urlParams = buildURL(params);
+			
+			let urlParams = "";
+			
+			for (let i = 0; i < params.Market.length; i++) {
+				urlParams += params.Market[i];
+				if (i !== params.Market.length - 1) {
+					urlParams += "-";
+				}
+			}
+			if (params.Count) {
+				urlParams = "/" + params.Count;
+			}
 			options.API_PATH = "GetMarketOrderGroups";
 			return publicRequest(urlParams);
 		},
