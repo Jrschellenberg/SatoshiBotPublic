@@ -1,10 +1,13 @@
 import async from 'async';
 import timeout from 'async/timeout';
+
 import {API_CREDENTIALS} from "../service/secret";
+import TradeSatoshiCurrencies from "../model/tradeSatoshiAccountBalance";
 
 const TradeSatoshi = require('../service/satoshiAPI')();
 const TradeSatoshiFeePrice = 0.002;
 const API_TIMEOUT = 4000;
+let singletonInstance = null;
 
 //Setting up Service
 const options = {
@@ -12,6 +15,7 @@ const options = {
 	API_SECRET: API_CREDENTIALS.SECRET
 };
 TradeSatoshi.setOptions(options);
+
 
 function sleep(ms = 0) {
 	return new Promise(r => setTimeout(r, ms));
@@ -65,19 +69,20 @@ export default class SatoshiTrader{
 		let satoshiTrader = this;
 		async.series({
 			one: async (callback) => {
-					const markets = await	TradeSatoshi.getTicker({market: satoshiTrader.pair1}); //LTC_USDT
+					const markets = await	TradeSatoshi.getOrderBook({market: satoshiTrader.pair1, depth: 1}); //LTC_USDT
 					callback(null, markets);
 			},
 			two: async (callback) =>{
-					const markets = await	TradeSatoshi.getTicker({market: satoshiTrader.pair2}); // BTC_USDT
+					const markets = await	TradeSatoshi.getOrderBook({market: satoshiTrader.pair2, depth: 1}); // BTC_USDT
 					callback(null, markets);
 			},
 			three: async  (callback) =>{
-				const markets = await	TradeSatoshi.getTicker({market: satoshiTrader.pair3});  // GRLC_BTC
+				const markets = await	TradeSatoshi.getOrderBook({market: satoshiTrader.pair3, depth: 1});  // GRLC_BTC
 				callback(null, markets);
 			},
 			four: async  (callback) =>{
-				const markets = await	TradeSatoshi.getTicker({market: satoshiTrader.pair4}); //GRLC_LTC
+				const markets = await	TradeSatoshi.getOrderBook({market: satoshiTrader.pair4, depth: 1});  //GRLC_LTC
+	
 				callback(null, markets);
 			},
 		}, (err, markets) => {
@@ -88,17 +93,19 @@ export default class SatoshiTrader{
 	}
 	
 	isProfitableTrade(next, markets){
+		let satoshiTrader = this;
 		if(markets){ // Make sure we actually have data
-			let marketOne = markets.one,
-				marketTwo = markets.two,
-				marketThree = markets.three,
-				marketFour = markets.four;
+			let marketOne = markets.one.buy[0],
+				marketTwo = markets.two.sell[0],
+				marketThree = markets.three.sell[0],
+				marketFour = markets.four.buy[0];
 			
-			let pair1Price = marketOne.bid;
-			let amountEarned = marketFour.bid * pair1Price;
-			let pair2Price = marketTwo.ask;
-			let amountSpent = marketThree.ask * pair2Price;
+			let pair1Price = marketOne.rate;                       // Buying price USD
+			let amountEarned = marketFour.rate * pair1Price;        //Buying price USD
+			let pair2Price = marketTwo.rate;                        //Selling price USD
+			let amountSpent = marketThree.rate * pair2Price;        //Selling price USD
 			let tradeFee = amountSpent * TradeSatoshiFeePrice;
+			amountEarned -=  tradeFee;
 			amountSpent += tradeFee;
 			
 			console.log(`Amount spent is ${amountSpent}`);
@@ -107,13 +114,58 @@ export default class SatoshiTrader{
 			if(amountEarned > amountSpent){
 				let profit = amountEarned - amountSpent;
 				console.log("This trade is profitable");
-				this.log.info({informatoin: markets, profit: profit }, `We Found a profitable Trade! Yay!`);
+				this.log.info({information: markets, market1: satoshiTrader.pair1, 
+					market2: satoshiTrader.pair2, market3: satoshiTrader.pair3, market4: satoshiTrader.pair4, profit: profit }, `We Found a profitable Trade! Yay!`);
+				
+				this.calculateProfits(markets);
 			}
 			else{
 				//this.log.info({information: markets }, "Test");
+				//this.log.info({information: markets})
 				console.log("This trade is not profitable");
+				//this.calculateProfits(markets);
 			}
 		}
 		next(); //Use this to restart the loop..
 	}
+	
+	calculateProfits(markets){
+		let marketOneRate = markets.one.buy[0].rate;
+		let marketTwoRate = markets.two.sell[0].rate;
+		let marketOnePrice, marketTwoPrice, marketThreePrice, marketFourPrice;
+		
+		marketOnePrice = marketOneRate * markets.one.buy[0].quantity;
+		marketTwoPrice = marketTwoRate * markets.two.sell[0].quantity;
+		marketThreePrice = markets.three.sell[0].rate * markets.three.sell[0].quantity * marketTwoRate;
+		marketFourPrice = markets.four.buy[0].rate * markets.four.buy[0].quantity * marketOneRate;
+		
+		console.log(marketOnePrice);
+		console.log(marketTwoPrice);
+		console.log(marketThreePrice);
+		console.log(marketFourPrice);
+		let lowest = Math.min(marketOnePrice, marketTwoPrice, marketThreePrice, marketFourPrice);
+		console.log(lowest);
+		
+	}
+	
+	static async getBalances(log){
+			const balance = await TradeSatoshiCurrencies.getAccountBalance();
+			console.log("Got balance already;");
+			log.info({information: balance }, "Balanced");
+			console.log(balance); //Object with Deposit Address data from API
+	}
+	
+	 static async setBalances(){
+			 const getBalances = await TradeSatoshi.getBalances();
+		    console.log("Got Balances");
+				await TradeSatoshiCurrencies.setAccountBalance(getBalances);
+				console.log("finished balances");
+		}
 }
+
+
+
+
+
+
+
