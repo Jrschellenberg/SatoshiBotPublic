@@ -3,12 +3,13 @@ import timeout from 'async/timeout';
 
 import {API_CREDENTIALS} from "../service/secret";
 import TradeSatoshiCurrencies from "../model/tradeSatoshiAccountBalance";
+import SatoshiTradeScout from "./SatoshiTradeScout";
 import TradeListing from "../model/tradeListing";
 import Trade from "../model/trade";
 
 const TradeSatoshi = require('../service/satoshiAPI')();
 const TradeSatoshiFeePrice = 0.002;
-const API_TIMEOUT = 4000;
+const API_TIMEOUT = 2500;
 
 //Setting up Service
 const options = {
@@ -33,22 +34,35 @@ export default class SatoshiTrader{
 		this.workerNumber = workerNumber
 		this.errorLog = errorLog;
 		this.profitLog = profitLog;
+		this.pair1 = null;
+		this.pair2 = null;
+		this.pair3 = null;
+		this.pair4 = null;
+		this.potentialTrade = null;
+		this.currencies = marketPairings;
+		this.assignMarketPairs(marketPairings);
+		this.process();
+	}
+	
+	assignMarketPairs(marketPairings){
+		for(let i=0; i<marketPairings.length; i++){
+			console.log(marketPairings[i]);
+		}
 		this.pair1 = marketPairings[0]+'_USDT';
 		this.pair2 = marketPairings[1]+'_USDT';
 		this.pair3 = marketPairings[2]+'_'+marketPairings[1];
 		this.pair4 = marketPairings[2]+'_'+marketPairings[0];
-		this.potentialTrade = null;
-		this.currencies = marketPairings;
-		this.process();
 	}
 	
 	process(){
-		console.log("hello from satoshitrader!");
+		//console.log("hello from satoshitrader!");
 		let satoshiTrader = this;
 		(async () => {
 			try {
 				async.forever((next)=>
 					{
+						//Finding new work while waiting before starting to scout for trade..
+						satoshiTrader.assignMarketPairs(SatoshiTradeScout.getWork(satoshiTrader.workerNumber));
 						sleep(API_TIMEOUT).then(()=>{
 							//console.log("Starting over..........");
 							satoshiTrader.currencyExchangeCalls(next);
@@ -85,7 +99,6 @@ export default class SatoshiTrader{
 			},
 			four: async  (callback) =>{
 				const markets = await	TradeSatoshi.getOrderBook({market: satoshiTrader.pair4, depth: 1});  //GRLC_LTC
-	
 				callback(null, markets);
 			},
 		}, (err, markets) => {
@@ -117,10 +130,9 @@ export default class SatoshiTrader{
 				if(amountEarned > amountSpent){ //Is a profitable trade...
 					let profit = amountEarned - amountSpent;
 					console.log("This trade is profitable");
-					this.profitLog.info({information: markets, market1: satoshiTrader.pair1,
-						market2: satoshiTrader.pair2, market3: satoshiTrader.pair3, market4: satoshiTrader.pair4, profit: profit }, `We Found a profitable Trade! Yay!`);
 					
-					this.calculateProfits(markets);
+					
+					this.calculateProfits(markets, profit);
 				}
 				else{
 					//this.log.info({information: markets }, "Test");
@@ -139,15 +151,24 @@ export default class SatoshiTrader{
 		next(); //Use this to restart the loop..
 	}
 	
-	calculateProfits(markets){
-		let tradeSatoshi = this;
-		let tradeListingOne = new TradeListing(markets.one.buy[0], tradeSatoshi.pair1, "buy");
-		let tradeListingTwo = new TradeListing(markets.two.sell[0], tradeSatoshi.pair2, "sell");
-		let tradeListingThree = new TradeListing(markets.three.sell[0], tradeSatoshi.pair3, "sell");
-		let tradeListingFour = new TradeListing(markets.four.buy[0], tradeSatoshi.pair4, "buy");
+	calculateProfits(markets, profit){
+		let satoshiTrader = this;
+		let tradeListingOne = new TradeListing(markets.one.buy[0], satoshiTrader.pair1, "buy");
+		let tradeListingTwo = new TradeListing(markets.two.sell[0], satoshiTrader.pair2, "sell");
+		let tradeListingThree = new TradeListing(markets.three.sell[0], satoshiTrader.pair3, "sell");
+		let tradeListingFour = new TradeListing(markets.four.buy[0], satoshiTrader.pair4, "buy");
 		
-		tradeSatoshi.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, tradeListingFour);
-		tradeSatoshi.potentialTrade.updateQuantities(); //Updates the quantities to correct ones.
+		satoshiTrader.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, tradeListingFour);
+		satoshiTrader.potentialTrade.updateQuantities(); //Updates the quantities to correct ones.
+		
+	
+		
+		TradeSatoshiCurrencies.tallyProfitableTrade(satoshiTrader.potentialTrade.lowestPrice * profit);
+		
+		this.profitLog.info({information: markets, market1: satoshiTrader.pair1,
+			market2: satoshiTrader.pair2, market3: satoshiTrader.pair3, market4: satoshiTrader.pair4, profit: profit, lowestPrice: satoshiTrader.potentialTrade.lowestPrice, totalProfit: 
+		TradeSatoshiCurrencies.profit}, `We Found a profitable Trade! Yay!`);
+		
 		
 		this.verifyTrade();
 	}
