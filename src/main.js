@@ -10,6 +10,10 @@ let log = bunyan.createLogger({
 		{
 			level: 'info',
 			path: './profitable.log'
+		},
+		{
+			level: 'error',
+			path: './error.log'
 		}
 	]
 });
@@ -41,10 +45,10 @@ let marketPairings = [["LTC", "BTC", "GRLC"],
 											["LTC", "DOGE", "GRLC"],
 											["BTC", "DOGE", "GRLC"],
 
-											["BTC", "LTC", "DOGE"],
-											["LTC", "BTC", "DOGE"],
-											["BCH", "LTC", "GRLC"],
-											["LTC", "BCH", "GRLC"],
+											["BTC", "DOGE", "CLAM"],
+											["DOGE", "BTC", "CLAM"],
+											["BTC", "CLAM", "DOGE"],
+											["CLAM", "BTC", "DOGE"],
 
 
 

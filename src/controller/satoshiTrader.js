@@ -104,31 +104,40 @@ export default class SatoshiTrader{
 				marketThree = markets.three.sell[0],
 				marketFour = markets.four.buy[0];
 			
-			let pair1Price = marketOne.rate;                       // Buying price USD
-			let amountEarned = marketFour.rate * pair1Price;        //Buying price USD
-			let pair2Price = marketTwo.rate;                        //Selling price USD
-			let amountSpent = marketThree.rate * pair2Price;        //Selling price USD
-			let tradeFee = amountSpent * TradeSatoshiFeePrice;
-			amountEarned -=  tradeFee;
-			amountSpent += tradeFee;
-			
-			console.log(`Amount spent is ${amountSpent}`);
-			console.log(`Amount Earned is ${amountEarned}`);
-			
-			if(amountEarned > amountSpent){ //Is a profitable trade...
-				let profit = amountEarned - amountSpent;
-				console.log("This trade is profitable");
-				this.log.info({information: markets, market1: satoshiTrader.pair1, 
-					market2: satoshiTrader.pair2, market3: satoshiTrader.pair3, market4: satoshiTrader.pair4, profit: profit }, `We Found a profitable Trade! Yay!`);
+			try{
+				let pair1Price = marketOne.rate;                       // Buying price USD
+				let amountEarned = marketFour.rate * pair1Price;        //Buying price USD
+				let pair2Price = marketTwo.rate;                        //Selling price USD
+				let amountSpent = marketThree.rate * pair2Price;        //Selling price USD
+				let tradeFee = amountSpent * TradeSatoshiFeePrice;
+				amountEarned -=  tradeFee;
+				amountSpent += tradeFee;
 				
-				this.calculateProfits(markets);
+				
+				console.log(`Amount spent is ${amountSpent}`);
+				console.log(`Amount Earned is ${amountEarned}`);
+				
+				if(amountEarned > amountSpent){ //Is a profitable trade...
+					let profit = amountEarned - amountSpent;
+					console.log("This trade is profitable");
+					this.log.info({information: markets, market1: satoshiTrader.pair1,
+						market2: satoshiTrader.pair2, market3: satoshiTrader.pair3, market4: satoshiTrader.pair4, profit: profit }, `We Found a profitable Trade! Yay!`);
+					
+					this.calculateProfits(markets);
+				}
+				else{
+					//this.log.info({information: markets }, "Test");
+					//this.log.info({information: markets})
+					console.log("This trade is not profitable");
+					//this.calculateProfits(markets);
+				}
+				
 			}
-			else{
-				//this.log.info({information: markets }, "Test");
-				//this.log.info({information: markets})
-				console.log("This trade is not profitable");
-				//this.calculateProfits(markets);
+			catch(err){
+				console.log(err);
+				this.log.error({pair: satoshiTrader.currencies});
 			}
+			
 		}
 		next(); //Use this to restart the loop..
 	}
