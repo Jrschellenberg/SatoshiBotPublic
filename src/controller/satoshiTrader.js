@@ -3,6 +3,8 @@ import timeout from 'async/timeout';
 
 import {API_CREDENTIALS} from "../service/secret";
 import TradeSatoshiCurrencies from "../model/tradeSatoshiAccountBalance";
+import TradeListing from "../model/tradeListing";
+import Trade from "../model/trade";
 
 const TradeSatoshi = require('../service/satoshiAPI')();
 const TradeSatoshiFeePrice = 0.002;
@@ -35,6 +37,7 @@ export default class SatoshiTrader{
 		this.pair2 = marketPairings[1]+'_USDT';
 		this.pair3 = marketPairings[2]+'_'+marketPairings[1];
 		this.pair4 = marketPairings[2]+'_'+marketPairings[0];
+		this.potentialTrade = null;
 		this.process();
 	}
 	
@@ -130,21 +133,16 @@ export default class SatoshiTrader{
 	}
 	
 	calculateProfits(markets){
-		let marketOneRate = markets.one.buy[0].rate;
-		let marketTwoRate = markets.two.sell[0].rate;
-		let marketOnePrice, marketTwoPrice, marketThreePrice, marketFourPrice;
+		let tradeSatoshi = this;
+		let tradeListingOne = new TradeListing(markets.one.buy[0], tradeSatoshi.pair1, "buy");
+		let tradeListingTwo = new TradeListing(markets.two.sell[0], tradeSatoshi.pair2, "sell");
+		let tradeListingThree = new TradeListing(markets.three.sell[0], tradeSatoshi.pair3, "sell");
+		let tradeListingFour = new TradeListing(markets.four.buy[0], tradeSatoshi.pair4, "buy");
 		
-		marketOnePrice = marketOneRate * markets.one.buy[0].quantity;
-		marketTwoPrice = marketTwoRate * markets.two.sell[0].quantity;
-		marketThreePrice = markets.three.sell[0].rate * markets.three.sell[0].quantity * marketTwoRate;
-		marketFourPrice = markets.four.buy[0].rate * markets.four.buy[0].quantity * marketOneRate;
-		
-		console.log(marketOnePrice);
-		console.log(marketTwoPrice);
-		console.log(marketThreePrice);
-		console.log(marketFourPrice);
-		let lowest = Math.min(marketOnePrice, marketTwoPrice, marketThreePrice, marketFourPrice);
-		console.log(lowest);
+		tradeSatoshi.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, tradeListingFour);
+	}
+	
+	calculateQuantities(){
 		
 	}
 	
