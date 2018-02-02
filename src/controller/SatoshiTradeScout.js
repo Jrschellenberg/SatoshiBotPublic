@@ -6,16 +6,21 @@ export default class SatoshiTradeScout {
 	static createInstance(numberOfSlaves, marketPairings){
 		SatoshiTradeScout.numberOfSlaves = numberOfSlaves;
 		SatoshiTradeScout.marketPairings = marketPairings;
-		SatoshiTradeScout.mappedMarketPairings = [];
+		SatoshiTradeScout.mappedMarketPairings = [[]];
 		SatoshiTradeScout.slaveIndexs = [];
-		
-		for(let i=0; i<marketPairings.length; i++){ //Loop through all pairings.
-			let j = i%numberOfSlaves; //Match our pairings to slaves work Ticket
-			SatoshiTradeScout.mappedMarketPairings[j].push(marketPairings[i]);
-		}
 		for(let i=0; i<numberOfSlaves; i++){ // May need -1
 			SatoshiTradeScout.slaveIndexs[i] = 0 //Initialize all of the indexes at 0
+			SatoshiTradeScout.mappedMarketPairings[i] = []; //Initialize these as empty arrays to work with later.
+			//console.log(i);
 		}
+		
+		for(let i=0; i<marketPairings.length; i++){ //Loop through all pairings.
+			let j =  i%numberOfSlaves; //Match our pairings to slaves work Ticket
+			//console.log(marketPairings[i]);
+			//console.log(j);
+			SatoshiTradeScout.mappedMarketPairings[j].push(marketPairings[i]);
+		}
+	
 	}
 	
 	static getWork(slaveNumber){

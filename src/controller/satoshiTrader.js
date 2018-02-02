@@ -29,7 +29,8 @@ function sleep(ms = 0) {
 //Master does trade, verifies trade went smoothly. Continues listening for events.
 //May need queue to handle collisions of events.
 export default class SatoshiTrader{
-	constructor(marketPairings, profitLog, errorLog){
+	constructor(marketPairings, profitLog, errorLog, workerNumber){
+		this.workerNumber = workerNumber
 		this.errorLog = errorLog;
 		this.profitLog = profitLog;
 		this.pair1 = marketPairings[0]+'_USDT';

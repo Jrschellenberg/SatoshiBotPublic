@@ -1,8 +1,12 @@
 require("babel-polyfill"); //This should go first
 let bunyan = require('bunyan');
 import SatoshiTrader from "./controller/satoshiTrader";
+import SatoshiTradeScout from "./controller/SatoshiTradeScout";
 //import TradeSatoshiCurrencies from "./model/tradeSatoshiAccountBalance";
-import {marketPairings} from "./markets"
+
+import {marketPairings} from "./markets";
+
+let NUMBER_SLAVES = 10;
 
 
 let profitLog = bunyan.createLogger({
@@ -36,6 +40,15 @@ console.log(SatoshiTrader.getBalances());
 console.log(marketPairings.length);
 
 
+
+
+//Initialize our TradeScout
+	
+	await SatoshiTradeScout.createInstance(NUMBER_SLAVES, marketPairings);
+	
+	
+
+
 //Initializing Robots To Trade
 //Entry Point into Program.
 //Pick three currencies  to check, fourth will always be USDT ie LTC, BTC, GRLC
@@ -47,24 +60,11 @@ console.log(marketPairings.length);
 	@Param 3 = Market to manipulate.
 	 */
 
-// let marketPairings = [["LTC", "BTC", "GRLC"],
-// 											["BTC", "LTC", "GRLC"],
-// 											["DOGE", "LTC", "GRLC"],
-// 											["DOGE", "BTC", "GRLC"],
-// 											["LTC", "DOGE", "GRLC"],
-// 											["BTC", "DOGE", "GRLC"],
-//
-// 											["BTC", "DOGE", "CLAM"],
-// 											["DOGE", "BTC", "CLAM"],
-// 											["BTC", "CLAM", "DOGE"],
-// 											["CLAM", "BTC", "DOGE"],
-//
-//
-//
-// 											];
-// for(let i=0; i<marketPairings.length; i++){
-// 	new SatoshiTrader(marketPairings[i], profitLog, errorLog);
-// }
+
+for(let i=0; i<NUMBER_SLAVES; i++){
+	console.log(i);
+	new SatoshiTrader(NUMBER_SLAVES[i], profitLog, errorLog, i);
+}
 
 	
 })();
