@@ -2,6 +2,7 @@ require("babel-polyfill"); //This should go first
 let bunyan = require('bunyan');
 import SatoshiTrader from "./controller/satoshiTrader";
 //import TradeSatoshiCurrencies from "./model/tradeSatoshiAccountBalance";
+import {marketPairings} from "./markets"
 
 
 let profitLog = bunyan.createLogger({
@@ -32,6 +33,8 @@ let errorLog = bunyan.createLogger({
 await  SatoshiTrader.setBalances();
 console.log(SatoshiTrader.getBalances());
 
+console.log(marketPairings.length);
+
 
 //Initializing Robots To Trade
 //Entry Point into Program.
@@ -44,24 +47,24 @@ console.log(SatoshiTrader.getBalances());
 	@Param 3 = Market to manipulate.
 	 */
 
-let marketPairings = [["LTC", "BTC", "GRLC"],
-											["BTC", "LTC", "GRLC"],
-											["DOGE", "LTC", "GRLC"],
-											["DOGE", "BTC", "GRLC"],
-											["LTC", "DOGE", "GRLC"],
-											["BTC", "DOGE", "GRLC"],
-
-											["BTC", "DOGE", "CLAM"],
-											["DOGE", "BTC", "CLAM"],
-											["BTC", "CLAM", "DOGE"],
-											["CLAM", "BTC", "DOGE"],
-
-
-
-											];
-for(let i=0; i<marketPairings.length; i++){
-	new SatoshiTrader(marketPairings[i], profitLog, errorLog);
-}
+// let marketPairings = [["LTC", "BTC", "GRLC"],
+// 											["BTC", "LTC", "GRLC"],
+// 											["DOGE", "LTC", "GRLC"],
+// 											["DOGE", "BTC", "GRLC"],
+// 											["LTC", "DOGE", "GRLC"],
+// 											["BTC", "DOGE", "GRLC"],
+//
+// 											["BTC", "DOGE", "CLAM"],
+// 											["DOGE", "BTC", "CLAM"],
+// 											["BTC", "CLAM", "DOGE"],
+// 											["CLAM", "BTC", "DOGE"],
+//
+//
+//
+// 											];
+// for(let i=0; i<marketPairings.length; i++){
+// 	new SatoshiTrader(marketPairings[i], profitLog, errorLog);
+// }
 
 	
 })();
