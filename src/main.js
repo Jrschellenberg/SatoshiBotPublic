@@ -6,7 +6,7 @@ import SatoshiTradeScout from "./controller/SatoshiTradeScout";
 
 import {marketPairings} from "./markets";
 
-let NUMBER_SLAVES = 1;
+let NUMBER_SLAVES = 10;
 
 
 let profitLog = bunyan.createLogger({
@@ -62,7 +62,7 @@ console.log(marketPairings.length);
 
 
 for(let i=0; i<NUMBER_SLAVES; i++){
-	console.log(i);
+	//console.log(i);
 	new SatoshiTrader(SatoshiTradeScout.getWork(i), profitLog, errorLog, i);
 }
 	

@@ -45,9 +45,9 @@ export default class SatoshiTrader{
 	}
 	
 	assignMarketPairs(marketPairings){
-		for(let i=0; i<marketPairings.length; i++){
-			console.log(marketPairings[i]);
-		}
+		// for(let i=0; i<marketPairings.length; i++){
+		// 	console.log(marketPairings[i]);
+		// }
 		this.pair1 = marketPairings[0]+'_USDT';
 		this.pair2 = marketPairings[1]+'_USDT';
 		this.pair3 = marketPairings[2]+'_'+marketPairings[1];
@@ -122,6 +122,10 @@ export default class SatoshiTrader{
 				let tradeFee = amountSpent * TradeSatoshiFeePrice;
 				amountEarned -=  tradeFee;
 				amountSpent += tradeFee;
+				
+				/*
+				Satoshi is retarded, need to add a check to do a trade in reverse if it doesn't go through >.> sigh
+				 */
 				
 				
 				console.log(`Amount spent is ${amountSpent}`);
