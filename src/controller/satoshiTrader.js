@@ -148,30 +148,19 @@ export default class SatoshiTrader{
 		
 	}
 	
-	static getBalances(log){
-		return new Promise((resolve, reject) => {
-			const balance = TradeSatoshiCurrencies.getAccountBalance();
+	static async getBalances(log){
+			const balance = await TradeSatoshiCurrencies.getAccountBalance();
 			console.log("Got balance already;");
 			log.info({information: balance }, "Balanced");
 			console.log(balance); //Object with Deposit Address data from API
-			
-		});
-	
-		
 	}
 	
-	 static setBalances(){
-		 (async function () {
+	 static async setBalances(){
 			 const getBalances = await TradeSatoshi.getBalances();
-			 // return new Promise((resolve, reject) => {
-				 console.log("Got Balances");
-				 TradeSatoshiCurrencies.setAccountBalance(getBalances);
-			 // 	resolve();
-			 // });
-		 })();
+		    console.log("Got Balances");
+				await TradeSatoshiCurrencies.setAccountBalance(getBalances);
+				console.log("finished balances");
 		}
-	
-	
 }
 
 

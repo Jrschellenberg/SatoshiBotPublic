@@ -3,15 +3,15 @@
 class TradeSatoshiCurrencies {
 		static balance = [];
 	
-	static getAccountBalance() {
-		return TradeSatoshiCurrencies.balance;
+	static async getAccountBalance() {
+		return await TradeSatoshiCurrencies.balance;
 	}
 	
 	static async setAccountBalance(coins) {
 		for(let i=0; i<coins.length; i++){
-			TradeSatoshiCurrencies.balance.push(coins[i]);
+			await TradeSatoshiCurrencies.balance.push(coins[i]);
 		}
-		console.log(TradeSatoshiCurrencies.balance);
+		//console.log(TradeSatoshiCurrencies.balance);
 	}
 }
 

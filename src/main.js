@@ -48,9 +48,9 @@ Market pairings Documentation
 // }
 (async function () {
 //new TradeSatoshiCurrencies();
- 	SatoshiTrader.getBalances(log);
-  SatoshiTrader.setBalances();
- 	SatoshiTrader.getBalances(log);
+ await	SatoshiTrader.getBalances(log);
+await  SatoshiTrader.setBalances();
+await 	SatoshiTrader.getBalances(log);
 	
 })();
 
