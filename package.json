@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "./node_modules/.bin/babel src -d lib",
-    "start": "npm run build && node lib/main.js"
+    "start": "node src/targetMarkets.js && npm run build && node lib/main.js"
   },
   "dependencies": {
     "async": "^2.6.0",

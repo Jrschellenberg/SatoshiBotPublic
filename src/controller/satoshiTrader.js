@@ -9,7 +9,7 @@ import Trade from "../model/trade";
 
 const TradeSatoshi = require('../service/satoshiAPI')();
 const TradeSatoshiFeePrice = 0.002;
-const API_TIMEOUT = 500;
+const API_TIMEOUT = 800;
 
 //Setting up Service
 const options = {
