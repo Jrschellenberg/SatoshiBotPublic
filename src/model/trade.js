@@ -1,7 +1,7 @@
 
 
 export default class Trade {
-	constructor(tradeListing1, tradeListing2, tradeListing3, tradeListing4){
+	constructor(tradeListing1, tradeListing2, tradeListing3, tradeListing4, currencies){
 		this.trade1 = tradeListing1;
 		this.trade1["usdRate"] = tradeListing1.quantity * tradeListing1.rate;
 		
@@ -15,21 +15,35 @@ export default class Trade {
 		this.trade4["usdRate"] = tradeListing4.quantity * tradeListing4.rate * tradeListing1.rate;
 		
 		this.lowestPrice = Math.min(this.trade1.usdRate, this.trade2.usdRate, this.trade3.usdRate, this.trade4.usdRate);
+		this.currencies = currencies;
 	}
 	
-	updateQuantity(quantity, index){
-		if(index === 1){
-			this.trade1.quantity = quantity;
-		} else if(index === 2){
-			this.trade2.quantity = quantity;
-		} else if(index === 3){
-			this.trade3.quantity = quantity;
-		}else if(index === 4){
-			this.trade4.quantity = quantity;
-		}else{
-			console.log("A Fatal error occured while trying to update the Quantities, terminating program to avoid unwanted trade...");
-			process.exit(1);
+	updateQuantities(){
+		this.trade1.quantity = (this.lowestPrice / this.trade1.usdRate) * this.trade1.quantity;
+		this.trade2.quantity = (this.lowestPrice / this.trade2.usdRate) * this.trade2.quantity;
+		
+		this.trade3.quantity = (this.lowestPrice / this.trade3.usdRate) * this.trade3.quantity;
+		this.trade4.quantity = (this.lowestPrice / this.trade4.usdRate) * this.trade4.quantity;
+	}
+	
+	isBelowMinimum(){
+		if(this.trade1.usdRate < 0.05 || this.trade2.usdRate < 0.05 || this.trade3.usdRate < 0.05 || this.trade4.usdRate < 0.05){
+			return true;
 		}
+		return false;
+	}
+	
+	async isAccountEmpty(){
+		let balance = await SatoshiTrader.getBalances();
+		let currencies = this.currencies;
+		currencies.push('USDT');
+		for(let i=0; i<currencies.length; i++){
+			if(balance[currencies[i]] = 0){
+				console.log(`${currencies[i]} has ${balance[currencies[i]]} funds. Therefore we are exiting trade, Please add funds there!`)
+				return true; //Don't initiate trade
+			}
+		}
+		return false;
 	}
 	
 	

@@ -38,6 +38,7 @@ export default class SatoshiTrader{
 		this.pair3 = marketPairings[2]+'_'+marketPairings[1];
 		this.pair4 = marketPairings[2]+'_'+marketPairings[0];
 		this.potentialTrade = null;
+		this.currencies = marketPairings;
 		this.process();
 	}
 	
@@ -114,7 +115,7 @@ export default class SatoshiTrader{
 			console.log(`Amount spent is ${amountSpent}`);
 			console.log(`Amount Earned is ${amountEarned}`);
 			
-			if(amountEarned > amountSpent){
+			if(amountEarned > amountSpent){ //Is a profitable trade...
 				let profit = amountEarned - amountSpent;
 				console.log("This trade is profitable");
 				this.log.info({information: markets, market1: satoshiTrader.pair1, 
@@ -140,25 +141,30 @@ export default class SatoshiTrader{
 		let tradeListingFour = new TradeListing(markets.four.buy[0], tradeSatoshi.pair4, "buy");
 		
 		tradeSatoshi.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, tradeListingFour);
+		tradeSatoshi.potentialTrade.updateQuantities(); //Updates the quantities to correct ones.
+		
+		this.verifyTrade();
 	}
-	
-	calculateQuantities(){
+	verifyTrade(){
+		let tradeSatoshi = this;
+		if(tradeSatoshi.potentialTrade.isAccountEmpty() || tradeSatoshi.potentialTrade.isBelowMinimum()){
+			console.log("Account is empty or we are below minimum amount, Exiting the trade...");
+			return;
+		}
+		
+		console.log("Sending Trade to Master worker...");
 		
 	}
 	
-	static async getBalances(log){
+	static async getBalances(){
 			const balance = await TradeSatoshiCurrencies.getAccountBalance();
-			console.log("Got balance already;");
-			log.info({information: balance }, "Balanced");
-			console.log(balance); //Object with Deposit Address data from API
+			return balance;
 	}
 	
 	 static async setBalances(){
-			 const getBalances = await TradeSatoshi.getBalances();
-		    console.log("Got Balances");
-				await TradeSatoshiCurrencies.setAccountBalance(getBalances);
-				console.log("finished balances");
-		}
+		  const getBalances = await TradeSatoshi.getBalances();
+	    await TradeSatoshiCurrencies.setAccountBalance(getBalances);
+	 }
 }
 
 
