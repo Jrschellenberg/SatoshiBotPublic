@@ -19,11 +19,16 @@ export default class Trade {
 	}
 	
 	updateQuantities(){
-		this.trade1.quantity = (this.lowestPrice / this.trade1.usdRate) * this.trade1.quantity;
-		this.trade2.quantity = (this.lowestPrice / this.trade2.usdRate) * this.trade2.quantity;
+		return new Promise((resolve, reject)=>{
+			this.trade1.quantity = (this.lowestPrice / this.trade1.usdRate) * this.trade1.quantity;
+			this.trade2.quantity = (this.lowestPrice / this.trade2.usdRate) * this.trade2.quantity;
+			
+			this.trade3.quantity = (this.lowestPrice / this.trade3.usdRate) * this.trade3.quantity;
+			this.trade4.quantity = (this.lowestPrice / this.trade4.usdRate) * this.trade4.quantity;
+			
+			resolve();
+		});
 		
-		this.trade3.quantity = (this.lowestPrice / this.trade3.usdRate) * this.trade3.quantity;
-		this.trade4.quantity = (this.lowestPrice / this.trade4.usdRate) * this.trade4.quantity;
 	}
 	
 	isBelowMinimum(){

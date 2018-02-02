@@ -1,6 +1,6 @@
 require("babel-polyfill");
-const TradeSatoshi = require('./service/satoshiAPI')();
-import {API_CREDENTIALS} from "./service/secret";
+const TradeSatoshi = require('../service/satoshiAPI')();
+import {API_CREDENTIALS} from "../service/secret";
 const options = {
     API_KEY: API_CREDENTIALS.KEY,
     API_SECRET: API_CREDENTIALS.SECRET

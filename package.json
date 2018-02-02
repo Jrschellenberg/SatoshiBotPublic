@@ -16,7 +16,6 @@
     "crypto-js": "^3.1.9-1",
     "microtime": "^2.1.7",
     "nonce": "^1.0.4",
-    "promise-retry": "^1.1.1",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
     "requestretry": "^1.13.0",

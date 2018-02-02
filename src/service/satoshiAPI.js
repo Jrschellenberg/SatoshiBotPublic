@@ -1,7 +1,5 @@
 const crypto = require('crypto');
 const request = require('requestretry');
-//const request = require('request-promise');
-const promiseRetry = require('promise-retry');
 const async = require('async');
 
 const HOST_URL = "https://tradesatoshi.com/api";
