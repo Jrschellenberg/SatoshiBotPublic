@@ -9,7 +9,7 @@ import Trade from "../model/trade";
 
 const TradeSatoshi = require('../service/satoshiAPI')();
 const TradeSatoshiFeePrice = 0.002;
-const API_TIMEOUT = 2500;
+const API_TIMEOUT = 500;
 
 //Setting up Service
 const options = {
@@ -70,10 +70,12 @@ export default class SatoshiTrader{
 					},
 					(err) =>{
 						console.log(err);
+						console.log("ERror BUBBLING UP HERE");
 					}
 				);
 			} catch (err) {
 				console.error(err);
+				this.errorLog.error({pair: satoshiTrader.currencies});
 			}
 		})();
 	}
@@ -124,7 +126,7 @@ export default class SatoshiTrader{
 				amountSpent += tradeFee;
 				
 				/*
-				Satoshi is retarded, need to add a check to do a trade in reverse if it doesn't go through >.> sigh
+				Satoshi API is retarded, need to add a check to do a trade in reverse if it doesn't go through >.> sigh
 				 */
 				
 				
@@ -147,7 +149,7 @@ export default class SatoshiTrader{
 				
 			}
 			catch(err){
-				console.log(err);
+				//console.log(err);
 				this.errorLog.error({pair: satoshiTrader.currencies});
 			}
 			

@@ -6,7 +6,7 @@ import SatoshiTradeScout from "./controller/SatoshiTradeScout";
 
 import {marketPairings} from "./markets";
 
-let NUMBER_SLAVES = 10;
+let NUMBER_SLAVES = 1;
 
 
 let profitLog = bunyan.createLogger({

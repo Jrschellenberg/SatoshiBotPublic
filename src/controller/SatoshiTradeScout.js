@@ -26,8 +26,15 @@ export default class SatoshiTradeScout {
 	static getWork(slaveNumber){
 		if(SatoshiTradeScout.slaveIndexs[slaveNumber] == SatoshiTradeScout.mappedMarketPairings[slaveNumber].length){
 			SatoshiTradeScout.slaveIndexs[slaveNumber] = 0;
-			return SatoshiTradeScout.mappedMarketPairings[slaveNumber][SatoshiTradeScout.slaveIndexs[slaveNumber]];
+			console.log("Is it hitting this?!?");
+			return SatoshiTradeScout.mappedMarketPairings[slaveNumber][SatoshiTradeScout.slaveIndexs[slaveNumber]]; // I think it errroring here!!!!!
 		}
+		
+		let index = SatoshiTradeScout.slaveIndexs[slaveNumber];
+		console.log(index);
+		console.log(SatoshiTradeScout.mappedMarketPairings[slaveNumber].length);
+		
+		//console.log(SatoshiTradeScout.mappedMarketPairings[slaveNumber][++SatoshiTradeScout.slaveIndexs[slaveNumber]]);
 		return SatoshiTradeScout.mappedMarketPairings[slaveNumber][++SatoshiTradeScout.slaveIndexs[slaveNumber]]; //Increment index by 1 and send off work.
 	}
 }
