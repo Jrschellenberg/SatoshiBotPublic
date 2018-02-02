@@ -1,10 +1,13 @@
 import async from 'async';
 import timeout from 'async/timeout';
+
 import {API_CREDENTIALS} from "../service/secret";
+import TradeSatoshiCurrencies from "../model/tradeSatoshiAccountBalance";
 
 const TradeSatoshi = require('../service/satoshiAPI')();
 const TradeSatoshiFeePrice = 0.002;
 const API_TIMEOUT = 4000;
+let singletonInstance = null;
 
 //Setting up Service
 const options = {
@@ -12,6 +15,7 @@ const options = {
 	API_SECRET: API_CREDENTIALS.SECRET
 };
 TradeSatoshi.setOptions(options);
+
 
 function sleep(ms = 0) {
 	return new Promise(r => setTimeout(r, ms));
@@ -144,4 +148,35 @@ export default class SatoshiTrader{
 		
 	}
 	
+	static getBalances(log){
+		return new Promise((resolve, reject) => {
+			const balance = TradeSatoshiCurrencies.getAccountBalance();
+			console.log("Got balance already;");
+			log.info({information: balance }, "Balanced");
+			console.log(balance); //Object with Deposit Address data from API
+			
+		});
+	
+		
+	}
+	
+	 static setBalances(){
+		 (async function () {
+			 const getBalances = await TradeSatoshi.getBalances();
+			 // return new Promise((resolve, reject) => {
+				 console.log("Got Balances");
+				 TradeSatoshiCurrencies.setAccountBalance(getBalances);
+			 // 	resolve();
+			 // });
+		 })();
+		}
+	
+	
 }
+
+
+
+
+
+
+
