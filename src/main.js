@@ -35,7 +35,8 @@ let errorLog = bunyan.createLogger({
 (async function () {
 //new TradeSatoshiCurrencies();
 await  SatoshiTrader.setBalances();
-console.log(SatoshiTrader.getBalances());
+let balance = await SatoshiTrader.getBalances()
+console.log(balance);
 
 console.log(marketPairings.length);
 

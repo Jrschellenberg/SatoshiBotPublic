@@ -24,20 +24,15 @@ let TradeSatoshi = () => {
 		    },
 		    body: JSON.stringify(params),
         maxAttempts: 10,
-        retryDelay: 5000
+        retryDelay: 3000
 	    };
 	    //Need to put in retries here.....
         try {
-            await request.post(reqOpts, (err, response, body) => {
-                // if(err){
-	               //  //console.log(err);
-	               //  throw err;
-                // }
-                console.log("got here!");
-	               body = JSON.parse(body);
-                  return body.success ? Promise.resolve(body.result) : Promise.reject(body.message);
+            let response = await request.post(reqOpts);
+	          response = JSON.parse(response.body);
+                return response.success ? Promise.resolve(response.result) : Promise.reject(response.message);
                 
-            });
+
 
         } catch (err) {
             return Promise.reject('privateRequest(), Error on privateRequest: ' + err)
@@ -51,11 +46,13 @@ let TradeSatoshi = () => {
 		    headers: {
 			    'Content-Type': 'application/json; charset=utf-8'
 		    },
-		    json: true
+		    json: true,
+        maxAttempts: 50,
+        retryDelay: 500
 	    };
 	    //And here...
         try {
-            const response = await request.get(reqOpts);
+            const response = await request.get(reqOpts).body;
             return response.success ? response.result : Promise.reject(response.message);
         } catch (err) {
             console.log(err);
