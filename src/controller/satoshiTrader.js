@@ -65,8 +65,6 @@ export default class SatoshiTrader{
 						satoshiTrader.assignMarketPairs(SatoshiTradeScout.getWork(satoshiTrader.workerNumber));
 						sleep(API_TIMEOUT).then(()=>{
 							satoshiTrader.currencyExchangeCalls(next);
-							//console.log("Starting over..........");
-							
 						});
 					},
 					(err) =>{
@@ -90,12 +88,8 @@ export default class SatoshiTrader{
 
 		async.series({
 			one: async (callback) => {
-				async.auto({
-					markets:  await	async.retryable(3, TradeSatoshi.getOrderBook({market: satoshiTrader.pair1, depth: 1})) //LTC_USDT
-			}, (err, results) => {
-					console.log("hitting this ");
-					callback(null, results.markets);
-				});
+				const markets = await	TradeSatoshi.getOrderBook({market: satoshiTrader.pair1, depth: 1}); // BTC_USDT
+				callback(null, markets);
 			},
 			two: async (callback) =>{
 					const markets = await	TradeSatoshi.getOrderBook({market: satoshiTrader.pair2, depth: 1}); // BTC_USDT

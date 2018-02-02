@@ -29,23 +29,18 @@ let errorLog = bunyan.createLogger({
 });
 		
 
-
-
-
 (async function () {
 //new TradeSatoshiCurrencies();
 await  SatoshiTrader.setBalances();
-let balance = await SatoshiTrader.getBalances()
-console.log(balance);
+//let balance = await SatoshiTrader.getBalances()
+//console.log(balance);
 
-console.log(marketPairings.length);
-
-
-
+	//console.log(marketPairings.length);
+	
 
 //Initialize our TradeScout
 	
-//	await SatoshiTradeScout.createInstance(NUMBER_SLAVES, marketPairings);
+	await SatoshiTradeScout.createInstance(NUMBER_SLAVES, marketPairings);
 	
 	
 
@@ -62,10 +57,10 @@ console.log(marketPairings.length);
 	 */
 
 //
-// for(let i=0; i<NUMBER_SLAVES; i++){
-// 	//console.log(i);
-// 	new SatoshiTrader(SatoshiTradeScout.getWork(i), profitLog, errorLog, i);
-// }
+for(let i=0; i<NUMBER_SLAVES; i++){
+	//console.log(i);
+	new SatoshiTrader(SatoshiTradeScout.getWork(i), profitLog, errorLog, i);
+}
 //	
 })();
 

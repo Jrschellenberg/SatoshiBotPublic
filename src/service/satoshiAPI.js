@@ -30,10 +30,8 @@ let TradeSatoshi = () => {
         try {
             let response = await request.post(reqOpts);
 	          response = JSON.parse(response.body);
-                return response.success ? Promise.resolve(response.result) : Promise.reject(response.message);
-                
-
-
+            return response.success ? Promise.resolve(response.result) : Promise.reject(response.message);
+          
         } catch (err) {
             return Promise.reject('privateRequest(), Error on privateRequest: ' + err)
         }
@@ -52,10 +50,13 @@ let TradeSatoshi = () => {
 	    };
 	    //And here...
         try {
-            const response = await request.get(reqOpts).body;
+            let response = await request.get(reqOpts);
+           // console.log(response);
+            response = response.body;
+            //console.log(response);
             return response.success ? response.result : Promise.reject(response.message);
         } catch (err) {
-            console.log(err);
+           // console.log(err);
             return Promise.reject('publicRequest(), Error on publicRequest: ' + err)
         }
     }
