@@ -44,7 +44,7 @@ console.log(marketPairings.length);
 
 //Initialize our TradeScout
 	
-	await SatoshiTradeScout.createInstance(NUMBER_SLAVES, marketPairings);
+//	await SatoshiTradeScout.createInstance(NUMBER_SLAVES, marketPairings);
 	
 	
 
@@ -60,12 +60,12 @@ console.log(marketPairings.length);
 	@Param 3 = Market to manipulate.
 	 */
 
-
-for(let i=0; i<NUMBER_SLAVES; i++){
-	//console.log(i);
-	new SatoshiTrader(SatoshiTradeScout.getWork(i), profitLog, errorLog, i);
-}
-	
+//
+// for(let i=0; i<NUMBER_SLAVES; i++){
+// 	//console.log(i);
+// 	new SatoshiTrader(SatoshiTradeScout.getWork(i), profitLog, errorLog, i);
+// }
+//	
 })();
 
 

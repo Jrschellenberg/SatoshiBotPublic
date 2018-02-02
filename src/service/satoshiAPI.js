@@ -1,7 +1,8 @@
 const crypto = require('crypto');
-//const request = require('requestretry');
-const request = require('request-promise');
+const request = require('requestretry');
+//const request = require('request-promise');
 const promiseRetry = require('promise-retry');
+const async = require('async');
 
 const HOST_URL = "https://tradesatoshi.com/api";
 
@@ -21,14 +22,24 @@ let TradeSatoshi = () => {
 			    'Authorization': buildAuth(params, options),
 			    'Content-Type': 'application/json; charset=utf-8'
 		    },
-		    body: JSON.stringify(params)
+		    body: JSON.stringify(params),
+        maxAttempts: 10,
+        retryDelay: 5000
 	    };
+	    //Need to put in retries here.....
         try {
-            let response = await request.post(reqOpts);
-            response = JSON.parse(response);
-            return response.success ? response.result : Promise.reject(response.message);
+            await request.post(reqOpts, (err, response, body) => {
+                // if(err){
+	               //  //console.log(err);
+	               //  throw err;
+                // }
+                console.log("got here!");
+	               body = JSON.parse(body);
+                  return body.success ? Promise.resolve(body.result) : Promise.reject(body.message);
+                
+            });
+
         } catch (err) {
-            console.log(err);
             return Promise.reject('privateRequest(), Error on privateRequest: ' + err)
         }
     }
@@ -42,6 +53,7 @@ let TradeSatoshi = () => {
 		    },
 		    json: true
 	    };
+	    //And here...
         try {
             const response = await request.get(reqOpts);
             return response.success ? response.result : Promise.reject(response.message);
