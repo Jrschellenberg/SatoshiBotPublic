@@ -1,7 +1,7 @@
 require("babel-polyfill"); //This should go first
 let bunyan = require('bunyan');
 import SatoshiTrader from "./controller/satoshiTrader";
-import SatoshiTradeScout from "./controller/SatoshiTradeScout";
+import TradeScout from "./controller/tradeScout";
 import {marketPairings} from "./markets";
 
 let NUMBER_SLAVES = 12;
@@ -46,7 +46,7 @@ let errorLog = bunyan.createLogger({
 	// 	["DOGE", "BTC", "GRLC"]];
 	
 //Initialize our TradeScout
-	 let satoshiTradeScout = new SatoshiTradeScout(NUMBER_SLAVES, marketPairings);	
+	 let satoshiTradeScout = new TradeScout(NUMBER_SLAVES, marketPairings);	
 	for(let i=0; i<NUMBER_SLAVES; i++){
 		new SatoshiTrader(profitLog, errorLog, i, satoshiTradeScout);
 	}

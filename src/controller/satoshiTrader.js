@@ -1,7 +1,6 @@
 import async from 'async';
 import {API_CREDENTIALS} from "../service/secret";
 import TradeSatoshiCurrencies from "../model/tradeSatoshiAccountBalance";
-import SatoshiTradeScout from "./SatoshiTradeScout";
 import TradeListing from "../model/tradeListing";
 import Trade from "../model/trade";
 
@@ -62,7 +61,7 @@ export default class SatoshiTrader{
 					},
 					(err) =>{
 						console.log(err);
-						console.log("ERror BUBBLING UP HERE");
+						console.log("Error BUBBLING UP HERE");
 					}
 				);
 			} catch (err) {
@@ -114,8 +113,10 @@ export default class SatoshiTrader{
 				let pair2Price = marketTwo.rate;                        //Selling price USD
 				let amountSpent = marketThree.rate * pair2Price;        //Selling price USD
 				let tradeFee = amountSpent * TradeSatoshiFeePrice;
+				amountSpent += tradeFee;
+				tradeFee = amountEarned * TradeSatoshiFeePrice;
 				amountEarned -=  tradeFee;
-				amountSpent += tradeFee;gr
+				
 				
 				/*
 				Satoshi API is retarded, need to add a check to do a trade in reverse if it doesn't go through >.> sigh
@@ -129,11 +130,13 @@ export default class SatoshiTrader{
 					this.calculateProfits(markets, profit);
 				}
 				else{
+					// if(amountEarned <0){
+					// 	console.log("BELOW 0!");
+					// 	this.profitLog.info({information: markets, market1: satoshiTrader.pair1,
+					// 		market2: satoshiTrader.pair2, market3: satoshiTrader.pair3, market4: satoshiTrader.pair4}, `We Found a profitable Trade! Yay!`);
+					// }
 					console.log('nothing, lets try again!');
-					//this.log.info({information: markets }, "Test");
-					//this.log.info({information: markets})
 				//	console.log("This trade is not profitable");
-					//this.calculateProfits(markets);
 				}
 			}
 			catch(err){
@@ -153,11 +156,11 @@ export default class SatoshiTrader{
 		
 		satoshiTrader.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, tradeListingFour);
 		satoshiTrader.potentialTrade.updateQuantities().then(() => {
-			TradeSatoshiCurrencies.tallyProfitableTrade(satoshiTrader.potentialTrade.lowestPrice * profit);
+		TradeSatoshiCurrencies.tallyProfitableTrade(satoshiTrader.potentialTrade.lowestPrice * profit);
 			
-			this.profitLog.info({information: markets, market1: satoshiTrader.pair1,
-				market2: satoshiTrader.pair2, market3: satoshiTrader.pair3, market4: satoshiTrader.pair4, profit: profit, lowestPrice: satoshiTrader.potentialTrade.lowestPrice, totalProfit:
-				TradeSatoshiCurrencies.profit, trade: satoshiTrader.potentialTrade}, `We Found a profitable Trade! Yay!`);
+		this.profitLog.info({information: markets, market1: satoshiTrader.pair1,
+			market2: satoshiTrader.pair2, market3: satoshiTrader.pair3, market4: satoshiTrader.pair4, profit: profit, lowestPrice: satoshiTrader.potentialTrade.lowestPrice, totalProfit:
+			TradeSatoshiCurrencies.profit, trade: satoshiTrader.potentialTrade}, `We Found a profitable Trade! Yay!`);
 			
 			this.verifyTrade();
 		}); //Updates the quantities to correct ones.
@@ -169,9 +172,7 @@ export default class SatoshiTrader{
 			console.log("Account is empty or we are below minimum amount, Exiting the trade...");
 			return;
 		}
-		
 		console.log("Sending Trade to Master worker...");
-		
 	}
 	
 	static async getBalances(){
@@ -186,10 +187,3 @@ export default class SatoshiTrader{
 	 }
 
 }
-
-
-
-
-
-
-
