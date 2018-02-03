@@ -1,22 +1,22 @@
 import TradeMiddleware from './tradeMiddleware';
 
-export class SatoshiMiddleware extends TradeMiddleware {
+export class CryptopiaMiddleware extends TradeMiddleware {
 	constructor(marketFee, service, API_TIMEOUT){
 		super(marketFee, service, API_TIMEOUT);
 	}
 	
 	async getMarketListing(params){
-		 const market = await this.service.getOrderBook(params);
-		 return market;		
+		const market = await this.service.getOrderBook(params);
+		return market;
 	}
 	
-
 	
-
+	
+	
 	
 }
 
-export class TradeSatoshiCurrencies {
+export class CryptopiaCurrencies {
 	static balance = {};
 	static profit = 0;
 	
@@ -46,7 +46,7 @@ export class TradeSatoshiCurrencies {
 		console.log("we getting back over here?");
 		await TradeSatoshiCurrencies.setAccountBalance(getBalances);
 	}
-
+	
 	
 	
 }

@@ -1,7 +1,8 @@
 
 
 export default class Trade {
-	constructor(tradeListing1, tradeListing2, tradeListing3, tradeListing4, currencies){
+	constructor(tradeListing1, tradeListing2, tradeListing3, tradeListing4, currencies,
+	            middleware){
 		this.trade1 = tradeListing1;
 		this.trade1["usdRate"] = tradeListing1.quantity * tradeListing1.rate;
 		
@@ -16,6 +17,7 @@ export default class Trade {
 		
 		this.lowestPrice = Math.min(this.trade1.usdRate, this.trade2.usdRate, this.trade3.usdRate, this.trade4.usdRate);
 		this.currencies = currencies;
+		this.service = middleware.service;
 	}
 	
 	updateQuantities(){
@@ -39,7 +41,7 @@ export default class Trade {
 	}
 	
 	async isAccountEmpty(){
-		let balance = await SatoshiTrader.getBalances();
+		let balance = await this.service.getBalances();
 		let currencies = this.currencies;
 		currencies.push('USDT');
 		for(let i=0; i<currencies.length; i++){

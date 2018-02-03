@@ -1,19 +1,8 @@
 import async from 'async';
-import {API_CREDENTIALS} from "../service/secret";
-import TradeSatoshiCurrencies from "../model/tradeSatoshiAccountBalance";
+
+import TradeSatoshiCurrencies from "../middleware/satoshiMiddleware";
 import TradeListing from "../model/tradeListing";
 import Trade from "../model/trade";
-
-const TradeSatoshi = require('../service/satoshiAPI')();
-const TradeSatoshiFeePrice = 0.002;
-const API_TIMEOUT = 800;
-
-//Setting up Service
-const options = {
-	API_KEY: API_CREDENTIALS.KEY,
-	API_SECRET: API_CREDENTIALS.SECRET
-};
-TradeSatoshi.setOptions(options);
 
 function sleep(ms = 0) {
 	return new Promise(r => setTimeout(r, ms));
@@ -23,9 +12,11 @@ function sleep(ms = 0) {
 //These class as slaves
 //Master does trade, verifies trade went smoothly. Continues listening for events.
 //May need queue to handle collisions of events.
-export default class SatoshiTrader{
-	constructor(profitLog, errorLog, workerNumber, satoshiTradeScout){
-		this.satoshiTradeScout = satoshiTradeScout;
+export default class TradeSeeker{
+	constructor(profitLog, errorLog, workerNumber, tradeScout,
+	            middleWare){
+		this.middleware = middleWare;
+		this.tradeScout = tradeScout;
 		this.workerNumber = workerNumber;
 		this.errorLog = errorLog;
 		this.profitLog = profitLog;
@@ -34,7 +25,7 @@ export default class SatoshiTrader{
 		this.pair3 = null;
 		this.pair4 = null;
 		this.potentialTrade = null;
-		this.currencies = satoshiTradeScout.getWork(workerNumber);
+		this.currencies = tradeScout.getWork(workerNumber);
 		this.assignMarketPairs(this.currencies);
 		this.process();
 	}
@@ -48,15 +39,15 @@ export default class SatoshiTrader{
 	
 	process(){
 		//console.log("hello from satoshitrader!");
-		let satoshiTrader = this;
+		let trader = this;
 		(async () => {
 			try {
 				async.forever((next)=>
 					{
 						//Finding new work while waiting before starting to scout for trade..
-						satoshiTrader.assignMarketPairs(satoshiTrader.satoshiTradeScout.getWork(satoshiTrader.workerNumber)); //Find more work!
-						sleep(API_TIMEOUT).then(()=>{
-							satoshiTrader.currencyExchangeCalls(next);
+						trader.assignMarketPairs(trader.tradeScout.getWork(trader.workerNumber)); //Find more work!
+						sleep(trader.middleware.API_TIMEOUT).then(()=>{
+							trader.currencyExchangeCalls(next);
 						});
 					},
 					(err) =>{
@@ -66,7 +57,7 @@ export default class SatoshiTrader{
 				);
 			} catch (err) {
 				console.error(err);
-				this.errorLog.error({pair: satoshiTrader.currencies});
+				this.errorLog.error({pair: trader.currencies});
 			}
 		})();
 	}
@@ -76,31 +67,31 @@ export default class SatoshiTrader{
 	Function used to send out API Calls to the 3 currencies we are monitoring.
 	 */
 	currencyExchangeCalls(next){
-		let satoshiTrader = this;
+		let trader = this;
 		async.series({
 			one: async (callback) => {
-				const markets = await	TradeSatoshi.getOrderBook({market: satoshiTrader.pair1, depth: 1}); // BTC_USDT
+				const markets = await	trader.middleware.getMarketListing({market: trader.pair1, depth: 1}); // BTC_USDT
 				callback(null, markets);
 			},
 			two: async (callback) =>{
-					const markets = await	TradeSatoshi.getOrderBook({market: satoshiTrader.pair2, depth: 1}); // BTC_USDT
+					const markets = await	trader.middleware.getMarketListing({market: trader.pair2, depth: 1}); // BTC_USDT
 					callback(null, markets);
 			},
 			three: async  (callback) =>{
-				const markets = await	TradeSatoshi.getOrderBook({market: satoshiTrader.pair3, depth: 1});  // GRLC_BTC
+				const markets = await	trader.middleware.getMarketListing({market: trader.pair3, depth: 1});  // GRLC_BTC
 				callback(null, markets);
 			},
 			four: async  (callback) =>{
-				const markets = await	TradeSatoshi.getOrderBook({market: satoshiTrader.pair4, depth: 1});  //GRLC_LTC
+				const markets = await	trader.middleware.getMarketListing({market: trader.pair4, depth: 1});  //GRLC_LTC
 				callback(null, markets);
 			},
 		}, (err, markets) => {
-			satoshiTrader.isProfitableTrade(next, markets);
+			trader.isProfitableTrade(next, markets);
 		})
 	}
 	
 	isProfitableTrade(next, markets){
-		let satoshiTrader = this;
+		let trader = this;
 		if(markets){ // Make sure we actually have data
 			let marketOne = markets.one.buy[0],
 				marketTwo = markets.two.sell[0],
@@ -112,9 +103,9 @@ export default class SatoshiTrader{
 				let amountEarned = marketFour.rate * pair1Price;        //Buying price USD
 				let pair2Price = marketTwo.rate;                        //Selling price USD
 				let amountSpent = marketThree.rate * pair2Price;        //Selling price USD
-				let tradeFee = amountSpent * TradeSatoshiFeePrice;
+				let tradeFee = amountSpent * trader.middleware.getMarketFee();
 				amountSpent += tradeFee;
-				tradeFee = amountEarned * TradeSatoshiFeePrice;
+				tradeFee = amountEarned * trader.middleware.getMarketFee();
 				amountEarned -=  tradeFee;
 				
 				
@@ -141,49 +132,37 @@ export default class SatoshiTrader{
 			}
 			catch(err){
 				//console.log(err);
-				this.errorLog.error({pair: satoshiTrader.currencies});
+				this.errorLog.error({pair: trader.currencies});
 			}
 		}
 		next(); //Use this to restart the loop..
 	}
 	
 	calculateProfits(markets, profit){
-		let satoshiTrader = this;
-		let tradeListingOne = new TradeListing(markets.one.buy[0], satoshiTrader.pair1, "buy");
-		let tradeListingTwo = new TradeListing(markets.two.sell[0], satoshiTrader.pair2, "sell");
-		let tradeListingThree = new TradeListing(markets.three.sell[0], satoshiTrader.pair3, "sell");
-		let tradeListingFour = new TradeListing(markets.four.buy[0], satoshiTrader.pair4, "buy");
+		let trader = this;
+		let tradeListingOne = new TradeListing(markets.one.buy[0], trader.pair1, "buy");
+		let tradeListingTwo = new TradeListing(markets.two.sell[0], trader.pair2, "sell");
+		let tradeListingThree = new TradeListing(markets.three.sell[0], trader.pair3, "sell");
+		let tradeListingFour = new TradeListing(markets.four.buy[0], trader.pair4, "buy");
 		
-		satoshiTrader.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, tradeListingFour);
-		satoshiTrader.potentialTrade.updateQuantities().then(() => {
-		TradeSatoshiCurrencies.tallyProfitableTrade(satoshiTrader.potentialTrade.lowestPrice * profit);
+		trader.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, tradeListingFour, trader.middleware);
+		trader.potentialTrade.updateQuantities().then(() => {
+		TradeSatoshiCurrencies.tallyProfitableTrade(trader.potentialTrade.lowestPrice * profit);
 			
-		this.profitLog.info({information: markets, market1: satoshiTrader.pair1,
-			market2: satoshiTrader.pair2, market3: satoshiTrader.pair3, market4: satoshiTrader.pair4, profit: profit, lowestPrice: satoshiTrader.potentialTrade.lowestPrice, totalProfit:
-			TradeSatoshiCurrencies.profit, trade: satoshiTrader.potentialTrade}, `We Found a profitable Trade! Yay!`);
+		this.profitLog.info({information: markets, market1: trader.pair1,
+			market2: trader.pair2, market3: trader.pair3, market4: trader.pair4, profit: profit, lowestPrice: trader.potentialTrade.lowestPrice, totalProfit:
+			TradeSatoshiCurrencies.profit, trade: trader.potentialTrade}, `We Found a profitable Trade! Yay!`);
 			
 			this.verifyTrade();
 		}); //Updates the quantities to correct ones.
 		
 	}
 	verifyTrade(){
-		let tradeSatoshi = this;
-		if(tradeSatoshi.potentialTrade.isAccountEmpty() || tradeSatoshi.potentialTrade.isBelowMinimum()){
+		let trader = this;
+		if(trader.potentialTrade.isAccountEmpty() || trader.potentialTrade.isBelowMinimum()){
 			console.log("Account is empty or we are below minimum amount, Exiting the trade...");
 			return;
 		}
 		console.log("Sending Trade to Master worker...");
 	}
-	
-	static async getBalances(){
-			const balance = await TradeSatoshiCurrencies.getAccountBalance();
-			return balance;
-	}
-	
-	 static async setBalances(){
-		  const getBalances = await TradeSatoshi.getBalances();
-		  console.log("we getting back over here?");
-	    await TradeSatoshiCurrencies.setAccountBalance(getBalances);
-	 }
-
 }
