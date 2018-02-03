@@ -10,22 +10,36 @@ export class CryptopiaMiddleware extends TradeMiddleware {
 			Market: params.market,
 			Count: params.depth
 		};
+		//console.log("hitting this?");
 		const market = await this.service.getMarketOrders(newParams);
-		let marketObject = {
-			buy: [
-				{
-					quantity: market.Buy.Volume,
-					rate: market.Buy.Price
-				}
-			],
-			sell: [
-				{
-					quantity: market.Sell.Volume,
-					rate: market.Sell.Price
-				}
-			]
-		};
-		return marketObject;
+		try {
+			if (market.Buy) {
+				//console.log(market);
+				let marketObject = {
+					buy: [
+						{
+							quantity: market.Buy[0].Volume,
+							rate: market.Buy[0].Price
+						}
+					],
+					sell: [
+						{
+							quantity: market.Sell[0].Volume,
+							rate: market.Sell[0].Price
+						}
+					]
+				};
+				
+				//console.log(marketObject);
+				return marketObject;
+			}
+			else {
+				return null;
+			}
+		}
+			catch(err){
+			console.log(err);
+			}
 	}
 	
 }

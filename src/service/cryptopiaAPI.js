@@ -37,7 +37,7 @@ let Cryptopia = () => {
 	//HTTPS Public Request
 	async function publicRequest(urlParams) {
 		let reqOpts = {
-			url: urlParams ? options.HOST_URL + "/" + options.API_PATH+"?"+urlParams : options.HOST_URL + "/" + options.API_PATH,
+			url: urlParams ? options.HOST_URL + "/" + options.API_PATH+""+urlParams : options.HOST_URL + "/" + options.API_PATH,
 			headers: {
 				'Content-Type': 'application/json; charset=utf-8'
 			},
@@ -48,9 +48,7 @@ let Cryptopia = () => {
 		//And here...
 		try {
 			let response = await request.get(reqOpts);
-			 //console.log(response);
 			response = response.body;
-			//console.log(response);
 			return response.Success ? response.Data : Promise.reject(response.Mssage);
 		} catch (err) {
 			// console.log(err);

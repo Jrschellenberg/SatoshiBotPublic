@@ -3,23 +3,33 @@ let bunyan = require('bunyan');
 import TradeSeeker from "./controller/tradeSeeker";
 import TradeScout from "./controller/tradeScout";
 import {SatoshiMiddleware, TradeSatoshiCurrencies} from "./middleware/satoshiMiddleware";
+import {CryptopiaMiddleware, CryptopiaCurrencies} from "./middleware/cryptopiaMiddleware";
 
-"./middleware/satoshiMiddleware";
-import {marketPairings} from "./markets";
-import {API_CREDENTIALS} from "./service/secret";
+import {satoshiMarkets} from "./satoshiMarkets";
+import {cryptopiaMarkets} from "./cryptopiaMarkets";
+import {API_CREDENTIALS, CRYPTOPIA_CREDENTIALS} from "./service/secret";
 
 const tradeSatoshiService = require('./service/satoshiAPI')();
-const options = {
+const tradeSatoshiOptions = {
 	API_KEY: API_CREDENTIALS.KEY,
 	API_SECRET: API_CREDENTIALS.SECRET
 };
-tradeSatoshiService.setOptions(options);
+tradeSatoshiService.setOptions(tradeSatoshiOptions);
+
+const cryptopiaService = require('./service/cryptopiaAPI')();
+const cryptopiaOptions = {
+	API_KEY: CRYPTOPIA_CREDENTIALS.KEY,
+	API_SECRET: CRYPTOPIA_CREDENTIALS.SECRET
+};
+cryptopiaService.setOptions(cryptopiaOptions);
+
 const TRADE_SATOSHI_TRADE_FEE = 0.002;
+const CRYPTOPIA_TRADE_FEE = 0.002;
 const API_TIMEOUT = 800;
 
 
 
-let NUMBER_SLAVES = 12;
+let NUMBER_SLAVES = 1;
 
 let profitLog = bunyan.createLogger({
 	name: "myapp",
@@ -61,11 +71,19 @@ let errorLog = bunyan.createLogger({
 	// 	["DOGE", "BTC", "GRLC"]];
 	
 //Initialize our TradeScout
-	 let satoshiTradeScout = new TradeScout(NUMBER_SLAVES, marketPairings);	
-	 
+	
+	
+	
+	// let satoshiTradeScout = new TradeScout(NUMBER_SLAVES, satoshiMarkets);
+	
+	 let cryptopiaTradeScout = new TradeScout(NUMBER_SLAVES, cryptopiaMarkets);
+	
 	for(let i=0; i<NUMBER_SLAVES; i++){
-		new TradeSeeker(profitLog, errorLog, i, satoshiTradeScout,
-			new SatoshiMiddleware(TRADE_SATOSHI_TRADE_FEE, tradeSatoshiService,API_TIMEOUT ));
+		// new TradeSeeker(profitLog, errorLog, i, satoshiTradeScout,
+		// 	new SatoshiMiddleware(TRADE_SATOSHI_TRADE_FEE, tradeSatoshiService,API_TIMEOUT ));
+		
+		new TradeSeeker(profitLog, errorLog, i, cryptopiaTradeScout,
+			new CryptopiaMiddleware(CRYPTOPIA_TRADE_FEE, cryptopiaService,API_TIMEOUT ));
 	}
 })();
 

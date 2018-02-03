@@ -6,9 +6,6 @@ export default class TradeListing {
 			quantity: market.quantity,
 			rate: market.rate
 		}
-		
-		
-		
 	}
 	
 	

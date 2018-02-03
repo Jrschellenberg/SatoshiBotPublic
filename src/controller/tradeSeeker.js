@@ -1,6 +1,6 @@
 import async from 'async';
 
-import TradeSatoshiCurrencies from "../middleware/satoshiMiddleware";
+import CryptopiaCurrencies from "../middleware/cryptopiaMiddleware";
 import TradeListing from "../model/tradeListing";
 import Trade from "../model/trade";
 
@@ -86,13 +86,16 @@ export default class TradeSeeker{
 				callback(null, markets);
 			},
 		}, (err, markets) => {
+			if(err){
+				next();
+			}
 			trader.isProfitableTrade(next, markets);
 		})
 	}
 	
 	isProfitableTrade(next, markets){
 		let trader = this;
-		if(markets){ // Make sure we actually have data
+		if(markets.one && markets.two && markets.three && markets.four){ // Make sure we actually have data
 			let marketOne = markets.one.buy[0],
 				marketTwo = markets.two.sell[0],
 				marketThree = markets.three.sell[0],
@@ -114,10 +117,12 @@ export default class TradeSeeker{
 				 */
 				console.log(`Amount spent is ${amountSpent}`);
 				console.log(`Amount Earned is ${amountEarned}`);
+				//console.log(this.pair1+this.pair2+this.pair3+this.pair4);
 				
 				if(amountEarned > amountSpent){ //Is a profitable trade...
 					let profit = amountEarned - amountSpent;
 					console.log("This trade is profitable");
+					console.log(`Profit earned is ${profit}`);
 					this.calculateProfits(markets, profit);
 				}
 				else{
@@ -139,6 +144,10 @@ export default class TradeSeeker{
 	}
 	
 	calculateProfits(markets, profit){
+		console.log("inside Calculate Profits function.");
+		
+		
+		
 		let trader = this;
 		let tradeListingOne = new TradeListing(markets.one.buy[0], trader.pair1, "buy");
 		let tradeListingTwo = new TradeListing(markets.two.sell[0], trader.pair2, "sell");
@@ -146,12 +155,15 @@ export default class TradeSeeker{
 		let tradeListingFour = new TradeListing(markets.four.buy[0], trader.pair4, "buy");
 		
 		trader.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, tradeListingFour, trader.middleware);
+		console.log("ARe we getting TO HERE??!");
 		trader.potentialTrade.updateQuantities().then(() => {
-		TradeSatoshiCurrencies.tallyProfitableTrade(trader.potentialTrade.lowestPrice * profit);
+		let profitTrade = trader.potentialTrade.lowestPrice * profit;
+		
+		console.log("getting here? on profit trade?");
 			
 		this.profitLog.info({information: markets, market1: trader.pair1,
-			market2: trader.pair2, market3: trader.pair3, market4: trader.pair4, profit: profit, lowestPrice: trader.potentialTrade.lowestPrice, totalProfit:
-			TradeSatoshiCurrencies.profit, trade: trader.potentialTrade}, `We Found a profitable Trade! Yay!`);
+			market2: trader.pair2, market3: trader.pair3, market4: trader.pair4, profit: profit, profitFromTrade: profitTrade, lowestPrice: trader.potentialTrade.lowestPrice, 
+			trade: trader.potentialTrade}, `We Found a profitable Trade! Yay!`);
 			
 			this.verifyTrade();
 		}); //Updates the quantities to correct ones.
