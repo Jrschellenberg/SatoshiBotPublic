@@ -145,28 +145,37 @@ export default class TradeSeeker{
 	
 	calculateProfits(markets, profit){
 		console.log("inside Calculate Profits function.");
-		
-		
-		
-		let trader = this;
-		let tradeListingOne = new TradeListing(markets.one.buy[0], trader.pair1, "buy");
-		let tradeListingTwo = new TradeListing(markets.two.sell[0], trader.pair2, "sell");
-		let tradeListingThree = new TradeListing(markets.three.sell[0], trader.pair3, "sell");
-		let tradeListingFour = new TradeListing(markets.four.buy[0], trader.pair4, "buy");
-		
-		trader.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, tradeListingFour, trader.middleware);
-		console.log("ARe we getting TO HERE??!");
-		trader.potentialTrade.updateQuantities().then(() => {
-		let profitTrade = trader.potentialTrade.lowestPrice * profit;
-		
-		console.log("getting here? on profit trade?");
+		try {
+			let trader = this;
+			let tradeListingOne = new TradeListing(markets.one.buy[0], trader.pair1, "buy");
+			let tradeListingTwo = new TradeListing(markets.two.sell[0], trader.pair2, "sell");
+			let tradeListingThree = new TradeListing(markets.three.sell[0], trader.pair3, "sell");
+			let tradeListingFour = new TradeListing(markets.four.buy[0], trader.pair4, "buy");
 			
-		this.profitLog.info({information: markets, market1: trader.pair1,
-			market2: trader.pair2, market3: trader.pair3, market4: trader.pair4, profit: profit, profitFromTrade: profitTrade, lowestPrice: trader.potentialTrade.lowestPrice, 
-			trade: trader.potentialTrade}, `We Found a profitable Trade! Yay!`);
+			trader.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, tradeListingFour, trader.middleware);
+			console.log("ARe we getting TO HERE??!");
+			
+			let profitTrade = trader.potentialTrade.lowestPrice * profit;
+			
+			console.log("getting here? on profit trade?");
+			
+			this.profitLog.info({
+				information: markets,
+				market1: trader.pair1,
+				market2: trader.pair2,
+				market3: trader.pair3,
+				market4: trader.pair4,
+				profit: profit,
+				profitFromTrade: profitTrade,
+				lowestPrice: trader.potentialTrade.lowestPrice,
+				trade: trader.potentialTrade
+			}, `We Found a profitable Trade! Yay!`);
 			
 			this.verifyTrade();
-		}); //Updates the quantities to correct ones.
+		}
+		catch(err){
+			console.log(err);
+		}
 		
 	}
 	verifyTrade(){
