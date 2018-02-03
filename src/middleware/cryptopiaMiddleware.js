@@ -6,13 +6,27 @@ export class CryptopiaMiddleware extends TradeMiddleware {
 	}
 	
 	async getMarketListing(params){
-		const market = await this.service.getOrderBook(params);
-		return market;
+		let newParams = {
+			Market: params.market,
+			Count: params.depth
+		};
+		const market = await this.service.getMarketOrders(newParams);
+		let marketObject = {
+			buy: [
+				{
+					quantity: market.Buy.Volume,
+					rate: market.Buy.Price
+				}
+			],
+			sell: [
+				{
+					quantity: market.Sell.Volume,
+					rate: market.Sell.Price
+				}
+			]
+		};
+		return marketObject;
 	}
-	
-	
-	
-	
 	
 }
 
@@ -21,30 +35,30 @@ export class CryptopiaCurrencies {
 	static profit = 0;
 	
 	static async getAccountBalance() {
-		return await TradeSatoshiCurrencies.balance;
+		return await CryptopiaCurrencies.balance;
 	}
 	
 	static async setAccountBalance(coins) {
 		for(let i=0; i<coins.length; i++){
 			if(coins[i].total != 0){
 				let key = coins[i].currency;
-				TradeSatoshiCurrencies.balance[key] = coins[i].total;
+				CryptopiaCurrencies.balance[key] = coins[i].total;
 			}
 		}
 	}
 	static tallyProfitableTrade(amount){
-		TradeSatoshiCurrencies.profit += amount;
+		CryptopiaCurrencies.profit += amount;
 	}
 	
 	static async getBalances(){
-		const balance = await TradeSatoshiCurrencies.getAccountBalance();
+		const balance = await CryptopiaCurrencies.getAccountBalance();
 		return balance;
 	}
 	
 	static async setBalances(service){
 		const getBalances = await service.getBalances();
 		console.log("we getting back over here?");
-		await TradeSatoshiCurrencies.setAccountBalance(getBalances);
+		await CryptopiaCurrencies.setAccountBalance(getBalances);
 	}
 	
 	
