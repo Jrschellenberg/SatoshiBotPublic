@@ -46,9 +46,9 @@ let errorLog = bunyan.createLogger({
 	// 	["DOGE", "BTC", "GRLC"]];
 	
 //Initialize our TradeScout
-	 await SatoshiTradeScout.createInstance(NUMBER_SLAVES, marketPairings);	
+	 let satoshiTradeScout = new SatoshiTradeScout(NUMBER_SLAVES, marketPairings);	
 	for(let i=0; i<NUMBER_SLAVES; i++){
-		new SatoshiTrader(SatoshiTradeScout.getWork(i), profitLog, errorLog, i);
+		new SatoshiTrader(profitLog, errorLog, i, satoshiTradeScout);
 	}
 })();
 

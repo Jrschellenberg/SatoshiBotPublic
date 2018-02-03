@@ -25,8 +25,9 @@ function sleep(ms = 0) {
 //Master does trade, verifies trade went smoothly. Continues listening for events.
 //May need queue to handle collisions of events.
 export default class SatoshiTrader{
-	constructor(marketPairings, profitLog, errorLog, workerNumber){
-		this.workerNumber = workerNumber
+	constructor(profitLog, errorLog, workerNumber, satoshiTradeScout){
+		this.satoshiTradeScout = satoshiTradeScout;
+		this.workerNumber = workerNumber;
 		this.errorLog = errorLog;
 		this.profitLog = profitLog;
 		this.pair1 = null;
@@ -34,8 +35,8 @@ export default class SatoshiTrader{
 		this.pair3 = null;
 		this.pair4 = null;
 		this.potentialTrade = null;
-		this.currencies = marketPairings;
-		this.assignMarketPairs(marketPairings);
+		this.currencies = satoshiTradeScout.getWork(workerNumber);
+		this.assignMarketPairs(this.currencies);
 		this.process();
 	}
 	
@@ -54,7 +55,7 @@ export default class SatoshiTrader{
 				async.forever((next)=>
 					{
 						//Finding new work while waiting before starting to scout for trade..
-						satoshiTrader.assignMarketPairs(SatoshiTradeScout.getWork(satoshiTrader.workerNumber));
+						satoshiTrader.assignMarketPairs(satoshiTrader.satoshiTradeScout.getWork(satoshiTrader.workerNumber)); //Find more work!
 						sleep(API_TIMEOUT).then(()=>{
 							satoshiTrader.currencyExchangeCalls(next);
 						});
@@ -114,13 +115,13 @@ export default class SatoshiTrader{
 				let amountSpent = marketThree.rate * pair2Price;        //Selling price USD
 				let tradeFee = amountSpent * TradeSatoshiFeePrice;
 				amountEarned -=  tradeFee;
-				amountSpent += tradeFee;
+				amountSpent += tradeFee;gr
 				
 				/*
 				Satoshi API is retarded, need to add a check to do a trade in reverse if it doesn't go through >.> sigh
 				 */
-				// console.log(`Amount spent is ${amountSpent}`);
-				// console.log(`Amount Earned is ${amountEarned}`);
+				console.log(`Amount spent is ${amountSpent}`);
+				console.log(`Amount Earned is ${amountEarned}`);
 				
 				if(amountEarned > amountSpent){ //Is a profitable trade...
 					let profit = amountEarned - amountSpent;

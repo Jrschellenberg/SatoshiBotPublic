@@ -1,33 +1,31 @@
+
+
 export default class SatoshiTradeScout {
-		static numberOfSlaves;
-		static marketPairings;
-		static mappedMarketPairings;
-		
-	static createInstance(numberOfSlaves, marketPairings){
-		SatoshiTradeScout.numberOfSlaves = numberOfSlaves;
-		SatoshiTradeScout.marketPairings = marketPairings;
-		SatoshiTradeScout.mappedMarketPairings = [[]];
-		SatoshiTradeScout.slaveIndexs = [];
-		for(let i=0; i<numberOfSlaves; i++){ // May need -1
-			SatoshiTradeScout.slaveIndexs[i] = 0 //Initialize all of the indexes at 0
-			SatoshiTradeScout.mappedMarketPairings[i] = []; //Initialize these as empty arrays to work with later.
-			//console.log(i);
-		}
-		
-		for(let i=0; i<marketPairings.length; i++){ //Loop through all pairings.
-			let j =  i%numberOfSlaves; //Match our pairings to slaves work Ticket
-			//console.log(marketPairings[i]);
-			//console.log(j);
-			SatoshiTradeScout.mappedMarketPairings[j].push(marketPairings[i]);
+		constructor(numberOfSlaves,marketPairings){
+			this.numberOfSlaves = numberOfSlaves;
+			this.marketPairings = marketPairings;
+			this.mappedMarketPairings = [[]];
+			this.slaveIndexs = [];
+			for(let i=0; i<numberOfSlaves; i++){ // May need -1
+				this.slaveIndexs[i] = 0 //Initialize all of the indexes at 0
+				this.mappedMarketPairings[i] = []; //Initialize these as empty arrays to work with later.
+				//console.log(i);
+			}
+			
+			for(let i=0; i<marketPairings.length; i++){ //Loop through all pairings.
+				let j =  i%numberOfSlaves; //Match our pairings to slaves work Ticket
+				//console.log(marketPairings[i]);
+				//console.log(j);
+				this.mappedMarketPairings[j].push(marketPairings[i]);
+			}
+			
 		}
 	
-	}
-	
-	static getWork(slaveNumber){
-		if(SatoshiTradeScout.slaveIndexs[slaveNumber] === SatoshiTradeScout.mappedMarketPairings[slaveNumber].length){
-			SatoshiTradeScout.slaveIndexs[slaveNumber] = 0;
-			return SatoshiTradeScout.mappedMarketPairings[slaveNumber][SatoshiTradeScout.slaveIndexs[slaveNumber]++]; // I think it errroring here!!!!!
+	getWork(slaveNumber){
+		if(this.slaveIndexs[slaveNumber] === this.mappedMarketPairings[slaveNumber].length){
+			this.slaveIndexs[slaveNumber] = 0;
+			return this.mappedMarketPairings[slaveNumber][this.slaveIndexs[slaveNumber]++]; // I think it errroring here!!!!!
 		}
-		return SatoshiTradeScout.mappedMarketPairings[slaveNumber][SatoshiTradeScout.slaveIndexs[slaveNumber]++]; //Increment index by 1 and send off work.
+		return this.mappedMarketPairings[slaveNumber][this.slaveIndexs[slaveNumber]++]; //Increment index by 1 and send off work.
 	}
 }
