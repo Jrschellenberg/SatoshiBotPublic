@@ -14,5 +14,25 @@ export default class TradeMiddleware {
 		return this.marketFee;
 	}
 	
+	isUSDT(param){
+		return param.toLowerCase() === 'usdt';
+	}
+	isBTC(param){
+		return param.toLowerCase() === 'btc';
+	}
+	isLTC(param){
+		return param.toLowerCase() === 'ltc';
+	}
+	isDOGE(param){
+		return param.toLowerCase() === 'doge';
+	}
+	isBCH(param){
+		return param.toLowerCase() === 'bch';
+	}
+	isNZDT(param){
+		return param.toLowerCase() === 'nzdt';
+	}
+	
+	
 	
 }

@@ -29,8 +29,6 @@ export class CryptopiaMiddleware extends TradeMiddleware {
 						}
 					]
 				};
-				
-				//console.log(marketObject);
 				return marketObject;
 			}
 			else {
@@ -40,6 +38,34 @@ export class CryptopiaMiddleware extends TradeMiddleware {
 			catch(err){
 			console.log(err);
 			}
+	}
+	
+	checkMinimumTrades(markets, currencies ){
+		let marketOneTrade = markets[0].rate * markets[0].quantity,
+			marketTwoTrade = markets[1].rate * markets[1].quantity,
+			marketThreeTrade = markets[2].rate * markets[2].quantity,
+		currencyOne = currencies[0],
+		currencyTwo = currencies[1],
+		currencyThree = currencies[2];
+		let passedChecks = [false, false];
+		
+		if(super.isUSDT(currencyThree) || super.isNZDT(currencyThree)){
+			if(marketOneTrade > 1.00 && marketTwoTrade > 1.00){
+				passedChecks[0] = true;
+			}
+		}
+		else if(super.isBTC(currencyTwo)){
+			if(marketThreeTrade > 0.0005){
+				passedChecks[1] = true;
+			}
+		}
+		else if(super.isUSDT(currencyTwo) || super.isNZDT(currencyTwo)){
+			if(marketThreeTrade > 1.00){
+				passedChecks[1] = true;
+			}
+		}
+		
+		
 	}
 	
 }

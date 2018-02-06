@@ -100,6 +100,8 @@ export default class TradeSeeker{
 				marketThree = markets.three.sell[0];
 				//marketFour = markets.four.buy[0];
 			
+			let newMarkets = [marketOne, marketTwo, marketThree];
+			
 			try{
 				
 				
@@ -125,8 +127,9 @@ export default class TradeSeeker{
 				console.log(`Amount Earned is ${amountEarned}`);
 				//console.log(this.pair1+this.pair2+this.pair3+this.pair4);
 				
-				if(amountEarned > amountSpent){ //Is a profitable trade...
+				if(amountEarned > amountSpent){ //Is a profitable trade... // Or i can throw it up here
 					let profit = amountEarned - amountSpent;
+					
 					console.log("This trade is profitable");
 					console.log(`Profit earned is ${profit}`);
 					//this.calculateProfits(markets, profit);
@@ -146,17 +149,10 @@ export default class TradeSeeker{
 					
 				}
 				else{
-					// if(amountEarned <0){
-					// 	console.log("BELOW 0!");
-					// 	this.profitLog.info({information: markets, market1: satoshiTrader.pair1,
-					// 		market2: satoshiTrader.pair2, market3: satoshiTrader.pair3, market4: satoshiTrader.pair4}, `We Found a profitable Trade! Yay!`);
-					// }
 					console.log('nothing, lets try again!');
-				//	console.log("This trade is not profitable");
 				}
 			}
 			catch(err){
-				//console.log(err);
 				this.errorLog.error({pair: trader.currencies});
 			}
 		}
@@ -170,9 +166,8 @@ export default class TradeSeeker{
 			let tradeListingOne = new TradeListing(markets.one.buy[0], trader.pair1, "buy");
 			let tradeListingTwo = new TradeListing(markets.two.sell[0], trader.pair2, "sell");
 			let tradeListingThree = new TradeListing(markets.three.sell[0], trader.pair3, "sell");
-//			let tradeListingFour = new TradeListing(markets.four.buy[0], trader.pair4, "buy");
 			
-			trader.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, tradeListingFour, trader.middleware);
+			trader.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, trader.middleware);
 			console.log("ARe we getting TO HERE??!");
 			
 			let profitTrade = trader.potentialTrade.lowestPrice * profit; // ?? this is questionable..
@@ -184,7 +179,6 @@ export default class TradeSeeker{
 				market1: trader.pair1,
 				market2: trader.pair2,
 				market3: trader.pair3,
-//				market4: trader.pair4,
 				profit: profit,
 				profitFromTrade: profitTrade,
 				lowestPrice: trader.potentialTrade.lowestPrice,
@@ -210,6 +204,29 @@ export default class TradeSeeker{
 	precisionRound(num, precision){
 		let factor = Math.pow(10, precision);
 		return Math.round(num * factor)/factor;
+	}
+	
+	
+	/*
+	needs to go in middlewares....
+	 */
+	checkMinimumTrades(market1, market2, market3){
+		let confirmedTrade = []
+	
+		if(this.currencies[2].toLowerCase() === 'usdt'){
+			if(market1.rate * market1.quantity > 1.00){
+				confirmedTrade[0] = true;
+			}
+		}
+		else if(this.currencies[2].toLowerCase() === 'btc'){
+			if(market1.rate * market1.quantity > 0.0005){
+				confirmedTrade[0] = true;
+			}
+		}
+				
+		
+		
+		
 	}
 	
 	
