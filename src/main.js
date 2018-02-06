@@ -1,10 +1,35 @@
 require("babel-polyfill"); //This should go first
 let bunyan = require('bunyan');
-import SatoshiTrader from "./controller/satoshiTrader";
-import SatoshiTradeScout from "./controller/SatoshiTradeScout";
-import {marketPairings} from "./markets";
+import TradeSeeker from "./controller/tradeSeeker";
+import TradeScout from "./controller/tradeScout";
+import {SatoshiMiddleware, TradeSatoshiCurrencies} from "./middleware/satoshiMiddleware";
+import {CryptopiaMiddleware, CryptopiaCurrencies} from "./middleware/cryptopiaMiddleware";
 
-let NUMBER_SLAVES = 12;
+import {satoshiMarkets} from "./satoshiMarkets";
+import {cryptopiaMarkets} from "./cryptopiaMarkets";
+import {API_CREDENTIALS, CRYPTOPIA_CREDENTIALS} from "./service/secret";
+
+const tradeSatoshiService = require('./service/satoshiAPI')();
+const tradeSatoshiOptions = {
+	API_KEY: API_CREDENTIALS.KEY,
+	API_SECRET: API_CREDENTIALS.SECRET
+};
+tradeSatoshiService.setOptions(tradeSatoshiOptions);
+
+const cryptopiaService = require('./service/cryptopiaAPI')();
+const cryptopiaOptions = {
+	API_KEY: CRYPTOPIA_CREDENTIALS.KEY,
+	API_SECRET: CRYPTOPIA_CREDENTIALS.SECRET
+};
+cryptopiaService.setOptions(cryptopiaOptions);
+
+const TRADE_SATOSHI_TRADE_FEE = 0.002;
+const CRYPTOPIA_TRADE_FEE = 0.002;
+const API_TIMEOUT = 800;
+
+
+
+let NUMBER_SLAVES = 5;
 
 let profitLog = bunyan.createLogger({
 	name: "myapp",
@@ -26,7 +51,7 @@ let errorLog = bunyan.createLogger({
 });
 
 (async function () {
-	await  SatoshiTrader.setBalances();
+	await  TradeSatoshiCurrencies.setBalances(tradeSatoshiService);
 	// let balance = await SatoshiTrader.getBalances()
 	// console.log(balance);
 	// console.log(marketPairings.length);
@@ -46,9 +71,19 @@ let errorLog = bunyan.createLogger({
 	// 	["DOGE", "BTC", "GRLC"]];
 	
 //Initialize our TradeScout
-	 await SatoshiTradeScout.createInstance(NUMBER_SLAVES, marketPairings);	
+	
+	
+	
+	 let satoshiTradeScout = new TradeScout(NUMBER_SLAVES, satoshiMarkets);
+	
+	 let cryptopiaTradeScout = new TradeScout(NUMBER_SLAVES, cryptopiaMarkets);
+	
 	for(let i=0; i<NUMBER_SLAVES; i++){
-		new SatoshiTrader(SatoshiTradeScout.getWork(i), profitLog, errorLog, i);
+		new TradeSeeker(profitLog, errorLog, i, satoshiTradeScout,
+			new SatoshiMiddleware(TRADE_SATOSHI_TRADE_FEE, tradeSatoshiService,API_TIMEOUT ));
+		
+		new TradeSeeker(profitLog, errorLog, i, cryptopiaTradeScout,
+			new CryptopiaMiddleware(CRYPTOPIA_TRADE_FEE, cryptopiaService,API_TIMEOUT ));
 	}
 })();
 
