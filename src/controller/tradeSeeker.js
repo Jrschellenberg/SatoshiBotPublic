@@ -155,7 +155,7 @@ export default class TradeSeeker{
 			trader.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, tradeListingFour, trader.middleware);
 			console.log("ARe we getting TO HERE??!");
 			
-			let profitTrade = trader.potentialTrade.lowestPrice * profit;
+			let profitTrade = trader.potentialTrade.lowestPrice * profit; // ?? this is questionable..
 			
 			console.log("getting here? on profit trade?");
 			

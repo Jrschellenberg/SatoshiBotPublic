@@ -94,8 +94,8 @@ function isMainMarket(i, j, arr, market){
 		//console.log(arr[i]);
 		return true;
 	}
-	else if((market.toLowerCase() === 'cryptopia')  && (arr[i].toLowerCase() === "btc" || arr[i].toLowerCase() ==="ltc" || arr[i].toLowerCase() ==="doge" || arr[i].toLowerCase() ==="nzdt" )
-	&& (arr[j].toLowerCase() ==="btc" || arr[j].toLowerCase() ==="ltc" || arr[j].toLowerCase() ==="doge" || arr[j].toLowerCase() ==="nzdt")){
+	else if((market.toLowerCase() === 'cryptopia')  && (arr[i].toLowerCase() === "btc" || arr[i].toLowerCase() ==="nzdt" )
+	&& (arr[j].toLowerCase() ==="btc"  || arr[j].toLowerCase() ==="nzdt")){
 		return true;
 	}
 	return false;
