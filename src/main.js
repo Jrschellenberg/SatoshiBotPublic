@@ -29,7 +29,7 @@ const API_TIMEOUT = 800;
 
 
 
-let NUMBER_SLAVES = 5;
+let NUMBER_SLAVES = 1;
 
 let profitLog = bunyan.createLogger({
 	name: "myapp",
@@ -79,8 +79,8 @@ let errorLog = bunyan.createLogger({
 	 let cryptopiaTradeScout = new TradeScout(NUMBER_SLAVES, cryptopiaMarkets);
 	
 	for(let i=0; i<NUMBER_SLAVES; i++){
-		new TradeSeeker(profitLog, errorLog, i, satoshiTradeScout,
-			new SatoshiMiddleware(TRADE_SATOSHI_TRADE_FEE, tradeSatoshiService,API_TIMEOUT ));
+		// new TradeSeeker(profitLog, errorLog, i, satoshiTradeScout,
+		// 	new SatoshiMiddleware(TRADE_SATOSHI_TRADE_FEE, tradeSatoshiService,API_TIMEOUT ));
 		
 		new TradeSeeker(profitLog, errorLog, i, cryptopiaTradeScout,
 			new CryptopiaMiddleware(CRYPTOPIA_TRADE_FEE, cryptopiaService,API_TIMEOUT ));

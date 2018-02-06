@@ -36,6 +36,7 @@ let targetMarketsSatoshi = [
 
 
 let targetMarketsCryptopia = [
+	'USDT',
 	'BTC',
 	'ETH',
 	'ETN',
@@ -71,7 +72,7 @@ function scrapeMarkets(array, filename, market) {
 			for (let k = 0; k < currenciesArray.length; k++) {
 				//console.log("got in her?");
 				//console.log(k);
-				if(isMainMarket(i, j, currenciesArray, market) && isNoRepeat(i,j,k,currenciesArray)) {
+				if(isMainMarket(i, j, k, currenciesArray, market) && isNoRepeat(i,j,k,currenciesArray)) {
 					//console.log(i);
 					writeData += '["' + currenciesArray[i] + '", "' + currenciesArray[j] + '", "' + currenciesArray[k] + '"],\n';
 				}
@@ -87,15 +88,16 @@ function scrapeMarkets(array, filename, market) {
 	fs.writeFileSync('./src/'+filename+'.js', writeData);
 	
 }
-function isMainMarket(i, j, arr, market){
+function isMainMarket(i, j, k, arr, market){
 	if((market.toLowerCase() === 'satoshi') &&
 		(arr[i].toLowerCase() === "btc" || arr[i].toLowerCase() ==="ltc" || arr[i].toLowerCase() ==="doge" || arr[i].toLowerCase() ==="bch")
 	&& (arr[j].toLowerCase() ==="btc" || arr[j].toLowerCase() ==="ltc" || arr[j].toLowerCase() ==="doge" || arr[j].toLowerCase() ==="bch")){
 		//console.log(arr[i]);
 		return true;
 	}
-	else if((market.toLowerCase() === 'cryptopia')  && (arr[i].toLowerCase() === "btc" || arr[i].toLowerCase() ==="nzdt" )
-	&& (arr[j].toLowerCase() ==="btc"  || arr[j].toLowerCase() ==="nzdt")){
+	else if((market.toLowerCase() === 'cryptopia')  && 
+		(arr[j].toLowerCase() ==="btc"  || arr[j].toLowerCase() ==="nzdt")
+		&& (arr[k].toLowerCase() === "usdt")){
 		return true;
 	}
 	return false;

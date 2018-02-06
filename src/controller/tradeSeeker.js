@@ -23,7 +23,6 @@ export default class TradeSeeker{
 		this.pair1 = null;
 		this.pair2 = null;
 		this.pair3 = null;
-		this.pair4 = null;
 		this.potentialTrade = null;
 		this.currencies = tradeScout.getWork(workerNumber);
 		this.assignMarketPairs(this.currencies);
@@ -31,10 +30,10 @@ export default class TradeSeeker{
 	}
 	
 	assignMarketPairs(marketPairings){
-		this.pair1 = marketPairings[0]+'_USDT';
-		this.pair2 = marketPairings[1]+'_USDT';
-		this.pair3 = marketPairings[2]+'_'+marketPairings[1];
-		this.pair4 = marketPairings[2]+'_'+marketPairings[0];
+		this.pair1 = marketPairings[0]+'_'+marketPairings[2];
+		this.pair2 = marketPairings[1]+'_'+marketPairings[2];
+		this.pair3 = marketPairings[0]+'_'+marketPairings[1];
+
 	}
 	
 	process(){
@@ -81,10 +80,10 @@ export default class TradeSeeker{
 				const markets = await	trader.middleware.getMarketListing({market: trader.pair3, depth: 1});  // GRLC_BTC
 				callback(null, markets);
 			},
-			four: async  (callback) =>{
-				const markets = await	trader.middleware.getMarketListing({market: trader.pair4, depth: 1});  //GRLC_LTC
-				callback(null, markets);
-			},
+			// four: async  (callback) =>{
+			// 	const markets = await	trader.middleware.getMarketListing({market: trader.pair4, depth: 1});  //GRLC_LTC
+			// 	callback(null, markets);
+			// },
 		}, (err, markets) => {
 			if(err){
 				next();
@@ -95,21 +94,28 @@ export default class TradeSeeker{
 	
 	isProfitableTrade(next, markets){
 		let trader = this;
-		if(markets.one && markets.two && markets.three && markets.four){ // Make sure we actually have data
+		if(markets.one && markets.two && markets.three){ // Make sure we actually have data
 			let marketOne = markets.one.buy[0],
 				marketTwo = markets.two.sell[0],
-				marketThree = markets.three.sell[0],
-				marketFour = markets.four.buy[0];
+				marketThree = markets.three.sell[0];
+				//marketFour = markets.four.buy[0];
 			
 			try{
-				let pair1Price = marketOne.rate;                       // Buying price USD
-				let amountEarned = marketFour.rate * pair1Price;        //Buying price USD
+				
+				
+				let amountEarned = marketOne.rate;                       // Buying price USD
+				let tradeFee = this.precisionRound((amountEarned * trader.middleware.getMarketFee()), 8);
+				amountEarned -=  tradeFee; // Amount earned per 1 of each coin.
+				
 				let pair2Price = marketTwo.rate;                        //Selling price USD
+				tradeFee = this.precisionRound((pair2Price*trader.middleware.getMarketFee()), 8);
+				pair2Price += tradeFee;
+				
 				let amountSpent = marketThree.rate * pair2Price;        //Selling price USD
-				let tradeFee = amountSpent * trader.middleware.getMarketFee();
-				amountSpent += tradeFee;
-				tradeFee = amountEarned * trader.middleware.getMarketFee();
-				amountEarned -=  tradeFee;
+				
+				tradeFee = this.precisionRound(amountSpent *trader.middleware.getMarketFee(),8); //Since 2 trades, 2 times fees.
+				amountSpent += tradeFee; // Add on the Fee. This is the 
+				
 				
 				
 				/*
@@ -123,7 +129,21 @@ export default class TradeSeeker{
 					let profit = amountEarned - amountSpent;
 					console.log("This trade is profitable");
 					console.log(`Profit earned is ${profit}`);
-					this.calculateProfits(markets, profit);
+					//this.calculateProfits(markets, profit);
+					this.profitLog.info({
+						information: markets,
+						market1: trader.pair1,
+						market2: trader.pair2,
+						market3: trader.pair3,
+//				market4: trader.pair4,
+						profit: profit,
+						//profitFromTrade: profitTrade,
+					//	lowestPrice: trader.potentialTrade.lowestPrice,
+					//	trade: trader.potentialTrade
+					}, `We Found a profitable Trade! Yay!`);
+					
+					
+					
 				}
 				else{
 					// if(amountEarned <0){
@@ -150,7 +170,7 @@ export default class TradeSeeker{
 			let tradeListingOne = new TradeListing(markets.one.buy[0], trader.pair1, "buy");
 			let tradeListingTwo = new TradeListing(markets.two.sell[0], trader.pair2, "sell");
 			let tradeListingThree = new TradeListing(markets.three.sell[0], trader.pair3, "sell");
-			let tradeListingFour = new TradeListing(markets.four.buy[0], trader.pair4, "buy");
+//			let tradeListingFour = new TradeListing(markets.four.buy[0], trader.pair4, "buy");
 			
 			trader.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, tradeListingFour, trader.middleware);
 			console.log("ARe we getting TO HERE??!");
@@ -164,7 +184,7 @@ export default class TradeSeeker{
 				market1: trader.pair1,
 				market2: trader.pair2,
 				market3: trader.pair3,
-				market4: trader.pair4,
+//				market4: trader.pair4,
 				profit: profit,
 				profitFromTrade: profitTrade,
 				lowestPrice: trader.potentialTrade.lowestPrice,
@@ -186,4 +206,11 @@ export default class TradeSeeker{
 		}
 		console.log("Sending Trade to Master worker...");
 	}
+	
+	precisionRound(num, precision){
+		let factor = Math.pow(10, precision);
+		return Math.round(num * factor)/factor;
+	}
+	
+	
 }
