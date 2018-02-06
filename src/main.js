@@ -29,7 +29,7 @@ const API_TIMEOUT = 800;
 
 
 
-let NUMBER_SLAVES = 1;
+let NUMBER_SLAVES = 10;
 
 let profitLog = bunyan.createLogger({
 	name: "myapp",
