@@ -52,13 +52,17 @@ export class CryptopiaMiddleware extends TradeMiddleware {
 		
 		console.log(`currencyThree is ${currencyThree}`);
 		console.log(`currencyTwo is ${currencyTwo}`);
-		
 		console.log(`marketOneTrade is ${marketOneTrade}`);
 		console.log(`marketTwoTrade is ${marketTwoTrade}`);
 		console.log(`marketThreeTrade is ${marketThreeTrade}`);
 		
 		if(super.isUSDT(currencyThree) || super.isNZDT(currencyThree)){
 			if(marketOneTrade > 1.00 && marketTwoTrade > 1.00){
+				passedChecks[0] = true;
+			}
+		}
+		if(super.isBTC(currencyThree)){
+			if(marketOneTrade > 0.0005 && marketTwoTrade > 0.0005){
 				passedChecks[0] = true;
 			}
 		}
@@ -72,11 +76,8 @@ export class CryptopiaMiddleware extends TradeMiddleware {
 				passedChecks[1] = true;
 			}
 		}
-		
 		console.log(`passed checks are ${passedChecks[0]} as well as ${passedChecks[1]}`);
-		
 		return passedChecks[0] && passedChecks[1];
-		
 		
 	}
 	

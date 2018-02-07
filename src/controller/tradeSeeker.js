@@ -99,12 +99,9 @@ export default class TradeSeeker{
 			let marketOne = markets.one.buy[0],
 				marketTwo = markets.two.sell[0],
 				marketThree = markets.three.sell[0];
-			
 			let newMarkets = [marketOne, marketTwo, marketThree];
 			
 			try{
-				
-				
 				let amountEarned = marketOne.rate;                       // Buying price USD
 				let tradeFee = this.precisionRound((amountEarned * trader.middleware.getMarketFee()), 8);
 				amountEarned -=  tradeFee; // Amount earned per 1 of each coin.
@@ -118,23 +115,17 @@ export default class TradeSeeker{
 				tradeFee = this.precisionRound(amountSpent *trader.middleware.getMarketFee(),8); //Since 2 trades, 2 times fees.
 				amountSpent += tradeFee; // Add on the Fee. This is the 
 				
-				
-				
 				/*
 				Satoshi API is retarded, need to add a check to do a trade in reverse if it doesn't go through >.> sigh
 				 */
-				//console.log(`Amount spent is ${amountSpent}`);
-				//console.log(`Amount Earned is ${amountEarned}`);
-				//console.log(this.pair1+this.pair2+this.pair3+this.pair4);
 				
 				if(amountEarned > amountSpent){ //Is a profitable trade... // Or i can throw it up here
-					let profit = amountEarned - amountSpent;
+					//let profit = amountEarned - amountSpent;
 					
 					console.log("This trade is profitable");
-					//console.log(`Profit earned is ${profit}`);
 					let passMinimumTrade = this.middleware.checkMinimumTrades(newMarkets, this.currencies);
 					
-					//this.calculateProfits(markets, profit);
+					this.calculateProfits(newMarkets);
 					this.profitLog.info({
 						information: markets,
 						market1: trader.pair1,
@@ -147,8 +138,6 @@ export default class TradeSeeker{
 					//	lowestPrice: trader.potentialTrade.lowestPrice,
 					//	trade: trader.potentialTrade
 					}, `We Found a profitable Trade! Yay!`);
-					
-					
 					
 				}
 				else{
@@ -166,9 +155,9 @@ export default class TradeSeeker{
 		console.log("inside Calculate Profits function.");
 		try {
 			let trader = this;
-			let tradeListingOne = new TradeListing(markets.one.buy[0], trader.pair1, "buy");
-			let tradeListingTwo = new TradeListing(markets.two.sell[0], trader.pair2, "sell");
-			let tradeListingThree = new TradeListing(markets.three.sell[0], trader.pair3, "sell");
+			let tradeListingOne = new TradeListing(markets[0], trader.pair1, "buy");
+			let tradeListingTwo = new TradeListing(markets[1], trader.pair2, "sell");
+			let tradeListingThree = new TradeListing(markets[2], trader.pair3, "sell");
 			
 			trader.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, trader.middleware);
 			console.log("ARe we getting TO HERE??!");
@@ -208,29 +197,4 @@ export default class TradeSeeker{
 		let factor = Math.pow(10, precision);
 		return Math.round(num * factor)/factor;
 	}
-	
-	
-	/*
-	needs to go in middlewares....
-	 */
-	checkMinimumTrades(market1, market2, market3){
-		let confirmedTrade = []
-	
-		if(this.currencies[2].toLowerCase() === 'usdt'){
-			if(market1.rate * market1.quantity > 1.00){
-				confirmedTrade[0] = true;
-			}
-		}
-		else if(this.currencies[2].toLowerCase() === 'btc'){
-			if(market1.rate * market1.quantity > 0.0005){
-				confirmedTrade[0] = true;
-			}
-		}
-				
-		
-		
-		
-	}
-	
-	
 }

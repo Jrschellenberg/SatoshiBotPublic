@@ -1,7 +1,7 @@
 
 
 export default class Trade {
-	constructor(tradeListing1, tradeListing2, tradeListing3, tradeListing4, currencies,
+	constructor(tradeListing1, tradeListing2, tradeListing3, currencies,
 	            middleware){
 		this.trade1 = tradeListing1.tradeListing;
 		this.trade1["usdRateOrder"] = tradeListing1.tradeListing.quantity * tradeListing1.tradeListing.rate;
@@ -13,40 +13,50 @@ export default class Trade {
 		this.trade3 = tradeListing3.tradeListing;
 		this.trade3["usdRateOrder"] = tradeListing3.tradeListing.quantity * tradeListing3.tradeListing.rate * tradeListing2.tradeListing.rate;
 		
-		this.trade4 = tradeListing4.tradeListing;
-		this.trade4["usdRateOrder"] = tradeListing4.tradeListing.quantity * tradeListing4.tradeListing.rate * tradeListing1.tradeListing.rate;
-		
-		this.lowestPrice = Math.min(this.trade1.usdRateOrder, this.trade2.usdRateOrder, this.trade3.usdRateOrder, this.trade4.usdRateOrder);
+		this.lowestPrice = Math.min(this.trade1.usdRateOrder, this.trade2.usdRateOrder, this.trade3.usdRateOrder);
 		this.currencies = currencies;
 		//this.service = middleware.service;
 		
-		this.trade1.quantity = (this.lowestPrice / this.trade1.usdRateOrder) * this.trade1.quantity;
-		this.trade2.quantity = (this.lowestPrice / this.trade2.usdRateOrder) * this.trade2.quantity;
-		
-		this.trade3.quantity = (this.lowestPrice / this.trade3.usdRateOrder) * this.trade3.quantity;
-		this.trade4.quantity = (this.lowestPrice / this.trade4.usdRateOrder) * this.trade4.quantity;
-		
-		this.trade1.quantity = Math.floor((this.trade1.quantity * 100000000))/100000000;
-		this.trade2.quantity = Math.floor((this.trade2.quantity * 100000000))/100000000;
-		
-		this.trade3.quantity = Math.floor((this.trade3.quantity * 100000000))/100000000;
-		this.trade4.quantity = Math.floor((this.trade4.quantity * 100000000))/100000000;
+		// this.trade1.quantity = (this.lowestPrice / this.trade1.usdRateOrder) * this.trade1.quantity;
+		// this.trade2.quantity = (this.lowestPrice / this.trade2.usdRateOrder) * this.trade2.quantity;
+		//
+		// this.trade3.quantity = (this.lowestPrice / this.trade3.usdRateOrder) * this.trade3.quantity;
+		//
+		// this.trade1.quantity = Math.floor((this.trade1.quantity * 100000000))/100000000;
+		// this.trade2.quantity = Math.floor((this.trade2.quantity * 100000000))/100000000;
+		//
+		// this.trade3.quantity = Math.floor((this.trade3.quantity * 100000000))/100000000;
 		
 		
-		this.trade1["usdRateTrade"] = tradeListing1.tradeListing.quantity * tradeListing1.tradeListing.rate;
-		this.trade2["usdRateTrade"] = tradeListing2.tradeListing.quantity * tradeListing2.tradeListing.rate;
-		this.trade3["usdRateTrade"] = tradeListing3.tradeListing.quantity * tradeListing3.tradeListing.rate * tradeListing2.tradeListing.rate;
-		this.trade4["usdRateTrade"] = tradeListing4.tradeListing.quantity * tradeListing4.tradeListing.rate * tradeListing1.tradeListing.rate;
+		// this.trade1["usdRateTrade"] = tradeListing1.tradeListing.quantity * tradeListing1.tradeListing.rate;
+		// this.trade2["usdRateTrade"] = tradeListing2.tradeListing.quantity * tradeListing2.tradeListing.rate;
+		// this.trade3["usdRateTrade"] = tradeListing3.tradeListing.quantity * tradeListing3.tradeListing.rate * tradeListing2.tradeListing.rate;
 		
 		this.trade1["usdRateTrade"] = this.precisionRound(this.trade1["usdRateTrade"], 8);
 		this.trade2["usdRateTrade"] = this.precisionRound(this.trade2["usdRateTrade"], 8);
 		this.trade3["usdRateTrade"] = this.precisionRound(this.trade3["usdRateTrade"], 8);
-		this.trade4["usdRateTrade"] = this.precisionRound(this.trade4["usdRateTrade"], 8);
 		
 	}
+	
+	calculateTrades(){
+		if(this.lowestPrice === this.trade1.usdRateOrder){
+			//Trade 1 is the limiting reagent
+		}
+		else if(this.lowestPrice === this.trade2.usdRateOrder){
+			//Trade 2 is the limiting reagent.
+		}
+		else if(this.lowestPrice === this.trade3.usdRateOrder){
+			//Trade 3 is the limiting reagent
+		}
+		else{
+			//AN error occurred..
+			console.log("An error occured while trying to determine the starting trade..")
+		}
+	}
+	
 		
 	isBelowMinimum(){
-		if(this.trade1.usdRateTrade < 0.05 || this.trade2.usdRateTrade < 0.05 || this.trade3.usdRateTrade < 0.05 || this.trade4.usdRateTrade < 0.05){
+		if(this.trade1.usdRateTrade < 0.05 || this.trade2.usdRateTrade < 0.05 || this.trade3.usdRateTrade < 0.05){
 			return true;
 		}
 		return false;
@@ -55,6 +65,25 @@ export default class Trade {
 		let factor = Math.pow(10, precision);
 		return Math.round(num * factor)/factor;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	async isAccountEmpty(){
 		let balance = await this.service.getBalances();
