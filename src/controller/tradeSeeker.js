@@ -30,6 +30,7 @@ export default class TradeSeeker{
 	}
 	
 	assignMarketPairs(marketPairings){
+		this.currencies = marketPairings;
 		this.pair1 = marketPairings[0]+'_'+marketPairings[2];
 		this.pair2 = marketPairings[1]+'_'+marketPairings[2];
 		this.pair3 = marketPairings[0]+'_'+marketPairings[1];
