@@ -14,6 +14,7 @@ export default class TradeMiddleware {
 		return this.marketFee;
 	}
 	
+	
 	isUSDT(param){
 		return param.toLowerCase() === 'usdt';
 	}

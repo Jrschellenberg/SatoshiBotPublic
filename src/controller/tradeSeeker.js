@@ -98,7 +98,6 @@ export default class TradeSeeker{
 			let marketOne = markets.one.buy[0],
 				marketTwo = markets.two.sell[0],
 				marketThree = markets.three.sell[0];
-				//marketFour = markets.four.buy[0];
 			
 			let newMarkets = [marketOne, marketTwo, marketThree];
 			
@@ -123,15 +122,17 @@ export default class TradeSeeker{
 				/*
 				Satoshi API is retarded, need to add a check to do a trade in reverse if it doesn't go through >.> sigh
 				 */
-				console.log(`Amount spent is ${amountSpent}`);
-				console.log(`Amount Earned is ${amountEarned}`);
+				//console.log(`Amount spent is ${amountSpent}`);
+				//console.log(`Amount Earned is ${amountEarned}`);
 				//console.log(this.pair1+this.pair2+this.pair3+this.pair4);
 				
 				if(amountEarned > amountSpent){ //Is a profitable trade... // Or i can throw it up here
 					let profit = amountEarned - amountSpent;
 					
 					console.log("This trade is profitable");
-					console.log(`Profit earned is ${profit}`);
+					//console.log(`Profit earned is ${profit}`);
+					let passMinimumTrade = this.middleware.checkMinimumTrades(newMarkets, this.currencies);
+					
 					//this.calculateProfits(markets, profit);
 					this.profitLog.info({
 						information: markets,
@@ -140,6 +141,7 @@ export default class TradeSeeker{
 						market3: trader.pair3,
 //				market4: trader.pair4,
 						profit: profit,
+						passMinimums: passMinimumTrade,
 						//profitFromTrade: profitTrade,
 					//	lowestPrice: trader.potentialTrade.lowestPrice,
 					//	trade: trader.potentialTrade

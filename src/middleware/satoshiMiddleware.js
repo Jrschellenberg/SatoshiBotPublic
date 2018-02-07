@@ -10,6 +10,11 @@ export class SatoshiMiddleware extends TradeMiddleware {
 		 return market;		
 	}
 	
+	checkMinimumTrades(markets, currencies){
+		
+		
+	}
+	
 
 	
 
