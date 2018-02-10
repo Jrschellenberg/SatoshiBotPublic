@@ -41,7 +41,7 @@ export class CryptopiaMiddleware extends TradeMiddleware {
 	}
 	
 	checkMinimumTrades(markets, currencies ){
-		console.log("Got into check Minimum.");
+		//console.log("Got into check Minimum.");
 		let marketOneTrade = markets[0].rate * markets[0].quantity,
 			marketTwoTrade = markets[1].rate * markets[1].quantity,
 			marketThreeTrade = markets[2].rate * markets[2].quantity,
@@ -50,11 +50,11 @@ export class CryptopiaMiddleware extends TradeMiddleware {
 		currencyThree = currencies[2];
 		let passedChecks = [false, false];
 		
-		console.log(`currencyThree is ${currencyThree}`);
-		console.log(`currencyTwo is ${currencyTwo}`);
-		console.log(`marketOneTrade is ${marketOneTrade}`);
-		console.log(`marketTwoTrade is ${marketTwoTrade}`);
-		console.log(`marketThreeTrade is ${marketThreeTrade}`);
+		// console.log(`currencyThree is ${currencyThree}`);
+		// console.log(`currencyTwo is ${currencyTwo}`);
+		// console.log(`marketOneTrade is ${marketOneTrade}`);
+		// console.log(`marketTwoTrade is ${marketTwoTrade}`);
+		// console.log(`marketThreeTrade is ${marketThreeTrade}`);
 		
 		if(super.isUSDT(currencyThree) || super.isNZDT(currencyThree)){
 			if(marketOneTrade > 1.00 && marketTwoTrade > 1.00){
@@ -76,7 +76,7 @@ export class CryptopiaMiddleware extends TradeMiddleware {
 				passedChecks[1] = true;
 			}
 		}
-		console.log(`passed checks are ${passedChecks[0]} as well as ${passedChecks[1]}`);
+		//console.log(`passed checks are ${passedChecks[0]} as well as ${passedChecks[1]}`);
 		return passedChecks[0] && passedChecks[1];
 		
 	}

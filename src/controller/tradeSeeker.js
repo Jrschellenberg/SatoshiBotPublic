@@ -118,30 +118,31 @@ export default class TradeSeeker{
 				/*
 				Satoshi API is retarded, need to add a check to do a trade in reverse if it doesn't go through >.> sigh
 				 */
-				
-				// if(amountEarned > amountSpent){ //Is a profitable trade... // Or i can throw it up here
+				let passMinimumTrade = this.middleware.checkMinimumTrades(newMarkets, this.currencies);
+				if(amountEarned > amountSpent && passMinimumTrade){ //Is a profitable trade... // Or i can throw it up here
 					//let profit = amountEarned - amountSpent;
 					
 					console.log("This trade is profitable");
-					let passMinimumTrade = this.middleware.checkMinimumTrades(newMarkets, this.currencies);
+					
 					
 					this.calculateProfits(newMarkets, passMinimumTrade);
-					this.profitLog.info({
-						information: markets,
-						market1: trader.pair1,
-						market2: trader.pair2,
-						market3: trader.pair3,
-//				market4: trader.pair4,
-						passMinimums: passMinimumTrade,
-						//profitFromTrade: profitTrade,
-					//	lowestPrice: trader.potentialTrade.lowestPrice,
-					//	trade: trader.potentialTrade
-					}, `We Found a profitable Trade! Yay!`);
 					
-				// }
-				// else{
-				// 	console.log('nothing, lets try again!');
-				// }
+// 					this.profitLog.info({
+// 						information: markets,
+// 						market1: trader.pair1,
+// 						market2: trader.pair2,
+// 						market3: trader.pair3,
+// //				market4: trader.pair4,
+// 						passMinimums: passMinimumTrade,
+// 						//profitFromTrade: profitTrade,
+// 					//	lowestPrice: trader.potentialTrade.lowestPrice,
+// 					//	trade: trader.potentialTrade
+// 					}, `We Found a profitable Trade! Yay!`);
+					
+				}
+				else{
+					console.log('nothing, lets try again!');
+				}
 			}
 			catch(err){
 				this.errorLog.error({pair: trader.currencies});
