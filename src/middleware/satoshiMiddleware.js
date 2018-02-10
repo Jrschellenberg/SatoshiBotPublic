@@ -1,8 +1,8 @@
 import TradeMiddleware from './tradeMiddleware';
 
 export class SatoshiMiddleware extends TradeMiddleware {
-	constructor(marketFee, service, API_TIMEOUT){
-		super(marketFee, service, API_TIMEOUT);
+	constructor(marketListing, marketFee, service, API_TIMEOUT){
+		super(marketListing, marketFee, service, API_TIMEOUT);
 	}
 	
 	async getMarketListing(params){

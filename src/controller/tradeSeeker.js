@@ -1,6 +1,5 @@
 import async from 'async';
 
-import CryptopiaCurrencies from "../middleware/cryptopiaMiddleware";
 import TradeListing from "../model/tradeListing";
 import Trade from "../model/trade";
 
@@ -62,7 +61,6 @@ export default class TradeSeeker{
 		})();
 	}
 	
-	
 	/*
 	Function used to send out API Calls to the 3 currencies we are monitoring.
 	 */
@@ -80,11 +78,7 @@ export default class TradeSeeker{
 			three: async  (callback) =>{
 				const markets = await	trader.middleware.getMarketListing({market: trader.pair3, depth: 1});  // GRLC_BTC
 				callback(null, markets);
-			},
-			// four: async  (callback) =>{
-			// 	const markets = await	trader.middleware.getMarketListing({market: trader.pair4, depth: 1});  //GRLC_LTC
-			// 	callback(null, markets);
-			// },
+			}
 		}, (err, markets) => {
 			if(err){
 				next();
@@ -120,11 +114,7 @@ export default class TradeSeeker{
 				 */
 				let passMinimumTrade = this.middleware.checkMinimumTrades(newMarkets, this.currencies);
 				if(amountEarned > amountSpent && passMinimumTrade){ //Is a profitable trade... // Or i can throw it up here
-					//let profit = amountEarned - amountSpent;
-					
 					console.log("This trade is profitable");
-					
-					
 					this.calculateProfits(newMarkets, passMinimumTrade);
 					
 // 					this.profitLog.info({

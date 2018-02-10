@@ -49,7 +49,12 @@ let errorLog = bunyan.createLogger({
 });
 
 (async function () {
-	await  TradeSatoshiCurrencies.setBalances(tradeSatoshiService);
+	//await  TradeSatoshiCurrencies.setBalances(tradeSatoshiService);
+	let cryptopiaCurrencies = new CryptopiaCurrencies(cryptopiaService);
+	await cryptopiaCurrencies.setBalances();
+	let balance = await cryptopiaCurrencies.getBalances();
+	console.log(balance);
+	
 	// let balance = await SatoshiTrader.getBalances()
 	// console.log(balance);
 	// console.log(marketPairings.length);
@@ -72,17 +77,17 @@ let errorLog = bunyan.createLogger({
 	
 	
 	
-	 let satoshiTradeScout = new TradeScout(NUMBER_SLAVES, satoshiMarkets);
-	
-	 let cryptopiaTradeScout = new TradeScout(NUMBER_SLAVES, cryptopiaMarkets);
-	
-	for(let i=0; i<NUMBER_SLAVES; i++){
-		// new TradeSeeker(profitLog, errorLog, i, satoshiTradeScout,
-		// 	new SatoshiMiddleware(TRADE_SATOSHI_TRADE_FEE, tradeSatoshiService,API_TIMEOUT ));
-		
-		new TradeSeeker(profitLog, errorLog, i, cryptopiaTradeScout,
-			new CryptopiaMiddleware(CRYPTOPIA_TRADE_FEE, cryptopiaService,API_TIMEOUT ));
-	}
+	//  let satoshiTradeScout = new TradeScout(NUMBER_SLAVES, satoshiMarkets);
+	//
+	//  let cryptopiaTradeScout = new TradeScout(NUMBER_SLAVES, cryptopiaMarkets);
+	//
+	// for(let i=0; i<NUMBER_SLAVES; i++){
+	// 	// new TradeSeeker(profitLog, errorLog, i, satoshiTradeScout,
+	// 	// 	new SatoshiMiddleware('satoshi', TRADE_SATOSHI_TRADE_FEE, tradeSatoshiService,API_TIMEOUT ));
+	//	
+	// 	new TradeSeeker(profitLog, errorLog, i, cryptopiaTradeScout,
+	// 		new CryptopiaMiddleware('cryptopia', CRYPTOPIA_TRADE_FEE, cryptopiaService,API_TIMEOUT ));
+	// }
 })();
 
 

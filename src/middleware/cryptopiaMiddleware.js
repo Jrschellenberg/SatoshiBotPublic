@@ -1,8 +1,8 @@
 import TradeMiddleware from './tradeMiddleware';
 
 export class CryptopiaMiddleware extends TradeMiddleware {
-	constructor(marketFee, service, API_TIMEOUT){
-		super(marketFee, service, API_TIMEOUT);
+	constructor(marketListing, marketFee, service, API_TIMEOUT){
+		super(marketListing, marketFee, service, API_TIMEOUT);
 	}
 	
 	async getMarketListing(params){
@@ -10,7 +10,6 @@ export class CryptopiaMiddleware extends TradeMiddleware {
 			Market: params.market,
 			Count: params.depth
 		};
-		//console.log("hitting this?");
 		const market = await this.service.getMarketOrders(newParams);
 		try {
 			if (market.Buy) {
@@ -39,6 +38,8 @@ export class CryptopiaMiddleware extends TradeMiddleware {
 			console.log(err);
 			}
 	}
+	
+	
 	
 	checkMinimumTrades(markets, currencies ){
 		//console.log("Got into check Minimum.");
@@ -82,36 +83,42 @@ export class CryptopiaMiddleware extends TradeMiddleware {
 	}
 	
 }
-
+let instance = null;
 export class CryptopiaCurrencies {
-	static balance = {};
-	static profit = 0;
 	
-	static async getAccountBalance() {
-		return await CryptopiaCurrencies.balance;
+	constructor(service){
+		if(instance) return instance;
+		this.balance = {};
+		this.service = service;
+		instance = this;
 	}
 	
-	static async setAccountBalance(coins) {
+	async getAccountBalance() {
+		return await this.balance;
+	}
+	
+	async setAccountBalance(coins) {
 		for(let i=0; i<coins.length; i++){
-			if(coins[i].total != 0){
-				let key = coins[i].currency;
-				CryptopiaCurrencies.balance[key] = coins[i].total;
+			if(coins[i].Total !== 0){
+				let key = coins[i].Symbol;
+				this.balance[key] = {
+					coins: coins[i].Total,
+					status: coins[i].Status
+				};
 			}
 		}
 	}
-	static tallyProfitableTrade(amount){
-		CryptopiaCurrencies.profit += amount;
-	}
 	
-	static async getBalances(){
-		const balance = await CryptopiaCurrencies.getAccountBalance();
+	async getBalances(){
+		const balance = await this.getAccountBalance();
 		return balance;
 	}
 	
-	static async setBalances(service){
-		const getBalances = await service.getBalances();
+	async setBalances(){
+		const getBalances = await this.service.getBalance();
+		//console.log(getBalances);
 		console.log("we getting back over here?");
-		await CryptopiaCurrencies.setAccountBalance(getBalances);
+		await this.setAccountBalance(getBalances);
 	}
 	
 	
