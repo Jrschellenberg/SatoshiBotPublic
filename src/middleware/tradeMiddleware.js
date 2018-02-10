@@ -1,5 +1,7 @@
+const API_TIMEOUT = 800;
+
 export default class TradeMiddleware {
-	constructor(marketListing, marketFee, service, marketBalances,  API_TIMEOUT){
+	constructor(marketListing, marketFee, service, marketBalances){
 		if(new.target === TradeMiddleware){
 			throw new TypeError("Cannot construct the TradeMiddleware instances directly!");
 		}

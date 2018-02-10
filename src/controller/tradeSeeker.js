@@ -139,7 +139,7 @@ export default class TradeSeeker{
 			let tradeListingTwo = new TradeListing(markets[1], trader.pair2, "sell");
 			let tradeListingThree = new TradeListing(markets[2], trader.pair3, "sell");
 			
-			trader.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, trader.currencies,trader.middleware, trader.utilities);
+			trader.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, trader.currencies, trader.utilities, trader.middleware);
 			
 			this.profitLog.info({
 				information: markets,

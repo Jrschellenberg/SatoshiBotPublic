@@ -4,9 +4,7 @@ import TradeSeeker from "./controller/tradeSeeker";
 import TradeScout from "./controller/tradeScout";
 import {SatoshiMiddleware, TradeSatoshiCurrencies} from "./middleware/satoshiMiddleware";
 import {CryptopiaMiddleware, CryptopiaCurrencies} from "./middleware/cryptopiaMiddleware";
-
 import Utilities from './utilities';
-
 import {satoshiMarkets} from "./satoshiMarkets";
 import {cryptopiaMarkets} from "./cryptopiaMarkets";
 import {API_CREDENTIALS, CRYPTOPIA_CREDENTIALS} from "./service/secret";
@@ -24,10 +22,6 @@ const cryptopiaOptions = {
 	API_SECRET: CRYPTOPIA_CREDENTIALS.SECRET
 };
 cryptopiaService.setOptions(cryptopiaOptions);
-
-const TRADE_SATOSHI_TRADE_FEE = 0.002;
-const CRYPTOPIA_TRADE_FEE = 0.002;
-const API_TIMEOUT = 800;
 
 let NUMBER_SLAVES = 1;
 
@@ -61,19 +55,13 @@ let errorLog = bunyan.createLogger({
 	// console.log(balance);
 	// console.log(marketPairings.length);
 	
-	//Initializing Robots To Trade
-	//Entry Point into Program.
-	//Pick three currencies  to check, fourth will always be USDT ie LTC, BTC, GRLC
-	//Pairings are nFactorial 
-	
 	/*
 	Market pairings Documentation
 	@Param 1 = market to earn profit with.
 	@Param 2 = market to incure losses with
 	@Param 3 = Market to manipulate.
 	 */
-	// let marketPairings = [["BTC", "DOGE", "GRLC"],
-	// 	["DOGE", "BTC", "GRLC"]];
+
 	
 //Initialize our TradeScout
 	
@@ -85,10 +73,10 @@ let errorLog = bunyan.createLogger({
 
 	for(let i=0; i<NUMBER_SLAVES; i++){
 		// new TradeSeeker(profitLog, errorLog, i, satoshiTradeScout, utilities,
-		// 	new SatoshiMiddleware('satoshi', TRADE_SATOSHI_TRADE_FEE, tradeSatoshiService, API_TIMEOUT ));
+		// 	new SatoshiMiddleware('satoshi', TRADE_SATOSHI_TRADE_FEE, tradeSatoshiService ));
 
 		new TradeSeeker(profitLog, errorLog, i, cryptopiaTradeScout, utilities,
-			new CryptopiaMiddleware('cryptopia', CRYPTOPIA_TRADE_FEE, cryptopiaService, cryptopiaCurrencies,  API_TIMEOUT ));
+			new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies ));
 	}
 })();
 

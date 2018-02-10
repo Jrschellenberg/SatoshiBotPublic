@@ -1,8 +1,8 @@
 import TradeMiddleware from './tradeMiddleware';
-
+const CRYPTOPIA_TRADE_FEE = 0.002; 
 export class CryptopiaMiddleware extends TradeMiddleware {
-	constructor(marketListing, marketFee, service, marketBalances, API_TIMEOUT){
-		super(marketListing, marketFee, service, marketBalances, API_TIMEOUT);
+	constructor(marketListing, service, marketBalances){
+		super(marketListing, CRYPTOPIA_TRADE_FEE, service, marketBalances);
 	}
 	
 	async getMarketListing(params){

@@ -1,8 +1,8 @@
 import TradeMiddleware from './tradeMiddleware';
-
+const SATOSHI_TRADE_FEE = 0.002;
 export class SatoshiMiddleware extends TradeMiddleware {
-	constructor(marketListing, marketFee, service, API_TIMEOUT){
-		super(marketListing, marketFee, service, API_TIMEOUT);
+	constructor(marketListing, service, marketBalances){
+		super(marketListing, SATOSHI_TRADE_FEE, service, marketBalances);
 	}
 	
 	async getMarketListing(params){
@@ -12,13 +12,7 @@ export class SatoshiMiddleware extends TradeMiddleware {
 	
 	checkMinimumTrades(markets, currencies){
 		
-		
 	}
-	
-
-	
-
-	
 }
 
 export class TradeSatoshiCurrencies {
