@@ -3,7 +3,7 @@ import Utilities from '../src/utilities';
 const expect = require('chai').expect;
 
 
-describe('precisionRound', () => {
+describe('Utilities - PrecisionRound', () => {
 	let utilities = new Utilities();
 	
 	if('should return NaN if supplied with non integer arguments', ()=> {

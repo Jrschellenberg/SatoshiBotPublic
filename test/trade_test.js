@@ -1,12 +1,25 @@
 import Trade from "../src/model/trade";
 import TradeListing from "../src/model/tradeListing";
 import Utilities from "../src/utilities";
-import CryptopiaMiddleware from "../src/middleware/cryptopiaMiddleware";
+import {CryptopiaMiddleware, CryptopiaCurrencies} from "../src/middleware/cryptopiaMiddleware";
+import {API_CREDENTIALS, CRYPTOPIA_CREDENTIALS} from "../src/service/secret";
+
 
 const expect = require('chai').expect;
+const cryptopiaService = require('../src/service/cryptopiaAPI')();
+const cryptopiaOptions = {
+	API_KEY: CRYPTOPIA_CREDENTIALS.KEY,
+	API_SECRET: CRYPTOPIA_CREDENTIALS.SECRET
+};
+cryptopiaService.setOptions(cryptopiaOptions);
+
+let cryptopiaCurrencies = new CryptopiaCurrencies(cryptopiaService);
+
+
 
 let utilities = new Utilities();
-let middleware = new CryptopiaMiddleware
+let middleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies );
+let currencies = ['ETH', 'NZDT', 'USDT'];
 
 let market1 = {
 	quantity: 0.12971306,
@@ -19,15 +32,49 @@ let market2 = {
 let market3 = {
 	quantity: 0.04750243,
 	rate: 1118.87999281
-}
+};
 
 let tradeListing1 = new TradeListing(market1, "ETH_USDT", 'buy');
 let tradeListing2 = new TradeListing(market2, "NZDT_USDT", 'sell');
 let tradeListing3 = new TradeListing(market3, "ETH_NZDT", 'sell');
 
-let trade = new Trade(tradeListing1, tradeListing2, tradeListing3)
 
-describe('calculateProfitEarned', () => {
+
+describe('Trade - Constructor', () => {
+	let trade = new Trade(tradeListing1, tradeListing2, tradeListing3, currencies, utilities, middleware);
 	
+	it('should set values to expected values', () => {
+		expect(trade.completedTrade1.rate).to.be.equal(887.77332964);
+		expect(trade.completedTrade1.trade).to.be.equal('SELL');
+		expect(trade.completedTrade1.quantity).to.be.equal(0.04750243);
+		
+		expect(trade.completedTrade2.rate).to.be.equal(0.80385059);
+		expect(trade.completedTrade2.trade).to.be.equal('BUY');
+		expect(trade.completedTrade2.quantity).to.be.equal(53.25581758);
+		
+		expect(trade.completedTrade3.rate).to.be.equal(1118.87999281);
+		expect(trade.completedTrade3.trade).to.be.equal('BUY');
+		expect(trade.completedTrade3.quantity).to.be.equal(0.04750243);
+		
+		expect(trade.trade1).to.be.equal(tradeListing1.tradeListing);
+		expect(trade.trade2).to.be.equal(tradeListing2.tradeListing);
+		expect(trade.trade3).to.be.equal(tradeListing3.tradeListing);
+		
+		expect(trade.trade1.usdRateOrder).to.be.equal(trade.trade1.quantity * trade.trade1.rate);
+		expect(trade.trade2.usdRateOrder).to.be.equal(trade.trade2.quantity * trade.trade2.rate);
+		expect(trade.trade3.usdRateOrder).to.be.equal(trade.trade3.quantity * trade.trade3.rate * trade.trade2.rate);
+		
+		expect(trade.lowestPrice).to.be.equal(42.724271834068865);
+		
+		expect(trade.trade1.limitingReagent).to.be.false;
+		expect(trade.trade2.limitingReagent).to.be.false;
+		expect(trade.trade3.limitingReagent).to.be.true;
+		
+		expect(trade.currencies).to.be.equal(currencies);
+		expect(trade.middleware).to.be.equal(middleware);
+		expect(trade.utilities).to.be.equal(utilities);
+		
+		expect(trade.profit).to.be.equal('-0.80812126USDT');
+	});
 	
 });

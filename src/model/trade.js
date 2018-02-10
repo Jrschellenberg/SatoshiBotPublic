@@ -64,7 +64,7 @@ export default class Trade {
 		let amountSpent = this.calculateAmountSpent(this.completedTrade3.quantity, this.completedTrade3.rate, this.completedTrade2.rate, this.middleware.marketFee );
 		//let profitEarned = (this.completedTrade1.rate * this.completedTrade1.quantity) - ((this.completedTrade1.quantity * this.completedTrade1.rate) * this.middleware.marketFee);
 		//let amountSpent = (this.completedTrade3.quantity * this.completedTrade3.rate * this.completedTrade2.rate) + ((this.completedTrade3.quantity * this.completedTrade3.rate * this.completedTrade2.rate) * (2*this.middleware.marketFee));
-		return (profitEarned - amountSpent).toString() + currency;
+		return this.utilities.precisionRound((profitEarned - amountSpent), 8).toString() + currency;
 	}
 	
 	calculateProfitEarned(completedTrade1Rate, completedTrade1Quantity, marketFee){
@@ -95,7 +95,7 @@ export default class Trade {
 		return balance[this.currencies[1]] && balance[this.currencies[2]] && 
 			(balance[this.currencies[1]].coins >  this.completedTrade2.quantity ) && 
 			(balance[this.currencies[2]].coins > (this.completedTrade2.quantity * this.completedTrade2.rate));
-		//Need to have enough of quantity 2 for Trade 3's market, as well as have enough of quantity 2 * rate for trade 2's market..
+			//Need to have enough of quantity 2 for Trade 3's market, as well as have enough of quantity 2 * rate for trade 2's market..
 		
 }
 	
