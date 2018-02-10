@@ -13,7 +13,8 @@ function sleep(ms = 0) {
 //May need queue to handle collisions of events.
 export default class TradeSeeker{
 	constructor(profitLog, errorLog, workerNumber, tradeScout,
-	            middleWare){
+	            middleWare, utilities){
+		this.utilities = utilities;
 		this.middleware = middleWare;
 		this.tradeScout = tradeScout;
 		this.workerNumber = workerNumber;
@@ -97,16 +98,16 @@ export default class TradeSeeker{
 			
 			try{
 				let amountEarned = marketOne.rate;                       // Buying price USD
-				let tradeFee = this.precisionRound((amountEarned * trader.middleware.getMarketFee()), 8);
+				let tradeFee = trader.utilities.precisionRound((amountEarned * trader.middleware.getMarketFee()), 8);
 				amountEarned -=  tradeFee; // Amount earned per 1 of each coin.
 				
 				let pair2Price = marketTwo.rate;                        //Selling price USD
-				tradeFee = this.precisionRound((pair2Price*trader.middleware.getMarketFee()), 8);
+				tradeFee = trader.utilities.precisionRound((pair2Price*trader.middleware.getMarketFee()), 8);
 				pair2Price += tradeFee;
 				
 				let amountSpent = marketThree.rate * pair2Price;        //Selling price USD
 				
-				tradeFee = this.precisionRound(amountSpent *trader.middleware.getMarketFee(),8); //Since 2 trades, 2 times fees.
+				tradeFee = trader.utilities.precisionRound(amountSpent *trader.middleware.getMarketFee(),8); //Since 2 trades, 2 times fees.
 				amountSpent += tradeFee; // Add on the Fee. This is the 
 				
 				/*
@@ -116,18 +117,7 @@ export default class TradeSeeker{
 				//if(amountEarned > amountSpent && passMinimumTrade){ //Is a profitable trade... // Or i can throw it up here
 					console.log("This trade is profitable");
 					this.calculateProfits(newMarkets, passMinimumTrade);
-					
-// 					this.profitLog.info({
-// 						information: markets,
-// 						market1: trader.pair1,
-// 						market2: trader.pair2,
-// 						market3: trader.pair3,
-// //				market4: trader.pair4,
-// 						passMinimums: passMinimumTrade,
-// 						//profitFromTrade: profitTrade,
-// 					//	lowestPrice: trader.potentialTrade.lowestPrice,
-// 					//	trade: trader.potentialTrade
-// 					}, `We Found a profitable Trade! Yay!`);
+				
 					
 				// }
 				// else{
@@ -149,7 +139,7 @@ export default class TradeSeeker{
 			let tradeListingTwo = new TradeListing(markets[1], trader.pair2, "sell");
 			let tradeListingThree = new TradeListing(markets[2], trader.pair3, "sell");
 			
-			trader.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, trader.currencies,trader.middleware);
+			trader.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, trader.currencies,trader.middleware, trader.utilities);
 			
 			this.profitLog.info({
 				information: markets,
@@ -176,10 +166,5 @@ export default class TradeSeeker{
 		}
 		console.log("Sending Trade to Master worker...");
 		return;
-	}
-	
-	precisionRound(num, precision){
-		let factor = Math.pow(10, precision);
-		return Math.round(num * factor)/factor;
 	}
 }

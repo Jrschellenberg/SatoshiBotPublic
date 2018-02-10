@@ -5,6 +5,8 @@ import TradeScout from "./controller/tradeScout";
 import {SatoshiMiddleware, TradeSatoshiCurrencies} from "./middleware/satoshiMiddleware";
 import {CryptopiaMiddleware, CryptopiaCurrencies} from "./middleware/cryptopiaMiddleware";
 
+import Utilities from './utilities';
+
 import {satoshiMarkets} from "./satoshiMarkets";
 import {cryptopiaMarkets} from "./cryptopiaMarkets";
 import {API_CREDENTIALS, CRYPTOPIA_CREDENTIALS} from "./service/secret";
@@ -75,17 +77,17 @@ let errorLog = bunyan.createLogger({
 	
 //Initialize our TradeScout
 	
-	
+	const utilities = new Utilities();
 	
 	 let satoshiTradeScout = new TradeScout(NUMBER_SLAVES, satoshiMarkets);
 
 	 let cryptopiaTradeScout = new TradeScout(NUMBER_SLAVES, cryptopiaMarkets);
 
 	for(let i=0; i<NUMBER_SLAVES; i++){
-		// new TradeSeeker(profitLog, errorLog, i, satoshiTradeScout,
+		// new TradeSeeker(profitLog, errorLog, i, satoshiTradeScout, utilities,
 		// 	new SatoshiMiddleware('satoshi', TRADE_SATOSHI_TRADE_FEE, tradeSatoshiService, API_TIMEOUT ));
 
-		new TradeSeeker(profitLog, errorLog, i, cryptopiaTradeScout,
+		new TradeSeeker(profitLog, errorLog, i, cryptopiaTradeScout, utilities,
 			new CryptopiaMiddleware('cryptopia', CRYPTOPIA_TRADE_FEE, cryptopiaService, cryptopiaCurrencies,  API_TIMEOUT ));
 	}
 })();

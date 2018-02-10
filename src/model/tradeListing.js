@@ -7,7 +7,4 @@ export default class TradeListing {
 			rate: market.rate
 		}
 	}
-	
-	
-	
 }
