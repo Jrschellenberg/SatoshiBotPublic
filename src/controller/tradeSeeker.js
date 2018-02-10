@@ -119,30 +119,29 @@ export default class TradeSeeker{
 				Satoshi API is retarded, need to add a check to do a trade in reverse if it doesn't go through >.> sigh
 				 */
 				
-				if(amountEarned > amountSpent){ //Is a profitable trade... // Or i can throw it up here
+				//if(amountEarned > amountSpent){ //Is a profitable trade... // Or i can throw it up here
 					//let profit = amountEarned - amountSpent;
 					
 					console.log("This trade is profitable");
 					let passMinimumTrade = this.middleware.checkMinimumTrades(newMarkets, this.currencies);
 					
-					this.calculateProfits(newMarkets);
+					this.calculateProfits(newMarkets, passMinimumTrade);
 					this.profitLog.info({
 						information: markets,
 						market1: trader.pair1,
 						market2: trader.pair2,
 						market3: trader.pair3,
 //				market4: trader.pair4,
-						profit: profit,
 						passMinimums: passMinimumTrade,
 						//profitFromTrade: profitTrade,
 					//	lowestPrice: trader.potentialTrade.lowestPrice,
 					//	trade: trader.potentialTrade
 					}, `We Found a profitable Trade! Yay!`);
 					
-				}
-				else{
-					console.log('nothing, lets try again!');
-				}
+				// }
+				// else{
+				// 	console.log('nothing, lets try again!');
+				// }
 			}
 			catch(err){
 				this.errorLog.error({pair: trader.currencies});
@@ -151,7 +150,7 @@ export default class TradeSeeker{
 		next(); //Use this to restart the loop..
 	}
 	
-	calculateProfits(markets, profit){
+	calculateProfits(markets, passMinimumTrade){
 		console.log("inside Calculate Profits function.");
 		try {
 			let trader = this;
@@ -159,10 +158,10 @@ export default class TradeSeeker{
 			let tradeListingTwo = new TradeListing(markets[1], trader.pair2, "sell");
 			let tradeListingThree = new TradeListing(markets[2], trader.pair3, "sell");
 			
-			trader.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, trader.middleware);
+			trader.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, trader.currencies,trader.middleware);
 			console.log("ARe we getting TO HERE??!");
 			
-			let profitTrade = trader.potentialTrade.lowestPrice * profit; // ?? this is questionable..
+			//let profitTrade = trader.potentialTrade.lowestPrice * profit; // ?? this is questionable..
 			
 			console.log("getting here? on profit trade?");
 			
@@ -171,13 +170,12 @@ export default class TradeSeeker{
 				market1: trader.pair1,
 				market2: trader.pair2,
 				market3: trader.pair3,
-				profit: profit,
-				profitFromTrade: profitTrade,
 				lowestPrice: trader.potentialTrade.lowestPrice,
-				trade: trader.potentialTrade
-			}, `We Found a profitable Trade! Yay!`);
+				trade: trader.potentialTrade,
+				passMinimums: passMinimumTrade,
+			}, `This written afterwards!!`);
 			
-			this.verifyTrade();
+			//this.verifyTrade();
 		}
 		catch(err){
 			console.log(err);
