@@ -38,10 +38,10 @@ let tradeListing1 = new TradeListing(market1, "ETH_USDT", 'buy');
 let tradeListing2 = new TradeListing(market2, "NZDT_USDT", 'sell');
 let tradeListing3 = new TradeListing(market3, "ETH_NZDT", 'sell');
 
-
+let trade = new Trade(tradeListing1, tradeListing2, tradeListing3, currencies, utilities, middleware);
 
 describe('Trade - Constructor', () => {
-	let trade = new Trade(tradeListing1, tradeListing2, tradeListing3, currencies, utilities, middleware);
+	
 	
 	it('should set values to expected values', () => {
 		expect(trade.completedTrade1.rate).to.be.equal(887.77332964);
@@ -76,5 +76,25 @@ describe('Trade - Constructor', () => {
 		
 		expect(trade.profit).to.be.equal('-0.80812126USDT');
 	});
-	
+});
+
+describe('Trade - calculateProfitEarned', () => {
+	it('should properly calculate profit when supplied with proper input', () => {
+		expect(trade.calculateProfitEarned(trade.completedTrade1.rate, trade.completedTrade1.quantity, trade.middleware.marketFee))
+			.to.be.equal(42.087047666196845);
+	});
+});
+
+describe('Trade - calculateAmountSpent', () => {
+	it('should properly calculate amount spent when supplied with proper input', () => {
+		expect(trade.calculateAmountSpent(trade.completedTrade3.quantity, trade.completedTrade3.rate, 
+			trade.completedTrade2.rate, trade.middleware.marketFee))
+			.to.be.equal(42.895168921405144);
+	});
+});
+
+describe('Trade - calculateProfit', () => {
+	it('should properly calculate profit and in which currency when supplied with correct input', () => {
+		expect(trade.calculateProfit(trade.currencies[2])).to.be.equal('-0.80812126USDT');
+	});
 });
