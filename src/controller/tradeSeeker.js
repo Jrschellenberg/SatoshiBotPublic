@@ -175,6 +175,7 @@ export default class TradeSeeker{
 			return;
 		}
 		console.log("Sending Trade to Master worker...");
+		return;
 	}
 	
 	precisionRound(num, precision){
