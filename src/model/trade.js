@@ -1,5 +1,3 @@
-
-
 export default class Trade {
 	constructor(tradeListing1, tradeListing2, tradeListing3, currencies,
 	            middleware){
@@ -25,7 +23,6 @@ export default class Trade {
 		this.profit = null;
 		
 		this.calculateStartTrade();
-		
 		this.executeTrade();
 		this.calculateProfit();
 		
@@ -59,8 +56,6 @@ export default class Trade {
 		this.completedTrade2.quantity = this.precisionRound(this.computeTrade(this.completedTrade3.quantity, this.trade3.rate, this.middleware.marketFee, 'buy'), 8);
 		
 		this.completedTrade1.quantity = this.completedTrade3.quantity;
-			//do trade from start at 3
-		
 	}
 	
 	calculateProfit(){
@@ -81,48 +76,23 @@ export default class Trade {
 		}
 	}
 	
-	isBelowMinimum(){
-		if(this.trade1.usdRateTrade < 0.05 || this.trade2.usdRateTrade < 0.05 || this.trade3.usdRateTrade < 0.05){
-			return true;
-		}
-		return false;
-	}
 	precisionRound(num, precision){
 		let factor = Math.pow(10, precision);
 		return Math.round(num * factor)/factor;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	async isAccountEmpty(){
-		let balance = await this.service.getBalances();
+	async isSufficientFunds(){
+		let balance = await this.middleware.getBalances();
+		console.log(balance);
 		let currencies = this.currencies;
-		currencies.push('USDT');
-		for(let i=0; i<currencies.length; i++){
-			if(balance[currencies[i]] = 0){
-				console.log(`${currencies[i]} has ${balance[currencies[i]]} funds. Therefore we are exiting trade, Please add funds there!`)
-				return true; //Don't initiate trade
-			}
-		}
+		console.log(currencies);
+		// for(let i=0; i<currencies.length; i++){
+		// 	if(balance[currencies[i]] === 0){
+		// 		console.log(`${currencies[i]} has ${balance[currencies[i]]} funds. Therefore we are exiting trade, Please add funds there!`)
+		// 		return true; //Don't initiate trade
+		// 	}
+		// }
 		return false;
 	}
-	
 	
 }

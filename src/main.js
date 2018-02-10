@@ -27,7 +27,7 @@ const TRADE_SATOSHI_TRADE_FEE = 0.002;
 const CRYPTOPIA_TRADE_FEE = 0.002;
 const API_TIMEOUT = 800;
 
-let NUMBER_SLAVES = 10;
+let NUMBER_SLAVES = 1;
 
 let profitLog = bunyan.createLogger({
 	name: "myapp",
@@ -51,9 +51,9 @@ let errorLog = bunyan.createLogger({
 (async function () {
 	//await  TradeSatoshiCurrencies.setBalances(tradeSatoshiService);
 	let cryptopiaCurrencies = new CryptopiaCurrencies(cryptopiaService);
-	await cryptopiaCurrencies.setBalances();
-	let balance = await cryptopiaCurrencies.getBalances();
-	console.log(balance);
+	await cryptopiaCurrencies.setBalances(); // Setting up our cryptopia balances for first time..
+	// let balance = await cryptopiaCurrencies.getBalances();
+	// console.log(balance);
 	
 	// let balance = await SatoshiTrader.getBalances()
 	// console.log(balance);
@@ -77,17 +77,17 @@ let errorLog = bunyan.createLogger({
 	
 	
 	
-	//  let satoshiTradeScout = new TradeScout(NUMBER_SLAVES, satoshiMarkets);
-	//
-	//  let cryptopiaTradeScout = new TradeScout(NUMBER_SLAVES, cryptopiaMarkets);
-	//
-	// for(let i=0; i<NUMBER_SLAVES; i++){
-	// 	// new TradeSeeker(profitLog, errorLog, i, satoshiTradeScout,
-	// 	// 	new SatoshiMiddleware('satoshi', TRADE_SATOSHI_TRADE_FEE, tradeSatoshiService,API_TIMEOUT ));
-	//	
-	// 	new TradeSeeker(profitLog, errorLog, i, cryptopiaTradeScout,
-	// 		new CryptopiaMiddleware('cryptopia', CRYPTOPIA_TRADE_FEE, cryptopiaService,API_TIMEOUT ));
-	// }
+	 let satoshiTradeScout = new TradeScout(NUMBER_SLAVES, satoshiMarkets);
+
+	 let cryptopiaTradeScout = new TradeScout(NUMBER_SLAVES, cryptopiaMarkets);
+
+	for(let i=0; i<NUMBER_SLAVES; i++){
+		// new TradeSeeker(profitLog, errorLog, i, satoshiTradeScout,
+		// 	new SatoshiMiddleware('satoshi', TRADE_SATOSHI_TRADE_FEE, tradeSatoshiService, API_TIMEOUT ));
+
+		new TradeSeeker(profitLog, errorLog, i, cryptopiaTradeScout,
+			new CryptopiaMiddleware('cryptopia', CRYPTOPIA_TRADE_FEE, cryptopiaService, cryptopiaCurrencies,  API_TIMEOUT ));
+	}
 })();
 
 

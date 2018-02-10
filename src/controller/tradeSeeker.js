@@ -113,7 +113,7 @@ export default class TradeSeeker{
 				Satoshi API is retarded, need to add a check to do a trade in reverse if it doesn't go through >.> sigh
 				 */
 				let passMinimumTrade = this.middleware.checkMinimumTrades(newMarkets, this.currencies);
-				if(amountEarned > amountSpent && passMinimumTrade){ //Is a profitable trade... // Or i can throw it up here
+				//if(amountEarned > amountSpent && passMinimumTrade){ //Is a profitable trade... // Or i can throw it up here
 					console.log("This trade is profitable");
 					this.calculateProfits(newMarkets, passMinimumTrade);
 					
@@ -129,10 +129,10 @@ export default class TradeSeeker{
 // 					//	trade: trader.potentialTrade
 // 					}, `We Found a profitable Trade! Yay!`);
 					
-				}
-				else{
-					console.log('nothing, lets try again!');
-				}
+				// }
+				// else{
+				// 	console.log('nothing, lets try again!');
+				// }
 			}
 			catch(err){
 				this.errorLog.error({pair: trader.currencies});
@@ -150,11 +150,6 @@ export default class TradeSeeker{
 			let tradeListingThree = new TradeListing(markets[2], trader.pair3, "sell");
 			
 			trader.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, trader.currencies,trader.middleware);
-			console.log("ARe we getting TO HERE??!");
-			
-			//let profitTrade = trader.potentialTrade.lowestPrice * profit; // ?? this is questionable..
-			
-			console.log("getting here? on profit trade?");
 			
 			this.profitLog.info({
 				information: markets,
@@ -166,7 +161,7 @@ export default class TradeSeeker{
 				passMinimums: passMinimumTrade,
 			}, `This written afterwards!!`);
 			
-			//this.verifyTrade();
+			this.verifyTrade();
 		}
 		catch(err){
 			console.log(err);
@@ -175,7 +170,7 @@ export default class TradeSeeker{
 	}
 	verifyTrade(){
 		let trader = this;
-		if(trader.potentialTrade.isAccountEmpty() || trader.potentialTrade.isBelowMinimum()){
+		if(trader.potentialTrade.isSufficientFunds()){
 			console.log("Account is empty or we are below minimum amount, Exiting the trade...");
 			return;
 		}

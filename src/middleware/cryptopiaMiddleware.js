@@ -1,8 +1,8 @@
 import TradeMiddleware from './tradeMiddleware';
 
 export class CryptopiaMiddleware extends TradeMiddleware {
-	constructor(marketListing, marketFee, service, API_TIMEOUT){
-		super(marketListing, marketFee, service, API_TIMEOUT);
+	constructor(marketListing, marketFee, service, marketBalances, API_TIMEOUT){
+		super(marketListing, marketFee, service, marketBalances, API_TIMEOUT);
 	}
 	
 	async getMarketListing(params){
@@ -38,8 +38,6 @@ export class CryptopiaMiddleware extends TradeMiddleware {
 			console.log(err);
 			}
 	}
-	
-	
 	
 	checkMinimumTrades(markets, currencies ){
 		//console.log("Got into check Minimum.");
