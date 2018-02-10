@@ -13,7 +13,7 @@ function sleep(ms = 0) {
 //May need queue to handle collisions of events.
 export default class TradeSeeker{
 	constructor(profitLog, errorLog, workerNumber, tradeScout,
-	            middleWare, utilities){
+	            utilities, middleWare){
 		this.utilities = utilities;
 		this.middleware = middleWare;
 		this.tradeScout = tradeScout;
