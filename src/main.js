@@ -27,8 +27,6 @@ const TRADE_SATOSHI_TRADE_FEE = 0.002;
 const CRYPTOPIA_TRADE_FEE = 0.002;
 const API_TIMEOUT = 800;
 
-
-
 let NUMBER_SLAVES = 1;
 
 let profitLog = bunyan.createLogger({

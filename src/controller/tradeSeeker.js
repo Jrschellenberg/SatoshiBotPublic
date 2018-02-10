@@ -119,7 +119,7 @@ export default class TradeSeeker{
 				Satoshi API is retarded, need to add a check to do a trade in reverse if it doesn't go through >.> sigh
 				 */
 				
-				//if(amountEarned > amountSpent){ //Is a profitable trade... // Or i can throw it up here
+				// if(amountEarned > amountSpent){ //Is a profitable trade... // Or i can throw it up here
 					//let profit = amountEarned - amountSpent;
 					
 					console.log("This trade is profitable");
