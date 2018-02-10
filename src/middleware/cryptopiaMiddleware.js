@@ -96,6 +96,7 @@ export class CryptopiaCurrencies {
 	}
 	
 	async setAccountBalance(coins) {
+		this.balance = {}; //Reset our balance to empty object once again...
 		for(let i=0; i<coins.length; i++){
 			if(coins[i].Total !== 0){
 				let key = coins[i].Symbol;
