@@ -98,7 +98,9 @@ function isMainMarket(i, j, k, arr, market){
 	else if((market.toLowerCase() === 'cryptopia')  && (arr[i].toLowerCase() !== 'usdt') &&
 		(arr[j].toLowerCase() ==="btc"  || arr[j].toLowerCase() ==="nzdt")
 		&& (arr[k].toLowerCase() === "usdt" || arr[k].toLowerCase() ==="btc"  || arr[k].toLowerCase() ==="nzdt" )){
-		return true;
+		if(!(arr[j].toLowerCase() === 'nzdt' && arr[k].toLowerCase() === 'btc')){
+			return true;
+		}
 	}
 	return false;
 }
