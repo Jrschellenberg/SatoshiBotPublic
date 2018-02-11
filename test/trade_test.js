@@ -98,3 +98,37 @@ describe('Trade - calculateProfit', () => {
 		expect(trade.calculateProfit(trade.currencies[2])).to.be.equal('-0.80812126USDT');
 	});
 });
+
+describe('Trade - ComputeTrade', () => {
+	it('should properly calculate the quantity required for trade given correct input', ()=> {
+		expect(trade.computeTrade(trade.completedTrade3.quantity, trade.trade3.rate, trade.middleware.marketFee, 'buy'))
+			.to.be.equal(53.25581757685753);
+		expect(trade.computeTrade(trade.completedTrade3.quantity, trade.trade3.rate, trade.middleware.marketFee, 'BUY'))
+			.to.be.equal(53.25581757685753);
+		expect(trade.computeTrade(trade.completedTrade3.quantity, trade.trade3.rate, trade.middleware.marketFee, 'sell'))
+			.to.be.equal(53.043219496857525);
+		expect(trade.computeTrade(trade.completedTrade3.quantity, trade.trade3.rate, trade.middleware.marketFee, 'SELL'))
+			.to.be.equal(53.043219496857525);
+	});
+});
+
+describe('Trade - determineEnoughFunds', () => {
+	let balance1 = { ETN: { coins: 0.40453008, status: 'OK' },
+		USDT: { coins: 15.56462343, status: 'OK' } };
+	let balance2 = { NZDT: { coins: 12.0453008, status: 'OK' },
+		USDT: { coins: 15.56462343, status: 'OK' } };
+	let balance3 = { NZDT: { coins: 70.0453008, status: 'OK' },
+		USDT: { coins: 50.56462343, status: 'OK' } };
+	
+	it('should return false if user does not have sufficient funds', () => {
+		expect(trade.determineEnoughFunds(balance1)).to.be.false;
+		expect(trade.determineEnoughFunds(balance2)).to.be.false;
+	});
+	it('should throw error if given null', () => {
+		expect(trade.determineEnoughFunds.bind(trade, null))
+			.to.throw(TypeError);
+	});
+	it('should return true if user has sufficient funds', () => {
+		expect(trade.determineEnoughFunds(balance3)).to.be.true;
+	});
+});

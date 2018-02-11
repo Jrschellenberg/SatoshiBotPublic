@@ -88,15 +88,20 @@ export default class Trade {
 	
 	async isSufficientFunds(){
 		let balance = await this.middleware.marketBalances.getBalances();
-		console.log(balance);
-		let currencies = this.currencies;
-		console.log(currencies);
-		console.log(balance[this.currencies[1]]);
-		return balance[this.currencies[1]] && balance[this.currencies[2]] && 
-			(balance[this.currencies[1]].coins >  this.completedTrade2.quantity ) && 
-			(balance[this.currencies[2]].coins > (this.completedTrade2.quantity * this.completedTrade2.rate));
+		return this.determineEnoughFunds(balance);
 			//Need to have enough of quantity 2 for Trade 3's market, as well as have enough of quantity 2 * rate for trade 2's market..
-		
-}
+	}
+	
+	determineEnoughFunds(balance){
+		if(!balance){
+			throw new TypeError("Program could not grab your Balances and has crashed");
+		}
+		if(!balance[this.currencies[1]] || !balance[this.currencies[2]]){
+			return false;
+		}
+		return (balance[this.currencies[1]].coins >  this.completedTrade2.quantity ) &&
+			(balance[this.currencies[2]].coins > (this.completedTrade2.quantity * this.completedTrade2.rate));
+	}
+
 	
 }

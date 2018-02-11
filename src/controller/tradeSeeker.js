@@ -158,7 +158,7 @@ export default class TradeSeeker{
 		}
 		
 	}
-	verifyTrade(){
+		verifyTrade(){
 		let trader = this;
 		if(trader.potentialTrade.isSufficientFunds()){
 			console.log("Account is empty or we are below minimum amount, Exiting the trade...");
