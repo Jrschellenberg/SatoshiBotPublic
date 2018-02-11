@@ -60,7 +60,7 @@ export default class Trade {
 	}
 	
 	isProfitable(){
-		return this.profit > 0;
+		return this.profit >= 0;
 	}
 	
 	calculateProfit(currency){

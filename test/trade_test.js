@@ -41,8 +41,6 @@ let tradeListing3 = new TradeListing(market3, "ETH_NZDT", 'sell');
 let trade = new Trade(tradeListing1, tradeListing2, tradeListing3, currencies, utilities, middleware);
 
 describe('Trade - Constructor', () => {
-	
-	
 	it('should set values to expected values', () => {
 		expect(trade.completedTrade1.rate).to.be.equal(887.77332964);
 		expect(trade.completedTrade1.trade).to.be.equal('SELL');
@@ -130,5 +128,16 @@ describe('Trade - determineEnoughFunds', () => {
 	});
 	it('should return true if user has sufficient funds', () => {
 		expect(trade.determineEnoughFunds(balance3)).to.be.true;
+	});
+});
+describe('Trade - isProfitable', () => {
+	it('should return false if profit is less than 0', () => {
+		expect(trade.isProfitable()).to.be.false;
+	});
+	it('should return true if profit is greater or equal than 0', () => {
+		trade.profit = 0;
+		expect(trade.isProfitable()).to.be.true;
+		trade.profit = 0.30;
+		expect(trade.isProfitable()).to.be.true;
 	});
 });
