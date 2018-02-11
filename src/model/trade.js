@@ -129,6 +129,4 @@ export default class Trade {
 		(balance[this.currencies[1]].coins >=  this.completedTrade2.quantity ) && //Enough for Trade 3.
 			(balance[this.currencies[2]].coins >= this.utilities.precisionRound(this.computeTrade(this.completedTrade2.quantity, this.completedTrade2.rate, this.middleware.marketFee, 'buy'), 8)); //Enough for Trade 2
 	}
-
-	
 }

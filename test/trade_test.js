@@ -16,9 +16,8 @@ cryptopiaService.setOptions(cryptopiaOptions);
 let cryptopiaCurrencies = new CryptopiaCurrencies(cryptopiaService);
 
 
-
 let utilities = new Utilities();
-let middleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies );
+let middleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies);
 let currencies = ['ETH', 'NZDT', 'USDT'];
 
 let market1 = {
@@ -85,7 +84,7 @@ describe('Trade - calculateProfitEarned', () => {
 
 describe('Trade - calculateAmountSpent', () => {
 	it('should properly calculate amount spent when supplied with proper input', () => {
-		expect(trade.calculateAmountSpent(trade.completedTrade3.quantity, trade.completedTrade3.rate, 
+		expect(trade.calculateAmountSpent(trade.completedTrade3.quantity, trade.completedTrade3.rate,
 			trade.completedTrade2.rate, trade.middleware.marketFee))
 			.to.be.equal(42.895168921405144);
 	});
@@ -98,7 +97,7 @@ describe('Trade - calculateProfit', () => {
 });
 
 describe('Trade - ComputeTrade', () => {
-	it('should properly calculate the quantity required for trade given correct input', ()=> {
+	it('should properly calculate the quantity required for trade given correct input', () => {
 		expect(trade.computeTrade(trade.completedTrade3.quantity, trade.trade3.rate, trade.middleware.marketFee, 'buy'))
 			.to.be.equal(53.25581757685753);
 		expect(trade.computeTrade(trade.completedTrade3.quantity, trade.trade3.rate, trade.middleware.marketFee, 'BUY'))
@@ -110,16 +109,26 @@ describe('Trade - ComputeTrade', () => {
 	});
 });
 describe('Trade - determineEnoughFundsThreeTrades', () => {
-	let balance1 = { ETH: { coins: 0.053008, status: 'OK' }, //false
-		USDT: { coins: 15.56462343, status: 'OK' } };
-	let balance2 = { NZDT: { coins: 12.0453008, status: 'OK' }, //False
-		USDT: { coins: 15.56462343, status: 'OK' } };
-	let balance3 = { ETH: { coins: 0.04750242, status: 'OK' }, NZDT: { coins: 70.0453008, status: 'OK' }, //false
-		USDT: { coins: 500.56462343, status: 'OK' } };
-	let balance4 = { ETH: { coins: 0.04750243, status: 'OK' }, NZDT: { coins: 53.25581758, status: 'OK' }, //True
-		USDT: { coins: 42.89533983, status: 'OK' } };
-	let balance5 = { ETH: { coins: 2.04750243, status: 'OK' }, NZDT: { coins: 533.25581758, status: 'OK' }, //True
-		USDT: { coins: 422.89533983, status: 'OK' } }; //True
+	let balance1 = {
+		ETH: {coins: 0.053008, status: 'OK'}, //false
+		USDT: {coins: 15.56462343, status: 'OK'}
+	};
+	let balance2 = {
+		NZDT: {coins: 12.0453008, status: 'OK'}, //False
+		USDT: {coins: 15.56462343, status: 'OK'}
+	};
+	let balance3 = {
+		ETH: {coins: 0.04750242, status: 'OK'}, NZDT: {coins: 70.0453008, status: 'OK'}, //false
+		USDT: {coins: 500.56462343, status: 'OK'}
+	};
+	let balance4 = {
+		ETH: {coins: 0.04750243, status: 'OK'}, NZDT: {coins: 53.25581758, status: 'OK'}, //True
+		USDT: {coins: 42.89533983, status: 'OK'}
+	};
+	let balance5 = {
+		ETH: {coins: 2.04750243, status: 'OK'}, NZDT: {coins: 533.25581758, status: 'OK'}, //True
+		USDT: {coins: 422.89533983, status: 'OK'}
+	}; //True
 	
 	it('should return false if user does not have sufficient funds', () => {
 		expect(trade.determineEnoughFundsThreeTrades(balance1)).to.be.false;
@@ -138,14 +147,22 @@ describe('Trade - determineEnoughFundsThreeTrades', () => {
 
 
 describe('Trade - determineEnoughFundsTwoTrades', () => {
-	let balance1 = { ETN: { coins: 0.40453008, status: 'OK' },
-		USDT: { coins: 15.56462343, status: 'OK' } };
-	let balance2 = { NZDT: { coins: 12.0453008, status: 'OK' },
-		USDT: { coins: 15.56462343, status: 'OK' } };
-	let balance3 = { NZDT: { coins: 70.0453008, status: 'OK' },
-		USDT: { coins: 50.56462343, status: 'OK' } };
-	let balance4 = { NZDT: { coins: 70.0453008, status: 'OK' },
-		USDT: { coins: 42.89533983, status: 'OK' } };
+	let balance1 = {
+		ETN: {coins: 0.40453008, status: 'OK'},
+		USDT: {coins: 15.56462343, status: 'OK'}
+	};
+	let balance2 = {
+		NZDT: {coins: 12.0453008, status: 'OK'},
+		USDT: {coins: 15.56462343, status: 'OK'}
+	};
+	let balance3 = {
+		NZDT: {coins: 70.0453008, status: 'OK'},
+		USDT: {coins: 50.56462343, status: 'OK'}
+	};
+	let balance4 = {
+		NZDT: {coins: 70.0453008, status: 'OK'},
+		USDT: {coins: 42.89533983, status: 'OK'}
+	};
 	
 	it('should return false if user does not have sufficient funds', () => {
 		expect(trade.determineEnoughFundsTwoTrades(balance1)).to.be.false;
@@ -166,8 +183,8 @@ describe('Trade - isProfitable', () => {
 	});
 	it('should return true if profit is greater or equal than 0', () => {
 		trade.profit = 0;
-expect(trade.isProfitable()).to.be.true;
-trade.profit = 0.30;
-expect(trade.isProfitable()).to.be.true;
-});
+		expect(trade.isProfitable()).to.be.true;
+		trade.profit = 0.30;
+		expect(trade.isProfitable()).to.be.true;
+	});
 });

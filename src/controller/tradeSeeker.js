@@ -85,9 +85,15 @@ export default class TradeSeeker {
 					passMinimumTrade: trader.passMinimumTrade,
 				}, `This written afterwards!!`);
 				
-				//Put an if here to determine if sufficient to do all 3 trades at once.
+				if(trader.potentialTrade.isSufficientFundsThreeTrades()){
+					//Logic for doing three fund Trade
+					
+				}
+				else if(trader.potentialTrade.isSufficientFundsTwoTrades()){
+					
+					//logic for doing a 2 Step Trade.
+				}
 				
-				//Else if if enough funds to do the trade in 2 steps...
 				
 				//Else, skip trade....
 				
