@@ -1,6 +1,4 @@
 import async from 'async';
-
-import CryptopiaCurrencies from "../middleware/cryptopiaMiddleware";
 import TradeListing from "../model/tradeListing";
 import Trade from "../model/trade";
 
@@ -12,9 +10,10 @@ function sleep(ms = 0) {
 //These class as slaves
 //Master does trade, verifies trade went smoothly. Continues listening for events.
 //May need queue to handle collisions of events.
-export default class TradeSeeker{
+export default class TradeSeeker {
 	constructor(profitLog, errorLog, workerNumber, tradeScout,
-	            middleWare){
+	            utilities, production, middleWare) {
+		this.utilities = utilities;
 		this.middleware = middleWare;
 		this.tradeScout = tradeScout;
 		this.workerNumber = workerNumber;
@@ -23,36 +22,39 @@ export default class TradeSeeker{
 		this.pair1 = null;
 		this.pair2 = null;
 		this.pair3 = null;
-		this.pair4 = null;
 		this.potentialTrade = null;
 		this.currencies = tradeScout.getWork(workerNumber);
 		this.assignMarketPairs(this.currencies);
-		this.process();
+		this.production = production;
+		this.passMinimumTrade = null;
+		this.currentMarket = null;
+		if (production) {
+			this.process();
+		}
 	}
 	
-	assignMarketPairs(marketPairings){
-		this.pair1 = marketPairings[0]+'_USDT';
-		this.pair2 = marketPairings[1]+'_USDT';
-		this.pair3 = marketPairings[2]+'_'+marketPairings[1];
-		this.pair4 = marketPairings[2]+'_'+marketPairings[0];
+	assignMarketPairs(marketPairings) {
+		this.currencies = marketPairings;
+		this.pair1 = marketPairings[0] + '_' + marketPairings[2];
+		this.pair2 = marketPairings[1] + '_' + marketPairings[2];
+		this.pair3 = marketPairings[0] + '_' + marketPairings[1];
 	}
 	
-	process(){
+	process() {
 		//console.log("hello from satoshitrader!");
 		let trader = this;
 		(async () => {
 			try {
-				async.forever((next)=>
-					{
+				async.forever((next) => {
 						//Finding new work while waiting before starting to scout for trade..
 						trader.assignMarketPairs(trader.tradeScout.getWork(trader.workerNumber)); //Find more work!
-						sleep(trader.middleware.API_TIMEOUT).then(()=>{
+						sleep(trader.middleware.API_TIMEOUT).then(() => {
+							console.log(trader.currencies);
 							trader.currencyExchangeCalls(next);
 						});
 					},
-					(err) =>{
+					(err) => {
 						console.log(err);
-						console.log("Error BUBBLING UP HERE");
 					}
 				);
 			} catch (err) {
@@ -62,128 +64,101 @@ export default class TradeSeeker{
 		})();
 	}
 	
+	logicFlow(next, oldMarkets) {
+		let trader = this;
+		if (oldMarkets.one && oldMarkets.two && oldMarkets.three) { // Make sure we actually have data
+			let marketOne = oldMarkets.one.buy[0],
+				marketTwo = oldMarkets.two.sell[0],
+				marketThree = oldMarkets.three.sell[0];
+			trader.currentMarket = [marketOne, marketTwo, marketThree];
+			trader.passMinimumTrade = this.middleware.checkMinimumTrades(trader.currentMarket, this.currencies);
+			
+			if(trader.establishTrade(this.currentMarket) && trader.potentialTrade.isProfitable() && trader.passMinimumTrade ){
+				console.log("trade is profitable and has been copied to log..");
+				this.profitLog.info({
+					information: this.currentMarket,
+					market1: trader.pair1,
+					market2: trader.pair2,
+					market3: trader.pair3,
+					lowestPrice: trader.potentialTrade.lowestPrice,
+					trade: trader.potentialTrade,
+					passMinimumTrade: trader.passMinimumTrade,
+				}, `This written afterwards!!`);
+				
+				//Put an if here to determine if sufficient to do all 3 trades at once.
+				
+				//Else if if enough funds to do the trade in 2 steps...
+				
+				//Else, skip trade....
+				
+			}
+		}
+		next();
+	}
 	
 	/*
 	Function used to send out API Calls to the 3 currencies we are monitoring.
 	 */
-	currencyExchangeCalls(next){
+	currencyExchangeCalls(next) {
 		let trader = this;
 		async.series({
 			one: async (callback) => {
-				const markets = await	trader.middleware.getMarketListing({market: trader.pair1, depth: 1}); // BTC_USDT
+				console.log(trader.pair1);
+				const markets = await  trader.middleware.getMarketListing({market: trader.pair1, depth: 1}); // BTC_USDT
 				callback(null, markets);
 			},
-			two: async (callback) =>{
-					const markets = await	trader.middleware.getMarketListing({market: trader.pair2, depth: 1}); // BTC_USDT
-					callback(null, markets);
-			},
-			three: async  (callback) =>{
-				const markets = await	trader.middleware.getMarketListing({market: trader.pair3, depth: 1});  // GRLC_BTC
+			two: async (callback) => {
+				console.log(trader.pair2);
+				const markets = await  trader.middleware.getMarketListing({market: trader.pair2, depth: 1}); // BTC_USDT
 				callback(null, markets);
 			},
-			four: async  (callback) =>{
-				const markets = await	trader.middleware.getMarketListing({market: trader.pair4, depth: 1});  //GRLC_LTC
+			three: async (callback) => {
+				console.log(trader.pair3);
+				const markets = await  trader.middleware.getMarketListing({market: trader.pair3, depth: 1});  // GRLC_BTC
 				callback(null, markets);
-			},
+			}
 		}, (err, markets) => {
-			if(err){
+			if (err) {
 				next();
 			}
-			trader.isProfitableTrade(next, markets);
+			trader.logicFlow(next, markets)
+			//trader.isProfitableTrade(next, markets);
 		})
 	}
-	
-	isProfitableTrade(next, markets){
-		let trader = this;
-		if(markets.one && markets.two && markets.three && markets.four){ // Make sure we actually have data
-			let marketOne = markets.one.buy[0],
-				marketTwo = markets.two.sell[0],
-				marketThree = markets.three.sell[0],
-				marketFour = markets.four.buy[0];
-			
-			try{
-				let pair1Price = marketOne.rate;                       // Buying price USD
-				let amountEarned = marketFour.rate * pair1Price;        //Buying price USD
-				let pair2Price = marketTwo.rate;                        //Selling price USD
-				let amountSpent = marketThree.rate * pair2Price;        //Selling price USD
-				let tradeFee = amountSpent * trader.middleware.getMarketFee();
-				amountSpent += tradeFee;
-				tradeFee = amountEarned * trader.middleware.getMarketFee();
-				amountEarned -=  tradeFee;
-				
-				
-				/*
-				Satoshi API is retarded, need to add a check to do a trade in reverse if it doesn't go through >.> sigh
-				 */
-				console.log(`Amount spent is ${amountSpent}`);
-				console.log(`Amount Earned is ${amountEarned}`);
-				//console.log(this.pair1+this.pair2+this.pair3+this.pair4);
-				
-				if(amountEarned > amountSpent){ //Is a profitable trade...
-					let profit = amountEarned - amountSpent;
-					console.log("This trade is profitable");
-					console.log(`Profit earned is ${profit}`);
-					this.calculateProfits(markets, profit);
-				}
-				else{
-					// if(amountEarned <0){
-					// 	console.log("BELOW 0!");
-					// 	this.profitLog.info({information: markets, market1: satoshiTrader.pair1,
-					// 		market2: satoshiTrader.pair2, market3: satoshiTrader.pair3, market4: satoshiTrader.pair4}, `We Found a profitable Trade! Yay!`);
-					// }
-					console.log('nothing, lets try again!');
-				//	console.log("This trade is not profitable");
-				}
-			}
-			catch(err){
-				//console.log(err);
-				this.errorLog.error({pair: trader.currencies});
-			}
-		}
-		next(); //Use this to restart the loop..
-	}
-	
-	calculateProfits(markets, profit){
-		console.log("inside Calculate Profits function.");
+		
+	establishTrade(newMarkets) {
+		//console.log("inside Calculate Profits function.");
 		try {
 			let trader = this;
-			let tradeListingOne = new TradeListing(markets.one.buy[0], trader.pair1, "buy");
-			let tradeListingTwo = new TradeListing(markets.two.sell[0], trader.pair2, "sell");
-			let tradeListingThree = new TradeListing(markets.three.sell[0], trader.pair3, "sell");
-			let tradeListingFour = new TradeListing(markets.four.buy[0], trader.pair4, "buy");
+			let tradeListingOne = new TradeListing(newMarkets[0], trader.pair1, "buy");
+			let tradeListingTwo = new TradeListing(newMarkets[1], trader.pair2, "sell");
+			let tradeListingThree = new TradeListing(newMarkets[2], trader.pair3, "sell");
 			
-			trader.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, tradeListingFour, trader.middleware);
-			console.log("ARe we getting TO HERE??!");
-			
-			let profitTrade = trader.potentialTrade.lowestPrice * profit; // ?? this is questionable..
-			
-			console.log("getting here? on profit trade?");
-			
-			this.profitLog.info({
-				information: markets,
-				market1: trader.pair1,
-				market2: trader.pair2,
-				market3: trader.pair3,
-				market4: trader.pair4,
-				profit: profit,
-				profitFromTrade: profitTrade,
-				lowestPrice: trader.potentialTrade.lowestPrice,
-				trade: trader.potentialTrade
-			}, `We Found a profitable Trade! Yay!`);
-			
-			this.verifyTrade();
+			trader.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, trader.currencies, trader.utilities, trader.middleware);
+			// this.profitLog.info({
+			// 	information: newMarkets,
+			// 	market1: trader.pair1,
+			// 	market2: trader.pair2,
+			// 	market3: trader.pair3,
+			// 	lowestPrice: trader.potentialTrade.lowestPrice,
+			// 	trade: trader.potentialTrade,
+			// 	passMinimumTrade: trader.passMinimumTrade,
+			// }, `This written afterwards!!`);
+			return true;
 		}
-		catch(err){
+		catch (err) {
 			console.log(err);
+			return false;
 		}
-		
 	}
-	verifyTrade(){
+	
+	verifyTrade() {
 		let trader = this;
-		if(trader.potentialTrade.isAccountEmpty() || trader.potentialTrade.isBelowMinimum()){
+		if (trader.potentialTrade.isSufficientFunds()) {
 			console.log("Account is empty or we are below minimum amount, Exiting the trade...");
 			return;
 		}
 		console.log("Sending Trade to Master worker...");
+		return;
 	}
 }

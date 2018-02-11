@@ -4,7 +4,7 @@ import TradeSeeker from "./controller/tradeSeeker";
 import TradeScout from "./controller/tradeScout";
 import {SatoshiMiddleware, TradeSatoshiCurrencies} from "./middleware/satoshiMiddleware";
 import {CryptopiaMiddleware, CryptopiaCurrencies} from "./middleware/cryptopiaMiddleware";
-
+import Utilities from './utilities';
 import {satoshiMarkets} from "./satoshiMarkets";
 import {cryptopiaMarkets} from "./cryptopiaMarkets";
 import {API_CREDENTIALS, CRYPTOPIA_CREDENTIALS} from "./service/secret";
@@ -23,13 +23,7 @@ const cryptopiaOptions = {
 };
 cryptopiaService.setOptions(cryptopiaOptions);
 
-const TRADE_SATOSHI_TRADE_FEE = 0.002;
-const CRYPTOPIA_TRADE_FEE = 0.002;
-const API_TIMEOUT = 800;
-
-
-
-let NUMBER_SLAVES = 5;
+let NUMBER_SLAVES = 1;
 
 let profitLog = bunyan.createLogger({
 	name: "myapp",
@@ -51,15 +45,16 @@ let errorLog = bunyan.createLogger({
 });
 
 (async function () {
-	await  TradeSatoshiCurrencies.setBalances(tradeSatoshiService);
+	//await  TradeSatoshiCurrencies.setBalances(tradeSatoshiService);
+	let cryptopiaCurrencies = new CryptopiaCurrencies(cryptopiaService);
+	await cryptopiaCurrencies.setBalances(); // Setting up our cryptopia balances for first time..
+	let production = true;
+	// let balance = await cryptopiaCurrencies.getBalances();
+	// console.log(balance);
+	
 	// let balance = await SatoshiTrader.getBalances()
 	// console.log(balance);
 	// console.log(marketPairings.length);
-	
-	//Initializing Robots To Trade
-	//Entry Point into Program.
-	//Pick three currencies  to check, fourth will always be USDT ie LTC, BTC, GRLC
-	//Pairings are nFactorial 
 	
 	/*
 	Market pairings Documentation
@@ -67,23 +62,22 @@ let errorLog = bunyan.createLogger({
 	@Param 2 = market to incure losses with
 	@Param 3 = Market to manipulate.
 	 */
-	// let marketPairings = [["BTC", "DOGE", "GRLC"],
-	// 	["DOGE", "BTC", "GRLC"]];
+
 	
 //Initialize our TradeScout
 	
-	
+	const utilities = new Utilities();
 	
 	 let satoshiTradeScout = new TradeScout(NUMBER_SLAVES, satoshiMarkets);
-	
+
 	 let cryptopiaTradeScout = new TradeScout(NUMBER_SLAVES, cryptopiaMarkets);
-	
+
 	for(let i=0; i<NUMBER_SLAVES; i++){
-		new TradeSeeker(profitLog, errorLog, i, satoshiTradeScout,
-			new SatoshiMiddleware(TRADE_SATOSHI_TRADE_FEE, tradeSatoshiService,API_TIMEOUT ));
-		
-		new TradeSeeker(profitLog, errorLog, i, cryptopiaTradeScout,
-			new CryptopiaMiddleware(CRYPTOPIA_TRADE_FEE, cryptopiaService,API_TIMEOUT ));
+		// new TradeSeeker(profitLog, errorLog, i, satoshiTradeScout, utilities, production
+		// 	new SatoshiMiddleware('satoshi', TRADE_SATOSHI_TRADE_FEE, tradeSatoshiService ));
+
+		new TradeSeeker(profitLog, errorLog, i, cryptopiaTradeScout, utilities, production,
+			new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies ));
 	}
 })();
 
