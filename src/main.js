@@ -23,7 +23,7 @@ const cryptopiaOptions = {
 };
 cryptopiaService.setOptions(cryptopiaOptions);
 
-let NUMBER_SLAVES = 1;
+let NUMBER_SLAVES = 10;
 
 let profitLog = bunyan.createLogger({
 	name: "myapp",

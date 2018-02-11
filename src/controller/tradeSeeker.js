@@ -103,17 +103,17 @@ export default class TradeSeeker {
 		let trader = this;
 		async.series({
 			one: async (callback) => {
-				console.log(trader.pair1);
+				//console.log(trader.pair1);
 				const markets = await  trader.middleware.getMarketListing({market: trader.pair1, depth: 1}); // BTC_USDT
 				callback(null, markets);
 			},
 			two: async (callback) => {
-				console.log(trader.pair2);
+				//console.log(trader.pair2);
 				const markets = await  trader.middleware.getMarketListing({market: trader.pair2, depth: 1}); // BTC_USDT
 				callback(null, markets);
 			},
 			three: async (callback) => {
-				console.log(trader.pair3);
+				//console.log(trader.pair3);
 				const markets = await  trader.middleware.getMarketListing({market: trader.pair3, depth: 1});  // GRLC_BTC
 				callback(null, markets);
 			}
