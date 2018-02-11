@@ -50,15 +50,18 @@ export class CryptopiaMiddleware extends TradeMiddleware {
 	
 	async submitOrder(params){
 		params.pair = this.reformatPairString(params.pair);
-		//return params;
-		//const market = await this.service.submitTrade({Market: params., Type: 'Buy', Rate: 3000, Amount: 0.00044})
+		params.type = this.reformatTypeString(params.type);
+		const trade = await this.service.submitTrade({Market: params.pair, Type: params.trade, Rate: params.rate, Amount: params.quantity});
+		return trade;
 		
 	}
 	reformatPairString(pair){
 		return pair.replace('_', '/');
 	}
-	
-	
+	reformatTypeString(type){
+		type = type.toLowerCase();
+		return type.charAt(0).toUpperCase() + type.slice(1);
+	}
 	
 	checkMinimumTrades(markets, currencies) {
 		let marketOneTrade = markets[0].rate * markets[0].quantity,

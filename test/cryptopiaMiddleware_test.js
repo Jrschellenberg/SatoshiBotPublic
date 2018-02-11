@@ -70,9 +70,13 @@ let completedTrade1 = {
 };
 
 describe('Cryptopia Middleware - reformatPairString', () => {
-
 	it('should replace the pairing to proper format ie replace _ with /', ()=> {
 		expect(middleware.reformatPairString('BTC_USDT')).to.be.equal('BTC/USDT');
 	})
-	
+});
+describe('Cryptopia Middleware - reformatTypeString', () => {
+	it('should return same string with only first letter capitalized', () => {
+		expect(middleware.reformatTypeString('buy')).to.be.equal('Buy');
+		expect(middleware.reformatTypeString('SELL')).to.be.equal('Sell');
+	});
 });
