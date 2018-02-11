@@ -44,8 +44,8 @@ export class CryptopiaMiddleware extends TradeMiddleware {
 	}
 	
 	async checkOpenOrder(market){
-		//const openOrder = await this.service.getOpenOrders({Market: market, Count: 1});
-		//return openOrder;
+		const openOrder = await this.service.getOpenOrders({Market: market, Count: 1});
+		return openOrder;
 	}
 	
 	async submitOrder(params){
@@ -130,8 +130,7 @@ export class CryptopiaCurrencies {
 	
 	async setBalances() {
 		const getBalances = await this.service.getBalance();
-		//console.log(getBalances);
-		console.log("we getting back over here?");
+		console.log("we getting back over to setting balances?");
 		await this.setAccountBalance(getBalances);
 	}
 	

@@ -63,7 +63,7 @@ describe('CryptopiaMiddleware - checkMinimumTrades', () => {
 });
 
 let completedTrade1 = {
-	pair: 'BTC_USDT',
+	pair: 'ETH_USDT',
 	rate: 887.77332964,
 	trade: "SELL",
 	quantity: 0.04750243

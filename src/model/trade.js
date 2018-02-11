@@ -98,7 +98,13 @@ export default class Trade {
 	async isSufficientFundsTwoTrades(){
 		let balance = await this.middleware.marketBalances.getBalances();
 		return this.determineEnoughFundsTwoTrades(balance);
-			//Need to have enough of quantity 2 for Trade 3's market, as well as have enough of quantity 2 * rate for trade 2's market..
+			//This is a drop down, trading off efficiency for less funds.
+	}
+	
+	async isSufficientFundsThreeTrades(){
+		let balance = await this.middleware.marketBalances.getBalances();
+		return this.determineEnoughFundsThreeTrades(balance);
+		//Need to have enough of quantity all markets.
 	}
 	
 	determineEnoughFundsTwoTrades(balance){
@@ -108,8 +114,20 @@ export default class Trade {
 		if(!balance[this.currencies[1]] || !balance[this.currencies[2]]){
 			return false;
 		}
-		return (balance[this.currencies[1]].coins >  this.completedTrade2.quantity ) &&
-			(balance[this.currencies[2]].coins > (this.completedTrade2.quantity * this.completedTrade2.rate));
+		return (balance[this.currencies[1]].coins >=  this.completedTrade2.quantity ) && //Enough for Trade 3
+			(balance[this.currencies[2]].coins >= this.utilities.precisionRound(this.computeTrade(this.completedTrade2.quantity, this.completedTrade2.rate, this.middleware.marketFee, 'buy'), 8)); //Enough for Trade 2
+	}
+	
+	determineEnoughFundsThreeTrades(balance){
+		if(!balance){
+			throw new TypeError("Program could not grab your Balances and has crashed");
+		}
+		if(!balance[this.currencies[0]] || !balance[this.currencies[1]] || !balance[this.currencies[2]]){
+			return false;
+		}
+		return (balance[this.currencies[0]].coins >= this.completedTrade1.quantity) &&  //Enough for trade 1.
+		(balance[this.currencies[1]].coins >=  this.completedTrade2.quantity ) && //Enough for Trade 3.
+			(balance[this.currencies[2]].coins >= this.utilities.precisionRound(this.computeTrade(this.completedTrade2.quantity, this.completedTrade2.rate, this.middleware.marketFee, 'buy'), 8)); //Enough for Trade 2
 	}
 
 	
