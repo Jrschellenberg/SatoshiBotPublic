@@ -48,6 +48,7 @@ let errorLog = bunyan.createLogger({
 	//await  TradeSatoshiCurrencies.setBalances(tradeSatoshiService);
 	let cryptopiaCurrencies = new CryptopiaCurrencies(cryptopiaService);
 	await cryptopiaCurrencies.setBalances(); // Setting up our cryptopia balances for first time..
+	let production = true;
 	// let balance = await cryptopiaCurrencies.getBalances();
 	// console.log(balance);
 	
@@ -72,10 +73,10 @@ let errorLog = bunyan.createLogger({
 	 let cryptopiaTradeScout = new TradeScout(NUMBER_SLAVES, cryptopiaMarkets);
 
 	for(let i=0; i<NUMBER_SLAVES; i++){
-		// new TradeSeeker(profitLog, errorLog, i, satoshiTradeScout, utilities,
+		// new TradeSeeker(profitLog, errorLog, i, satoshiTradeScout, utilities, production
 		// 	new SatoshiMiddleware('satoshi', TRADE_SATOSHI_TRADE_FEE, tradeSatoshiService ));
 
-		new TradeSeeker(profitLog, errorLog, i, cryptopiaTradeScout, utilities,
+		new TradeSeeker(profitLog, errorLog, i, cryptopiaTradeScout, utilities, production,
 			new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies ));
 	}
 })();

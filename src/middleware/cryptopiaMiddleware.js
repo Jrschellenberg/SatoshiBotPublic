@@ -1,11 +1,12 @@
 import TradeMiddleware from './tradeMiddleware';
-const CRYPTOPIA_TRADE_FEE = 0.002; 
+const CRYPTOPIA_TRADE_FEE = 0.002;
+
 export class CryptopiaMiddleware extends TradeMiddleware {
-	constructor(marketListing, service, marketBalances){
+	constructor(marketListing, service, marketBalances) {
 		super(marketListing, CRYPTOPIA_TRADE_FEE, service, marketBalances);
 	}
 	
-	async getMarketListing(params){
+	async getMarketListing(params) {
 		let newParams = {
 			Market: params.market,
 			Count: params.depth
@@ -34,36 +35,39 @@ export class CryptopiaMiddleware extends TradeMiddleware {
 				return null;
 			}
 		}
-			catch(err){
+		catch (err) {
+			//throw new TypeError("Error in getMarketListing function!!!"+err);
+			//console.log("hitting the catch here!!");
+			console.log("Error in getMarketListing function!!!");
 			console.log(err);
-			}
+		}
 	}
 	
-	checkMinimumTrades(markets, currencies ){
+	checkMinimumTrades(markets, currencies) {
 		let marketOneTrade = markets[0].rate * markets[0].quantity,
 			marketTwoTrade = markets[1].rate * markets[1].quantity,
 			marketThreeTrade = markets[2].rate * markets[2].quantity,
-		currencyTwo = currencies[1],
-		currencyThree = currencies[2];
+			currencyTwo = currencies[1],
+			currencyThree = currencies[2];
 		let passedChecks = [false, false];
-				
-		if(super.isUSDT(currencyThree) || super.isNZDT(currencyThree)){
-			if(marketOneTrade > 1.00 && marketTwoTrade > 1.00){
+		
+		if (super.isUSDT(currencyThree) || super.isNZDT(currencyThree)) {
+			if (marketOneTrade > 1.00 && marketTwoTrade > 1.00) {
 				passedChecks[0] = true;
 			}
 		}
-		if(super.isBTC(currencyThree)){
-			if(marketOneTrade > 0.0005 && marketTwoTrade > 0.0005){
+		if (super.isBTC(currencyThree)) {
+			if (marketOneTrade > 0.0005 && marketTwoTrade > 0.0005) {
 				passedChecks[0] = true;
 			}
 		}
-		if(super.isBTC(currencyTwo)){
-			if(marketThreeTrade > 0.0005){
+		if (super.isBTC(currencyTwo)) {
+			if (marketThreeTrade > 0.0005) {
 				passedChecks[1] = true;
 			}
 		}
-		if(super.isUSDT(currencyTwo) || super.isNZDT(currencyTwo)){
-			if(marketThreeTrade > 1.00){
+		if (super.isUSDT(currencyTwo) || super.isNZDT(currencyTwo)) {
+			if (marketThreeTrade > 1.00) {
 				passedChecks[1] = true;
 			}
 		}
@@ -72,10 +76,11 @@ export class CryptopiaMiddleware extends TradeMiddleware {
 }
 
 let instance = null;
+
 export class CryptopiaCurrencies {
 	
-	constructor(service){
-		if(instance) return instance;
+	constructor(service) {
+		if (instance) return instance;
 		this.balance = {};
 		this.service = service;
 		instance = this;
@@ -87,8 +92,8 @@ export class CryptopiaCurrencies {
 	
 	async setAccountBalance(coins) {
 		this.balance = {}; //Reset our balance to empty object once again...
-		for(let i=0; i<coins.length; i++){
-			if(coins[i].Total !== 0){
+		for (let i = 0; i < coins.length; i++) {
+			if (coins[i].Total !== 0) {
 				let key = coins[i].Symbol;
 				this.balance[key] = {
 					coins: coins[i].Total,
@@ -98,18 +103,17 @@ export class CryptopiaCurrencies {
 		}
 	}
 	
-	async getBalances(){
+	async getBalances() {
 		const balance = await this.getAccountBalance();
 		return balance;
 	}
 	
-	async setBalances(){
+	async setBalances() {
 		const getBalances = await this.service.getBalance();
 		//console.log(getBalances);
 		console.log("we getting back over here?");
 		await this.setAccountBalance(getBalances);
 	}
-	
 	
 	
 }

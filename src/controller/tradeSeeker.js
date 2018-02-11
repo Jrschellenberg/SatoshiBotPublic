@@ -12,7 +12,7 @@ function sleep(ms = 0) {
 //May need queue to handle collisions of events.
 export default class TradeSeeker{
 	constructor(profitLog, errorLog, workerNumber, tradeScout,
-	            utilities, middleWare){
+	            utilities, production, middleWare ){
 		this.utilities = utilities;
 		this.middleware = middleWare;
 		this.tradeScout = tradeScout;
@@ -25,7 +25,11 @@ export default class TradeSeeker{
 		this.potentialTrade = null;
 		this.currencies = tradeScout.getWork(workerNumber);
 		this.assignMarketPairs(this.currencies);
-		this.process();
+		this.production = production;
+		if(production){
+			this.process();
+		}
+		
 	}
 	
 	assignMarketPairs(marketPairings){
@@ -68,14 +72,17 @@ export default class TradeSeeker{
 		let trader = this;
 		async.series({
 			one: async (callback) => {
+				console.log(trader.pair1);
 				const markets = await	trader.middleware.getMarketListing({market: trader.pair1, depth: 1}); // BTC_USDT
 				callback(null, markets);
 			},
 			two: async (callback) =>{
+				console.log(trader.pair2);
 					const markets = await	trader.middleware.getMarketListing({market: trader.pair2, depth: 1}); // BTC_USDT
 					callback(null, markets);
 			},
 			three: async  (callback) =>{
+				console.log(trader.pair3);
 				const markets = await	trader.middleware.getMarketListing({market: trader.pair3, depth: 1});  // GRLC_BTC
 				callback(null, markets);
 			}

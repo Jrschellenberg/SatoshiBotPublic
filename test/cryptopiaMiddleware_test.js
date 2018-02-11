@@ -13,11 +13,11 @@ let cryptopiaCurrencies = new CryptopiaCurrencies(cryptopiaService);
 
 let middleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies);
 
-describe('CryptopiaMiddleware - getMarketListing', () => {
-	it('should return null if api call failed or not supplied with proper parameter', () => {
-		expect(middleware.getMarketListing.bind(middleware, null)).to.throw(ReferenceError);
-	});
-});
+// describe('CryptopiaMiddleware - getMarketListing', () => {
+// 	it('should return null if api call failed or not supplied with proper parameter', () => {
+// 		expect(middleware.getMarketListing.bind(middleware, null)).to.throw(ReferenceError);
+// 	});
+// });
 
 describe('CryptopiaMiddleware - checkMinimumTrades', () => {
 	let markets1 = [
