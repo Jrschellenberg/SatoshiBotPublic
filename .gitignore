@@ -5,4 +5,5 @@ lib/
 package-lock.json
 profitable.log
 error.log
+Success.log
 markets.js

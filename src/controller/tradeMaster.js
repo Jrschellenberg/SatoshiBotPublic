@@ -1,8 +1,8 @@
 import async from 'async';
 export default class TradeMaster {
-	constructor(middleware, successfulTradeLog, errorLog, ){
-		this.tradeToExecute = null;
-		this.middleware = middleware;
+	constructor(successfulTradeLog, errorLog, ){
+		this.potentialTrade = null;
+		this.middleware = null;
 		this.successfulTradingLog = successfulTradeLog; 
 		this.errorLog = errorLog;
 		this.isCurrentlyTrading = false;

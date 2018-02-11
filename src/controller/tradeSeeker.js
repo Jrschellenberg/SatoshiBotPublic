@@ -12,7 +12,8 @@ function sleep(ms = 0) {
 //May need queue to handle collisions of events.
 export default class TradeSeeker {
 	constructor(profitLog, errorLog, workerNumber, tradeScout,
-	            utilities, production, middleWare) {
+	            utilities, production, tradeMaster, middleWare) {
+		this.tradeMaster = tradeMaster;
 		this.utilities = utilities;
 		this.middleware = middleWare;
 		this.tradeScout = tradeScout;
@@ -87,16 +88,23 @@ export default class TradeSeeker {
 				
 				if(trader.potentialTrade.isSufficientFundsThreeTrades()){
 					//Logic for doing three fund Trade
-					
 				}
 				else if(trader.potentialTrade.isSufficientFundsTwoTrades()){
 					
 					//logic for doing a 2 Step Trade.
 				}
-				
-				
+				else{
+					this.errorLog.error({
+						information: this.currentMarket,
+						market1: trader.pair1,
+						market2: trader.pair2,
+						market3: trader.pair3,
+						lowestPrice: trader.potentialTrade.lowestPrice,
+						trade: trader.potentialTrade,
+						passMinimumTrade: trader.passMinimumTrade,
+					}, `Trade missed Due to inSufficient funds!!!`);
+				}
 				//Else, skip trade....
-				
 			}
 		}
 		next();

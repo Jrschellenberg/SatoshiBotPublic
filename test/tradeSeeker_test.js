@@ -5,6 +5,7 @@ import {API_CREDENTIALS, CRYPTOPIA_CREDENTIALS} from "../src/service/secret";
 import TradeSeeker from "../src/controller/tradeSeeker";
 import TradeScout from "../src/controller/tradeScout";
 import Utilities from '../src/utilities';
+import TradeMaster from '../src/controller/tradeMaster';
 
 const expect = require('chai').expect;
 const bunyan = require('bunyan');
@@ -36,6 +37,15 @@ let errorLog = bunyan.createLogger({
 	]
 });
 
+let successLog = bunyan.createLogger({
+	name: "myapp",
+	streams: [
+		{
+			level: 'info',
+			path: './Success.log'
+		}
+	]
+});
 
 const utilities = new Utilities();
 
@@ -46,8 +56,8 @@ let cryptopiaCurrencies = new CryptopiaCurrencies(cryptopiaService);
 let middleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies);
 let production = false;
 
-
-let tradeSeeker = new TradeSeeker(profitLog, errorLog, 0, cryptopiaTradeScout, utilities,production, middleware);
+let cryptopiaTradeMaster = new TradeMaster(successLog, errorLog);
+let tradeSeeker = new TradeSeeker(profitLog, errorLog, 0, cryptopiaTradeScout, utilities,production, cryptopiaTradeMaster, middleware);
 
 describe('TradeSeeker - Constructor', () => {
 	it('should set the constructor values to the expected values', () => {
@@ -59,6 +69,7 @@ describe('TradeSeeker - Constructor', () => {
 		expect(tradeSeeker.errorLog).to.be.equal(errorLog);
 		expect(tradeSeeker.profitLog).to.be.equal(profitLog);
 		expect(tradeSeeker.currencies).to.be.equal(cryptopiaMarkets[0]);
+		expect(tradeSeeker.tradeMaster).to.be.equal(cryptopiaTradeMaster);
 	});
 });
 
