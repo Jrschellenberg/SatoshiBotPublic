@@ -31,7 +31,6 @@ export default class TradeSeeker {
 		if (production) {
 			this.process();
 		}
-		
 	}
 	
 	assignMarketPairs(marketPairings) {
@@ -39,7 +38,6 @@ export default class TradeSeeker {
 		this.pair1 = marketPairings[0] + '_' + marketPairings[2];
 		this.pair2 = marketPairings[1] + '_' + marketPairings[2];
 		this.pair3 = marketPairings[0] + '_' + marketPairings[1];
-		
 	}
 	
 	process() {
@@ -51,6 +49,7 @@ export default class TradeSeeker {
 						//Finding new work while waiting before starting to scout for trade..
 						trader.assignMarketPairs(trader.tradeScout.getWork(trader.workerNumber)); //Find more work!
 						sleep(trader.middleware.API_TIMEOUT).then(() => {
+							console.log(trader.currencies);
 							trader.currencyExchangeCalls(next);
 						});
 					},
@@ -67,9 +66,32 @@ export default class TradeSeeker {
 	
 	logicFlow(next, oldMarkets) {
 		let trader = this;
-		if(trader.isProfitableTrade(oldMarkets) && trader.establishTrade(this.currentMarket)){
-			console.log("trade is profitable and has been copied to log..");
+		if (oldMarkets.one && oldMarkets.two && oldMarkets.three) { // Make sure we actually have data
+			let marketOne = oldMarkets.one.buy[0],
+				marketTwo = oldMarkets.two.sell[0],
+				marketThree = oldMarkets.three.sell[0];
+			trader.currentMarket = [marketOne, marketTwo, marketThree];
+			trader.passMinimumTrade = this.middleware.checkMinimumTrades(trader.currentMarket, this.currencies);
 			
+			if(trader.establishTrade(this.currentMarket) && trader.potentialTrade.isProfitable() && trader.passMinimumTrade ){
+				console.log("trade is profitable and has been copied to log..");
+				this.profitLog.info({
+					information: this.currentMarket,
+					market1: trader.pair1,
+					market2: trader.pair2,
+					market3: trader.pair3,
+					lowestPrice: trader.potentialTrade.lowestPrice,
+					trade: trader.potentialTrade,
+					passMinimumTrade: trader.passMinimumTrade,
+				}, `This written afterwards!!`);
+				
+				//Put an if here to determine if sufficient to do all 3 trades at once.
+				
+				//Else if if enough funds to do the trade in 2 steps...
+				
+				//Else, skip trade....
+				
+			}
 		}
 		next();
 	}
@@ -103,43 +125,7 @@ export default class TradeSeeker {
 			//trader.isProfitableTrade(next, markets);
 		})
 	}
-	
-	isProfitableTrade(oldMarkets) {
-		let trader = this;
-		if (oldMarkets.one && oldMarkets.two && oldMarkets.three) { // Make sure we actually have data
-			let marketOne = oldMarkets.one.buy[0],
-				marketTwo = oldMarkets.two.sell[0],
-				marketThree = oldMarkets.three.sell[0];
-			trader.currentMarket = [marketOne, marketTwo, marketThree];
-			
-			try {
-				let amountEarned = marketOne.rate;                       // Buying price USD
-				let tradeFee = trader.utilities.precisionRound((amountEarned * trader.middleware.getMarketFee()), 8);
-				amountEarned -= tradeFee; // Amount earned per 1 of each coin.
-				
-				let pair2Price = marketTwo.rate;                        //Selling price USD
-				tradeFee = trader.utilities.precisionRound((pair2Price * trader.middleware.getMarketFee()), 8);
-				pair2Price += tradeFee;
-				
-				let amountSpent = marketThree.rate * pair2Price;        //Selling price USD
-				
-				tradeFee = trader.utilities.precisionRound(amountSpent * trader.middleware.getMarketFee(), 8); //Since 2 trades, 2 times fees.
-				amountSpent += tradeFee; // Add on the Fee. This is the 
-				
-				trader.passMinimumTrade = this.middleware.checkMinimumTrades(trader.currentMarket, this.currencies);
-				
-				//return (amountEarned > amountSpent) && trader.passMinimumTrade;
-				return true;
-				//this.establishTrade(newMarkets, passMinimumTrade);
-			}
-			catch (err) {
-				this.errorLog.error({pair: trader.currencies});
-				return false;
-			}
-		}
-		return false;
-	}
-	
+		
 	establishTrade(newMarkets) {
 		//console.log("inside Calculate Profits function.");
 		try {
@@ -149,17 +135,15 @@ export default class TradeSeeker {
 			let tradeListingThree = new TradeListing(newMarkets[2], trader.pair3, "sell");
 			
 			trader.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, trader.currencies, trader.utilities, trader.middleware);
-			
-			this.profitLog.info({
-				information: newMarkets,
-				market1: trader.pair1,
-				market2: trader.pair2,
-				market3: trader.pair3,
-				lowestPrice: trader.potentialTrade.lowestPrice,
-				trade: trader.potentialTrade,
-				passMinimumTrade: trader.passMinimumTrade,
-			}, `This written afterwards!!`);
-			
+			// this.profitLog.info({
+			// 	information: newMarkets,
+			// 	market1: trader.pair1,
+			// 	market2: trader.pair2,
+			// 	market3: trader.pair3,
+			// 	lowestPrice: trader.potentialTrade.lowestPrice,
+			// 	trade: trader.potentialTrade,
+			// 	passMinimumTrade: trader.passMinimumTrade,
+			// }, `This written afterwards!!`);
 			return true;
 		}
 		catch (err) {

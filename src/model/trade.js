@@ -59,6 +59,10 @@ export default class Trade {
 		this.completedTrade1.quantity = this.completedTrade3.quantity;
 	}
 	
+	isProfitable(){
+		return this.profit > 0;
+	}
+	
 	calculateProfit(currency){
 		let profitEarned = this.calculateProfitEarned(this.completedTrade1.rate, this.completedTrade1.quantity, this.middleware.marketFee);
 		let amountSpent = this.calculateAmountSpent(this.completedTrade3.quantity, this.completedTrade3.rate, this.completedTrade2.rate, this.middleware.marketFee );
