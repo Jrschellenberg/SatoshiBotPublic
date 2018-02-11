@@ -1,5 +1,4 @@
 import async from 'async';
-
 import TradeListing from "../model/tradeListing";
 import Trade from "../model/trade";
 

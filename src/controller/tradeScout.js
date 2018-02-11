@@ -10,7 +10,7 @@ export default class TradeScout {
 			}
 			
 			for(let i=0; i<marketPairings.length; i++){ //Loop through all pairings.
-				let j =  i%numberOfSlaves; //Match our pairings to slaves work Ticket
+				let j =  i % numberOfSlaves; //Match our pairings to slaves work Ticket
 				this.mappedMarketPairings[j].push(marketPairings[i]);
 			}
 		}
@@ -18,7 +18,7 @@ export default class TradeScout {
 	getWork(slaveNumber){
 		if(this.slaveIndexs[slaveNumber] === this.mappedMarketPairings[slaveNumber].length){
 			this.slaveIndexs[slaveNumber] = 0;
-			return this.mappedMarketPairings[slaveNumber][this.slaveIndexs[slaveNumber]++]; // I think it errroring here!!!!!
+			return this.mappedMarketPairings[slaveNumber][this.slaveIndexs[slaveNumber]++]; 
 		}
 		return this.mappedMarketPairings[slaveNumber][this.slaveIndexs[slaveNumber]++]; //Increment index by 1 and send off work.
 	}
