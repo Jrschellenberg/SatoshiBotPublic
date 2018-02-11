@@ -45,9 +45,14 @@ export default class Trade {
 		}
 	}
 	executeTrade(){
+		this.completedTrade1.pair = this.trade1.pair;
+		this.completedTrade2.pair = this.trade2.pair;
+		this.completedTrade3.pair = this.trade3.pair;
+		
 		this.completedTrade1.rate = this.trade1.rate;
 		this.completedTrade2.rate = this.trade2.rate;
 		this.completedTrade3.rate = this.trade3.rate;
+		
 		this.completedTrade1.trade = 'SELL';
 		this.completedTrade2.trade = 'BUY';
 		this.completedTrade3.trade = 'BUY';
@@ -90,13 +95,13 @@ export default class Trade {
 		}
 	}
 	
-	async isSufficientFunds(){
+	async isSufficientFundsTwoTrades(){
 		let balance = await this.middleware.marketBalances.getBalances();
-		return this.determineEnoughFunds(balance);
+		return this.determineEnoughFundsTwoTrades(balance);
 			//Need to have enough of quantity 2 for Trade 3's market, as well as have enough of quantity 2 * rate for trade 2's market..
 	}
 	
-	determineEnoughFunds(balance){
+	determineEnoughFundsTwoTrades(balance){
 		if(!balance){
 			throw new TypeError("Program could not grab your Balances and has crashed");
 		}

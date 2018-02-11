@@ -110,7 +110,7 @@ describe('Trade - ComputeTrade', () => {
 	});
 });
 
-describe('Trade - determineEnoughFunds', () => {
+describe('Trade - determineEnoughFundsTwoTrades', () => {
 	let balance1 = { ETN: { coins: 0.40453008, status: 'OK' },
 		USDT: { coins: 15.56462343, status: 'OK' } };
 	let balance2 = { NZDT: { coins: 12.0453008, status: 'OK' },
@@ -119,15 +119,15 @@ describe('Trade - determineEnoughFunds', () => {
 		USDT: { coins: 50.56462343, status: 'OK' } };
 	
 	it('should return false if user does not have sufficient funds', () => {
-		expect(trade.determineEnoughFunds(balance1)).to.be.false;
-		expect(trade.determineEnoughFunds(balance2)).to.be.false;
+		expect(trade.determineEnoughFundsTwoTrades(balance1)).to.be.false;
+		expect(trade.determineEnoughFundsTwoTrades(balance2)).to.be.false;
 	});
 	it('should throw error if given null', () => {
-		expect(trade.determineEnoughFunds.bind(trade, null))
+		expect(trade.determineEnoughFundsTwoTrades.bind(trade, null))
 			.to.throw(TypeError);
 	});
 	it('should return true if user has sufficient funds', () => {
-		expect(trade.determineEnoughFunds(balance3)).to.be.true;
+		expect(trade.determineEnoughFundsTwoTrades(balance3)).to.be.true;
 	});
 });
 describe('Trade - isProfitable', () => {

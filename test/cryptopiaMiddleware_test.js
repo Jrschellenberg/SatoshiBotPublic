@@ -61,3 +61,18 @@ describe('CryptopiaMiddleware - checkMinimumTrades', () => {
 		expect(middleware.checkMinimumTrades(markets2, currencies)).to.be.false;
 	});
 });
+
+let completedTrade1 = {
+	pair: 'BTC_USDT',
+	rate: 887.77332964,
+	trade: "SELL",
+	quantity: 0.04750243
+};
+
+describe('Cryptopia Middleware - reformatPairString', () => {
+
+	it('should replace the pairing to proper format ie replace _ with /', ()=> {
+		expect(middleware.reformatPairString('BTC_USDT')).to.be.equal('BTC/USDT');
+	})
+	
+});

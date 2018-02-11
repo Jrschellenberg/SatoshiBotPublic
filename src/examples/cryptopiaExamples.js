@@ -46,10 +46,10 @@ Cryptopia.setOptions(options);
 		// const transactions = await Cryptopia.getTransactions({Type: 'Withdraw'});
 		// console.log(transactions); //Array of available Transactions with Type from API
 		//
-		// const openOrders = await Cryptopia.getOpenOrders({Market: 'ETH/BTC', Count: 10});
-		// console.log(openOrders); //Array of available Open Orders in Market from API
+		//const openOrders = await Cryptopia.getOpenOrders({Market: 'BTC/USDT', Count: 1});
+		//console.log(openOrders); //Array of available Open Orders in Market from API
 		//
-		// const submitTrade = await Cryptopia.submitTrade({Market: 'ETH/BTC', Type: 'Buy', Rate: 0.00050000, Amount: 123.000000000});
+		// const submitTrade = await Cryptopia.submitTrade({Market: 'BTC/USDT', Type: 'Buy', Rate: 3000, Amount: 0.00044});
 		// console.log(submitTrade); //Object with OrderId and FilledOrders array from API
 		//
 		// const cancelTrade = await Cryptopia.cancelTrade({Type: 'Trade', OrderId: 12354});

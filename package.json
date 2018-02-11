@@ -12,6 +12,7 @@
   },
   "scripts": {
     "test": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text mocha test/*.js",
+    "quickTest": "mocha --compilers js:babel-core/register",
     "build": "./node_modules/.bin/babel src -d lib",
     "start": "node src/targetMarkets.js && npm run build && node lib/main.js",
     "crypt": "npm run build && node lib/examples/cryptopiaExamples.js"

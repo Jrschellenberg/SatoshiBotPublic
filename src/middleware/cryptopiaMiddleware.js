@@ -43,6 +43,23 @@ export class CryptopiaMiddleware extends TradeMiddleware {
 		}
 	}
 	
+	async checkOpenOrder(market){
+		//const openOrder = await this.service.getOpenOrders({Market: market, Count: 1});
+		//return openOrder;
+	}
+	
+	async submitOrder(params){
+		params.pair = this.reformatPairString(params.pair);
+		//return params;
+		//const market = await this.service.submitTrade({Market: params., Type: 'Buy', Rate: 3000, Amount: 0.00044})
+		
+	}
+	reformatPairString(pair){
+		return pair.replace('_', '/');
+	}
+	
+	
+	
 	checkMinimumTrades(markets, currencies) {
 		let marketOneTrade = markets[0].rate * markets[0].quantity,
 			marketTwoTrade = markets[1].rate * markets[1].quantity,
