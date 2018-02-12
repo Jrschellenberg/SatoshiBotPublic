@@ -109,7 +109,7 @@ export default class Trade {
 	
 	async reCalculateTrade(){
 		let balance = await this.middleware.marketBalances.getBalances();
-		return this.determineLeastFundsAvailable();
+		return this.determineLeastFundsAvailable(balance);
 	}
 	
 	determineEnoughFundsTwoTrades(balance){

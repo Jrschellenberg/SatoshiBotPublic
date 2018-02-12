@@ -135,8 +135,8 @@ export class CryptopiaCurrencies {
 	}
 	
 	
-	async setTestBalance(balance){
-		await this.setAccountBalance(balance);
+	setTestBalance(balance){
+		this.balance = balance;
 	}
 	
 	

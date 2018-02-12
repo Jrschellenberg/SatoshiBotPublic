@@ -53,18 +53,12 @@ let cryptopiaTradeScout = new TradeScout(NUMBER_SLAVES, cryptopiaMarkets);
 
 let cryptopiaCurrencies = new CryptopiaCurrencies(cryptopiaService);
 
-let balance3 = {
-	ETH: {coins: 0.02750242, status: 'OK'}, NZDT: {coins: 70.0453008, status: 'OK'}, //false
-	USDT: {coins: 500.56462343, status: 'OK'}
-};
-
-
 
 let middleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies);
 let production = false;
 
 let cryptopiaTradeMaster = new TradeMaster(successLog, errorLog);
-let tradeSeeker = new TradeSeeker(profitLog, errorLog, 0, cryptopiaTradeScout, utilities,production, cryptopiaTradeMaster, middleware);
+let tradeSeeker = new TradeSeeker(profitLog, errorLog, 0, cryptopiaTradeScout, utilities, production, cryptopiaTradeMaster, middleware);
 
 describe('TradeSeeker - Constructor', () => {
 	it('should set the constructor values to the expected values', () => {
@@ -82,54 +76,121 @@ describe('TradeSeeker - Constructor', () => {
 
 describe('TradeSeeker - assignMarketPairs', () => {
 	it('should set the pairs of TradeSeeker properly when called', () => {
-		expect(tradeSeeker.pair1).to.be.equal(cryptopiaMarkets[0][0]+'_'+cryptopiaMarkets[0][2]);
-		expect(tradeSeeker.pair2).to.be.equal(cryptopiaMarkets[0][1]+'_'+cryptopiaMarkets[0][2]);
-		expect(tradeSeeker.pair3).to.be.equal(cryptopiaMarkets[0][0]+'_'+cryptopiaMarkets[0][1]);
+		expect(tradeSeeker.pair1).to.be.equal(cryptopiaMarkets[0][0] + '_' + cryptopiaMarkets[0][2]);
+		expect(tradeSeeker.pair2).to.be.equal(cryptopiaMarkets[0][1] + '_' + cryptopiaMarkets[0][2]);
+		expect(tradeSeeker.pair3).to.be.equal(cryptopiaMarkets[0][0] + '_' + cryptopiaMarkets[0][1]);
 	});
 });
 
 
+describe('TradeSeeker - LogicFlow', () => {
+	let oldMarkets = {
+		one: {
+			buy: [
+				{
+					quantity: 231.19800452,
+					rate: 13.92580232
+				}
+			]
+		},
+		two: {
+			sell: [
+				{
+					quantity: 0.02570287,
+					rate: 8400
+				}
+			]
+		},
+		three: {
+			sell: [
+				{
+					quantity: 1386.25271649,
+					rate: 0.00162027
+				}
+			]
+		}
+	};
+	it('should set values accordingly based off mock api data above with sufficient funds for all Three', () => {
+		let newCryptopiaCurrencies = new CryptopiaCurrencies(cryptopiaService);
+		newCryptopiaCurrencies.balance = {
+			LUX: {coins: 30.86332525, status: 'OK'}, BTC: {coins: 70.0453008, status: 'OK'},
+			USDT: {coins: 500.56462343, status: 'OK'}
+		};
+		
+		let next = function(){
+			console.log('hi from test');
+		};
+		
+			let balance3 = {
+				LUX: {coins: 30.86332525, status: 'OK'}, BTC: {coins: 70.0453008, status: 'OK'},
+				USDT: {coins: 500.56462343, status: 'OK'}
+			};
+			
+			
+			
+			let newMiddleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, newCryptopiaCurrencies);
+			let anotherTradeSeeker = new TradeSeeker(profitLog, errorLog, 0, cryptopiaTradeScout, utilities, production, cryptopiaTradeMaster, newMiddleware);
 
-// describe('TradeSeeker - LogicFlow', () => {
-// 	(async function () {
-//		
-// 		await cryptopiaCurrencies.setTestBalance(balance3);
-// 		let middleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies);
-// 	let anotherTradeSeeker = new TradeSeeker(profitLog, errorLog, 0, cryptopiaTradeScout, utilities,production, cryptopiaTradeMaster, middleware);
-//	
-// 	let oldMarkets = {
-// 		one: {
-// 			buy: [
-// 				{
-// 					quantity: 231.19800452,
-// 					rate: 13.92580232
-// 				}
-// 			]
-// 		},
-// 		two: {
-// 			sell: [
-// 				{
-// 					quantity: 0.02570287,
-// 					rate: 8400
-// 				}
-// 			]
-// 		},
-// 		three: {
-// 			sell: [
-// 				{
-// 					quantity: 1386.25271649,
-// 					rate: 0.00162027
-// 				}
-// 			]
-// 		}
-// 	};
-// 	it('should set values accordingly based off mock api data above', () => {
-//		
-//		
-// 	});
-//		
-// 	})();
-// });
+			
+			anotherTradeSeeker.logicFlow(next, oldMarkets);
+			expect(anotherTradeSeeker.middleware.marketBalances.getBalances()).to.be.equal(balance3);
+			expect(anotherTradeSeeker.passMinimumTrade).to.be.true;
+			expect(anotherTradeSeeker.potentialTrade.profit).to.be.equal(3.69998805);
+			expect(anotherTradeSeeker.potentialTrade.isProfitable()).to.be.true;
+			//expect(anotherTradeSeeker.potentialTrade.isSufficientFundsTwoTrades()).to.be.true;
+			//expect(anotherTradeSeeker.potentialTrade.isSufficientFundsThreeTrades()).to.be.true;
+			//expect(anotherTradeSeeker.establishTrade()).to.be.true;
+			//expect(anotherTradeSeeker.potentialTrade.reCalculateTrade()).to.be.equal(1);
+
+	});
+	
+	// it('should set values properly from mock data when only sufficient funds in two.', () => {
+	// 	(async function () {
+	//		
+	// 		let balance3 = {
+	// 			BTC: {coins: 70.0453008, status: 'OK'},
+	// 			USDT: {coins: 500.56462343, status: 'OK'}
+	// 		};
+	//		
+	// 		await cryptopiaCurrencies.setTestBalance(balance3);
+	// 		let middleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies);
+	// 		let anotherTradeSeeker = new TradeSeeker(profitLog, errorLog, 0, cryptopiaTradeScout, utilities, production, cryptopiaTradeMaster, middleware);
+	// 		anotherTradeSeeker.logicFlow(null, oldMarkets);
+	//		
+	// 		expect(anotherTradeSeeker.passMinimumTrade).to.be.true;
+	// 		expect(anotherTradeSeeker.potentialTrade.profit).to.be.equal(3.69998805);
+	// 		expect(anotherTradeSeeker.potentialTrade.isProfitable()).to.be.true;
+	// 		expect(anotherTradeSeeker.potentialTrade.isSufficientFundsTwoTrades()).to.be.true;
+	// 		expect(anotherTradeSeeker.potentialTrade.isSufficientFundsThreeTrades()).to.be.false;
+	// 		expect(anotherTradeSeeker.establishTrade()).to.be.true;
+	// 		expect(anotherTradeSeeker.potentialTrade.reCalculateTrade()).to.be.equal(1);
+	//		
+	// 	})();
+	// });
+	
+	// it('should properly recalculate trade amount when insufficient funds', () => {
+	// 	(async function () {
+	//		
+	// 		let balance3 = {
+	// 			LUX: {coins: 4.86332525, status: 'OK'}, BTC: {coins: 0.0453008, status: 'OK'},
+	// 			USDT: {coins: 20.00, status: 'OK'}
+	// 		};
+	//		
+	// 		await cryptopiaCurrencies.setTestBalance(balance3);
+	// 		let middleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies);
+	// 		let anotherTradeSeeker = new TradeSeeker(profitLog, errorLog, 0, cryptopiaTradeScout, utilities, production, cryptopiaTradeMaster, middleware);
+	// 		anotherTradeSeeker.logicFlow(null, oldMarkets);
+	//		
+	// 		expect(anotherTradeSeeker.potentialTrade.reCalculateTrade()).to.be.equal(0.09226123);
+	// 		// expect(trader.potentialTrade.completedTrade3.quantity).
+	//		
+	//		
+	//		
+	//		
+	// 	})();
+	// });
+	
+});
 
 
 
