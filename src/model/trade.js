@@ -23,7 +23,7 @@ export default class Trade {
 		this.utilities = utilities;
 		
 		this.calculateStartTrade();
-		this.executeTrade();
+		this.executeTrade(1);
 		
 		this.profit = this.calculateProfit();
 		this.displayProfit = this.profit.toString() + this.currencies[2];
@@ -41,11 +41,10 @@ export default class Trade {
 			this.trade3.limitingReagent = true;
 		}
 		else{
-			//AN error occurred..
 			console.log("An error occured while trying to determine the starting trade..")
 		}
 	}
-	executeTrade(){
+	executeTrade(ratio){
 		this.completedTrade1.pair = this.trade1.pair;
 		this.completedTrade2.pair = this.trade2.pair;
 		this.completedTrade3.pair = this.trade3.pair;
@@ -58,7 +57,7 @@ export default class Trade {
 		this.completedTrade2.trade = 'BUY';
 		this.completedTrade3.trade = 'BUY';
 		
-		this.completedTrade3.quantity = this.utilities.precisionRound(((this.lowestPrice / this.trade3.usdRateOrder) * this.trade3.quantity), 8);
+		this.completedTrade3.quantity = this.utilities.precisionRound(ratio* (((this.lowestPrice / this.trade3.usdRateOrder) * this.trade3.quantity)), 8);
 		
 		this.completedTrade2.quantity = this.utilities.precisionRound(this.computeTrade(this.completedTrade3.quantity, this.trade3.rate, this.middleware.marketFee, 'buy'), 8);
 		
@@ -129,5 +128,36 @@ export default class Trade {
 		return (balance[this.currencies[0]].coins >= this.completedTrade1.quantity) &&  //Enough for trade 1.
 		(balance[this.currencies[1]].coins >=  this.completedTrade2.quantity ) && //Enough for Trade 3.
 			(balance[this.currencies[2]].coins >= this.utilities.precisionRound(this.computeTrade(this.completedTrade2.quantity, this.completedTrade2.rate, this.middleware.marketFee, 'buy'), 8)); //Enough for Trade 2
+	}
+	
+	determineLeastFundsAvailable(balance){
+		if(!balance){
+			throw new TypeError("Program could not grab your Balances and has crashed");
+		}
+		let balanceTrade1 = balance[this.currencies[0]].coins / this.completedTrade1.quantity; //Trade 1
+		let balanceTrade3 = (balance[this.currencies[1]].coins /  this.completedTrade2.quantity ); // Trade 3
+		let balanceTrade2 = (balance[this.currencies[2]].coins / this.utilities.precisionRound(this.computeTrade(this.completedTrade2.quantity, this.completedTrade2.rate, this.middleware.marketFee, 'buy'), 8)); //Enough for Trade 2
+		
+		let lowest = Math.min(balanceTrade1, balanceTrade2, balanceTrade3);
+		let obj = {
+		};
+		
+		if(lowest > 1){
+			obj['currency'] = this.currencies[0];
+			obj['lowest'] = 1;
+			return obj;
+		}
+		
+		if(lowest === balanceTrade1){
+			obj['currency'] = this.currencies[0];
+		}
+		else if(lowest === balanceTrade3){
+			obj['currency'] = this.currencies[1];
+		}
+		else if(lowest === balanceTrade2){
+			obj['currency'] = this.currencies[2];
+		}
+		obj['lowest'] = this.utilities.precisionFloor(lowest, 5);
+		return obj;
 	}
 }

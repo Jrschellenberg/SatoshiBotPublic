@@ -1,11 +1,9 @@
 import Utilities from '../src/utilities';
 
 const expect = require('chai').expect;
-
+let utilities = new Utilities();
 
 describe('Utilities - PrecisionRound', () => {
-	let utilities = new Utilities();
-	
 	if('should return NaN if supplied with non integer arguments', ()=> {
 			expect(utilities.precisionRound('stringOne', 0.12312312312)).to.be.NaN;
 			expect(utilities.precisionRound(0.123, 'stringTwo')).to.be.NaN;
@@ -31,5 +29,11 @@ describe('Utilities - PrecisionRound', () => {
 		expect(utilities.precisionRound(20.1274532, 2)).to.be.equal(20.13);
 		expect(utilities.precisionRound(20.1274532234235, 8)).to.be.equal(20.12745322);
 	});
-	
+});
+
+describe('Utilities - PrecisionFloor', () => {
+	it('should return the first argument with decimals always rounded down in place specified by second argument', () => {
+		expect(utilities.precisionFloor(20.123456789, 5)).to.be.equal(20.12345);
+		expect(utilities.precisionFloor(20.1, 5)).to.be.equal(20.1);
+	});
 });

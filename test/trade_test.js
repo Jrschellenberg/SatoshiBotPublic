@@ -145,6 +145,22 @@ describe('Trade - determineEnoughFundsThreeTrades', () => {
 	});
 });
 
+describe('Trade - ExecuteTrade', () => {
+	let newTrade = new Trade(tradeListing1, tradeListing2, tradeListing3, currencies, utilities, middleware);
+	it('Should maintain proper ratios on trades during constructor..', () => {
+		expect(newTrade.completedTrade1.quantity).to.be.equal(0.04750243);
+		expect(newTrade.completedTrade2.quantity).to.be.equal(53.25581758);
+		expect(newTrade.completedTrade3.quantity).to.be.equal(0.04750243);
+	});
+	
+	it('should be able to shift all of the quantities to lower trade when given a ratio less than 1', () => {
+		newTrade.executeTrade(0.57896);
+		expect(newTrade.completedTrade1.quantity).to.be.equal(0.02750201);
+		expect(newTrade.completedTrade2.quantity).to.be.equal(30.83299165);
+		expect(newTrade.completedTrade3.quantity).to.be.equal(0.02750201);
+	});
+});
+
 
 describe('Trade - determineEnoughFundsTwoTrades', () => {
 	let balance1 = {
@@ -186,5 +202,19 @@ describe('Trade - isProfitable', () => {
 		expect(trade.isProfitable()).to.be.true;
 		trade.profit = 0.30;
 		expect(trade.isProfitable()).to.be.true;
+	});
+});
+
+describe('Trade - determineLeastFundsAvailable', () => {
+	it('should return the lowest ratio of funds available', () => {
+		let balance3 = {
+			ETH: {coins: 0.02750242, status: 'OK'}, NZDT: {coins: 70.0453008, status: 'OK'}, //false
+			USDT: {coins: 500.56462343, status: 'OK'}
+		};
+		let objExpecting = {
+			currency: 'ETH',
+			lowest: 0.57896
+		};
+		expect(trade.determineLeastFundsAvailable(balance3)).to.deep.equal(objExpecting);
 	});
 });
