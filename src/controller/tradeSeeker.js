@@ -50,7 +50,7 @@ export default class TradeSeeker {
 						//Finding new work while waiting before starting to scout for trade..
 						trader.assignMarketPairs(trader.tradeScout.getWork(trader.workerNumber)); //Find more work!
 						sleep(trader.middleware.API_TIMEOUT).then(() => {
-							console.log(trader.currencies);
+							//console.log(trader.currencies);
 							trader.currencyExchangeCalls(next);
 						});
 					},
@@ -74,27 +74,14 @@ export default class TradeSeeker {
 			trader.currentMarket = [marketOne, marketTwo, marketThree];
 			trader.passMinimumTrade = this.middleware.checkMinimumTrades(trader.currentMarket, this.currencies);
 			
-			if(trader.establishTrade(this.currentMarket) && trader.potentialTrade.isProfitable() && trader.passMinimumTrade ){
-				console.log("trade is profitable and has been copied to log..");
-				this.profitLog.info({
-					information: this.currentMarket,
-					market1: trader.pair1,
-					market2: trader.pair2,
-					market3: trader.pair3,
-					lowestPrice: trader.potentialTrade.lowestPrice,
-					trade: trader.potentialTrade,
-					passMinimumTrade: trader.passMinimumTrade,
-				}, `This written afterwards!!`);
+			
+			if(trader.establishTrade(this.currentMarket)){
+				console.log(`profit is ${trader.potentialTrade.profit}`);
 				
-				if(trader.potentialTrade.isSufficientFundsThreeTrades()){
-					//Logic for doing three fund Trade
-				}
-				else if(trader.potentialTrade.isSufficientFundsTwoTrades()){
-					
-					//logic for doing a 2 Step Trade.
-				}
-				else{
-					this.errorLog.error({
+				
+				if(trader.potentialTrade.isProfitable() && trader.passMinimumTrade ){
+					console.log("trade is profitable and has been copied to log..");
+					this.profitLog.info({
 						information: this.currentMarket,
 						market1: trader.pair1,
 						market2: trader.pair2,
@@ -102,10 +89,36 @@ export default class TradeSeeker {
 						lowestPrice: trader.potentialTrade.lowestPrice,
 						trade: trader.potentialTrade,
 						passMinimumTrade: trader.passMinimumTrade,
-					}, `Trade missed Due to inSufficient funds!!!`);
+					}, `This written afterwards!!`);
+					
+					if(trader.potentialTrade.isSufficientFundsThreeTrades()){
+						//Logic for doing three fund Trade
+					}
+					else if(trader.potentialTrade.isSufficientFundsTwoTrades()){
+						
+						//logic for doing a 2 Step Trade.
+					}
+					else{
+						this.errorLog.error({
+							information: this.currentMarket,
+							market1: trader.pair1,
+							market2: trader.pair2,
+							market3: trader.pair3,
+							lowestPrice: trader.potentialTrade.lowestPrice,
+							trade: trader.potentialTrade,
+							passMinimumTrade: trader.passMinimumTrade,
+						}, `Trade missed Due to inSufficient funds!!!`);
+					}
+					//Else, skip trade....
 				}
-				//Else, skip trade....
+				
+				
+				
+				
+				
 			}
+			
+
 		}
 		next();
 	}

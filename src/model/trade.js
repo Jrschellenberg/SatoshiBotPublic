@@ -25,7 +25,8 @@ export default class Trade {
 		this.calculateStartTrade();
 		this.executeTrade();
 		
-		this.profit = this.calculateProfit(this.currencies[2]);
+		this.profit = this.calculateProfit();
+		this.displayProfit = this.profit.toString() + this.currencies[2];
 		
 	}
 	
@@ -68,12 +69,12 @@ export default class Trade {
 		return this.profit >= 0;
 	}
 	
-	calculateProfit(currency){
+	calculateProfit(){
 		let profitEarned = this.calculateProfitEarned(this.completedTrade1.rate, this.completedTrade1.quantity, this.middleware.marketFee);
 		let amountSpent = this.calculateAmountSpent(this.completedTrade3.quantity, this.completedTrade3.rate, this.completedTrade2.rate, this.middleware.marketFee );
 		//let profitEarned = (this.completedTrade1.rate * this.completedTrade1.quantity) - ((this.completedTrade1.quantity * this.completedTrade1.rate) * this.middleware.marketFee);
 		//let amountSpent = (this.completedTrade3.quantity * this.completedTrade3.rate * this.completedTrade2.rate) + ((this.completedTrade3.quantity * this.completedTrade3.rate * this.completedTrade2.rate) * (2*this.middleware.marketFee));
-		return this.utilities.precisionRound((profitEarned - amountSpent), 8).toString() + currency;
+		return this.utilities.precisionRound((profitEarned - amountSpent), 8);
 	}
 	
 	calculateProfitEarned(completedTrade1Rate, completedTrade1Quantity, marketFee){

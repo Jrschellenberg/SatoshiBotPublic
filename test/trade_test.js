@@ -71,7 +71,7 @@ describe('Trade - Constructor', () => {
 		expect(trade.middleware).to.be.equal(middleware);
 		expect(trade.utilities).to.be.equal(utilities);
 		
-		expect(trade.profit).to.be.equal('-0.80812126USDT');
+		expect(trade.profit).to.be.equal(-0.80812126);
 	});
 });
 
@@ -92,7 +92,7 @@ describe('Trade - calculateAmountSpent', () => {
 
 describe('Trade - calculateProfit', () => {
 	it('should properly calculate profit and in which currency when supplied with correct input', () => {
-		expect(trade.calculateProfit(trade.currencies[2])).to.be.equal('-0.80812126USDT');
+		expect(trade.calculateProfit()).to.be.equal(-0.80812126);
 	});
 });
 

@@ -24,7 +24,6 @@ let cryptopiaMarkets = [
 ["BCH", "BTC", "USDT"],
 ["BCH", "BTC", "NZDT"],
 ["BCH", "NZDT", "USDT"],
-["NZDT", "BTC", "USDT"],
 ["DOGE", "BTC", "USDT"],
 ["DOGE", "BTC", "NZDT"],
 ["DOGE", "NZDT", "USDT"],
