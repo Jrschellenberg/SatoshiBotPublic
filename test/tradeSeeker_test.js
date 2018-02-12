@@ -53,6 +53,13 @@ let cryptopiaTradeScout = new TradeScout(NUMBER_SLAVES, cryptopiaMarkets);
 
 let cryptopiaCurrencies = new CryptopiaCurrencies(cryptopiaService);
 
+let balance3 = {
+	ETH: {coins: 0.02750242, status: 'OK'}, NZDT: {coins: 70.0453008, status: 'OK'}, //false
+	USDT: {coins: 500.56462343, status: 'OK'}
+};
+
+
+
 let middleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies);
 let production = false;
 
@@ -80,6 +87,49 @@ describe('TradeSeeker - assignMarketPairs', () => {
 		expect(tradeSeeker.pair3).to.be.equal(cryptopiaMarkets[0][0]+'_'+cryptopiaMarkets[0][1]);
 	});
 });
+
+
+
+// describe('TradeSeeker - LogicFlow', () => {
+// 	(async function () {
+//		
+// 		await cryptopiaCurrencies.setTestBalance(balance3);
+// 		let middleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies);
+// 	let anotherTradeSeeker = new TradeSeeker(profitLog, errorLog, 0, cryptopiaTradeScout, utilities,production, cryptopiaTradeMaster, middleware);
+//	
+// 	let oldMarkets = {
+// 		one: {
+// 			buy: [
+// 				{
+// 					quantity: 231.19800452,
+// 					rate: 13.92580232
+// 				}
+// 			]
+// 		},
+// 		two: {
+// 			sell: [
+// 				{
+// 					quantity: 0.02570287,
+// 					rate: 8400
+// 				}
+// 			]
+// 		},
+// 		three: {
+// 			sell: [
+// 				{
+// 					quantity: 1386.25271649,
+// 					rate: 0.00162027
+// 				}
+// 			]
+// 		}
+// 	};
+// 	it('should set values accordingly based off mock api data above', () => {
+//		
+//		
+// 	});
+//		
+// 	})();
+// });
 
 
 

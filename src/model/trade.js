@@ -107,6 +107,11 @@ export default class Trade {
 		//Need to have enough of quantity all markets.
 	}
 	
+	async reCalculateTrade(){
+		let balance = await this.middleware.marketBalances.getBalances();
+		return this.determineLeastFundsAvailable();
+	}
+	
 	determineEnoughFundsTwoTrades(balance){
 		if(!balance){
 			throw new TypeError("Program could not grab your Balances and has crashed");
@@ -134,9 +139,9 @@ export default class Trade {
 		if(!balance){
 			throw new TypeError("Program could not grab your Balances and has crashed");
 		}
-		let balanceTrade1 = balance[this.currencies[0]].coins / this.completedTrade1.quantity; //Trade 1
-		let balanceTrade3 = (balance[this.currencies[1]].coins /  this.completedTrade2.quantity ); // Trade 3
-		let balanceTrade2 = (balance[this.currencies[2]].coins / this.utilities.precisionRound(this.computeTrade(this.completedTrade2.quantity, this.completedTrade2.rate, this.middleware.marketFee, 'buy'), 8)); //Enough for Trade 2
+		let balanceTrade1 = balance[this.currencies[0]] ? balance[this.currencies[0]].coins / this.completedTrade1.quantity : 1; //Trade 1
+		let balanceTrade3 =  balance[this.currencies[1]] ? (balance[this.currencies[1]].coins /  this.completedTrade2.quantity ) : 1; // Trade 3
+		let balanceTrade2 =  balance[this.currencies[2]] ? (balance[this.currencies[2]].coins / this.utilities.precisionRound(this.computeTrade(this.completedTrade2.quantity, this.completedTrade2.rate, this.middleware.marketFee, 'buy'), 8)) : 1; //Enough for Trade 2
 		
 		let lowest = Math.min(balanceTrade1, balanceTrade2, balanceTrade3);
 		let obj = {

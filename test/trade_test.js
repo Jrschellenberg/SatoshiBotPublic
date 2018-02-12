@@ -161,7 +161,6 @@ describe('Trade - ExecuteTrade', () => {
 	});
 });
 
-
 describe('Trade - determineEnoughFundsTwoTrades', () => {
 	let balance1 = {
 		ETN: {coins: 0.40453008, status: 'OK'},
@@ -214,6 +213,32 @@ describe('Trade - determineLeastFundsAvailable', () => {
 		let objExpecting = {
 			currency: 'ETH',
 			lowest: 0.57896
+		};
+		expect(trade.determineLeastFundsAvailable(balance3)).to.deep.equal(objExpecting);
+	});
+	
+	it('should determine Lowest ratio for only 2 of 3 funds as well', () => {
+		let balance3 = {
+			NZDT: {coins: 20.0453008, status: 'OK'}, //false
+			USDT: {coins: 500.56462343, status: 'OK'}
+		};
+		let objExpecting = {
+			currency: 'NZDT',
+			lowest: 0.37639
+		};
+		expect(trade.determineLeastFundsAvailable(balance3)).to.deep.equal(objExpecting);
+	});
+	it('should throw an error if no balance is provided', () => {
+		expect(trade.determineLeastFundsAvailable.bind(trade, null)).to.throw(TypeError)
+	});
+	it('should return a lowest of 1 and the first currency if none of the balances required are available', () => {
+		let balance3 = {
+			BTC: {coins: 20.0453008, status: 'OK'}, //false
+			LUX: {coins: 500.56462343, status: 'OK'}
+		};
+		let objExpecting = {
+			currency: 'ETH',
+			lowest: 1
 		};
 		expect(trade.determineLeastFundsAvailable(balance3)).to.deep.equal(objExpecting);
 	});
