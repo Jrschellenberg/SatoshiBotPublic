@@ -5,13 +5,14 @@ export default class TradeMaster {
 		this.middleware = null;
 		this.successfulTradingLog = successfulTradeLog; 
 		this.errorLog = errorLog;
-		this.isCurrentlyTrading = false;
-		
+		this.currentlyTrading = false;
 	}
 	
-	isAvailableForTrade(){
-		return this.isCurrentlyTrading;
+	isCurrentlyTrading(){
+		return this.currentlyTrading;
 	}
+	
+	
 	
 	
 }
