@@ -229,10 +229,12 @@ describe('TradeSeeker - LogicFlow', () => {
 			USDT: {coins: 20.00, status: 'OK'}
 		});
 		
+		//expect(anotherTradeSeeker.currencies).to.be.equal(1);
 		expect(anotherTradeSeeker.potentialTrade.profit).to.be.equal(3.69998805);
 		expect(anotherTradeSeeker.potentialTrade.isProfitable()).to.be.true;
-		expect(anotherTradeSeeker.potentialTrade.isSufficientFundsTwoTrades()).to.be.false;
-		//expect(anotherTradeSeeker.potentialTrade.isSufficientFundsThreeTrades()).to.be.false;
+		
+		//Can't test for false here because since we are lowering trade down it'll become lower enough to be sufficient !!!
+		
 		expect(anotherTradeSeeker.establishTrade(anotherTradeSeeker.currentMarket)).to.be.true;
 		//expect(anotherTradeSeeker.potentialTrade.reCalculateTrade().lowest).to.be.equal(1);
 		
