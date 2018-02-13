@@ -6,6 +6,9 @@ import TradeSeeker from "../src/controller/tradeSeeker";
 import TradeScout from "../src/controller/tradeScout";
 import Utilities from '../src/utilities';
 import TradeMaster from '../src/controller/tradeMaster';
+
+import Trade from "../src/model/trade";
+
 const sinon = require('sinon');
 
 const expect = require('chai').expect;
@@ -87,13 +90,10 @@ describe('TradeSeeker - assignMarketPairs', () => {
 describe('TradeSeeker - LogicFlow', () => {
 	var tradeScoutStub;
 	var cryptopiaCurrencies2;
-	var middleware2;
 	var oldMarkets;
 	
-	//let production = false;
-	
 	var cryptopiaTradeMaster2;
-	beforeEach(function() {
+	beforeEach(function () {
 		oldMarkets = {
 			one: {
 				buy: [
@@ -121,111 +121,147 @@ describe('TradeSeeker - LogicFlow', () => {
 			}
 		};
 		tradeScoutStub = sinon.createStubInstance(TradeScout);
-		tradeScoutStub.getWork.returns( [
-			"LUX",
-			"BTC",
-			"USDT"
-		]);
+		let array = ["LUX", "BTC", "USDT"];
+		tradeScoutStub.getWork.returns(array);
 		cryptopiaCurrencies2 = sinon.createStubInstance(CryptopiaCurrencies);
 		cryptopiaCurrencies2.getBalances.returns({
 			LUX: {coins: 30.86332525, status: 'OK'}, BTC: {coins: 70.0453008, status: 'OK'},
 			USDT: {coins: 500.56462343, status: 'OK'}
 		});
-		middleware2 = sinon.createStubInstance(CryptopiaMiddleware);
-		middleware2.marketBalances = cryptopiaCurrencies2;
-		
-		//let production = false;
-		
 		cryptopiaTradeMaster2 = sinon.createStubInstance(TradeMaster);
-		
-		
 	});
 	
-	
-	
-	// let balance3 = 
-	// before(async () => {
-	// 	await cryptopiaCurrencies.setTestBalance(balance3);
-	// });
-	
-	
 	it('should set values accordingly based off mock api data above with sufficient funds for all Three', () => {
-
-		
-
-
-		
-		let next = function(){
+		let next = function () {
 			console.log('hi from test');
 		};
 		
-			//let newMiddleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies);
-			let anotherTradeSeeker = new TradeSeeker(profitLog, errorLog, 0, tradeScoutStub, utilities, false, cryptopiaTradeMaster2, middleware2);
-
-			
-			anotherTradeSeeker.logicFlow(next, oldMarkets);
-			
-			expect(anotherTradeSeeker.middleware.marketBalances.getBalances()).to.deep.equal({
-				LUX: {coins: 30.86332525, status: 'OK'}, BTC: {coins: 70.0453008, status: 'OK'},
-				USDT: {coins: 500.56462343, status: 'OK'}
-			});
-			// expect(anotherTradeSeeker.passMinimumTrade).to.be.true;
-			// expect(anotherTradeSeeker.potentialTrade.profit).to.be.equal(3.69998805);
-			// expect(anotherTradeSeeker.potentialTrade.isProfitable()).to.be.true;
-			//expect(anotherTradeSeeker.potentialTrade.isSufficientFundsTwoTrades()).to.be.true;
-			//expect(anotherTradeSeeker.potentialTrade.isSufficientFundsThreeTrades()).to.be.true;
-			//expect(anotherTradeSeeker.establishTrade()).to.be.true;
-			//expect(anotherTradeSeeker.potentialTrade.reCalculateTrade()).to.be.equal(1);
-
+		let middleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies2);
+		let anotherTradeSeeker = new TradeSeeker(profitLog, errorLog, 0, tradeScoutStub, utilities, false, cryptopiaTradeMaster2, middleware);
+		
+		anotherTradeSeeker.logicFlow(next, oldMarkets);
+		
+		expect(anotherTradeSeeker.middleware.marketBalances.getBalances()).to.deep.equal({
+			LUX: {coins: 30.86332525, status: 'OK'}, BTC: {coins: 70.0453008, status: 'OK'},
+			USDT: {coins: 500.56462343, status: 'OK'}
+		});
+		expect(anotherTradeSeeker.passMinimumTrade).to.be.true;
+		expect(anotherTradeSeeker.potentialTrade.profit).to.be.equal(3.69998805);
+		expect(anotherTradeSeeker.potentialTrade.isProfitable()).to.be.true;
+		expect(anotherTradeSeeker.currentMarket).to.deep.equal([
+			{
+				quantity: 231.19800452,
+				rate: 13.92580232
+			},
+			{
+				quantity: 0.02570287,
+				rate: 8400
+			},
+			{
+				quantity: 1386.25271649,
+				rate: 0.00162027
+			}
+		]);
+		expect(anotherTradeSeeker.currencies).to.deep.equal(["LUX", "BTC", "USDT"]);
+		expect(anotherTradeSeeker.pair1).to.be.equal('LUX_USDT');
+		expect(anotherTradeSeeker.pair2).to.be.equal('BTC_USDT');
+		expect(anotherTradeSeeker.pair3).to.be.equal('LUX_BTC');
+		expect(anotherTradeSeeker.middleware).to.be.equal(middleware);
+		expect(anotherTradeSeeker.potentialTrade.isSufficientFundsTwoTrades()).to.be.true;
+		expect(anotherTradeSeeker.establishTrade(anotherTradeSeeker.currentMarket)).to.be.true;
+		expect(anotherTradeSeeker.potentialTrade.isSufficientFundsThreeTrades()).to.be.true;
+		expect(anotherTradeSeeker.potentialTrade.reCalculateTrade().lowest).to.be.equal(1);
+		expect(anotherTradeSeeker.potentialTrade.reCalculateTrade()).to.deep.equal({currency: "LUX", lowest: 1});
 	});
 	
-	// it('should set values properly from mock data when only sufficient funds in two.', () => {
-	// 	(async function () {
-	//		
-	// 		let balance3 = {
-	// 			BTC: {coins: 70.0453008, status: 'OK'},
-	// 			USDT: {coins: 500.56462343, status: 'OK'}
-	// 		};
-	//		
-	// 		await cryptopiaCurrencies.setTestBalance(balance3);
-	// 		let middleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies);
-	// 		let anotherTradeSeeker = new TradeSeeker(profitLog, errorLog, 0, cryptopiaTradeScout, utilities, production, cryptopiaTradeMaster, middleware);
-	// 		anotherTradeSeeker.logicFlow(null, oldMarkets);
-	//		
-	// 		expect(anotherTradeSeeker.passMinimumTrade).to.be.true;
-	// 		expect(anotherTradeSeeker.potentialTrade.profit).to.be.equal(3.69998805);
-	// 		expect(anotherTradeSeeker.potentialTrade.isProfitable()).to.be.true;
-	// 		expect(anotherTradeSeeker.potentialTrade.isSufficientFundsTwoTrades()).to.be.true;
-	// 		expect(anotherTradeSeeker.potentialTrade.isSufficientFundsThreeTrades()).to.be.false;
-	// 		expect(anotherTradeSeeker.establishTrade()).to.be.true;
-	// 		expect(anotherTradeSeeker.potentialTrade.reCalculateTrade()).to.be.equal(1);
-	//		
-	// 	})();
-	// });
 	
-	// it('should properly recalculate trade amount when insufficient funds', () => {
-	// 	(async function () {
-	//		
-	// 		let balance3 = {
-	// 			LUX: {coins: 4.86332525, status: 'OK'}, BTC: {coins: 0.0453008, status: 'OK'},
-	// 			USDT: {coins: 20.00, status: 'OK'}
-	// 		};
-	//		
-	// 		await cryptopiaCurrencies.setTestBalance(balance3);
-	// 		let middleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies);
-	// 		let anotherTradeSeeker = new TradeSeeker(profitLog, errorLog, 0, cryptopiaTradeScout, utilities, production, cryptopiaTradeMaster, middleware);
-	// 		anotherTradeSeeker.logicFlow(null, oldMarkets);
-	//		
-	// 		expect(anotherTradeSeeker.potentialTrade.reCalculateTrade()).to.be.equal(0.09226123);
-	// 		// expect(trader.potentialTrade.completedTrade3.quantity).
-	//		
-	//		
-	//		
-	//		
-	// 	})();
-	// });
+	it('should set values properly from mock data when only sufficient funds in two.', () => {
+		
+		let next = function () {
+			console.log('hi from test');
+		};
+		
+		cryptopiaCurrencies2.getBalances.returns({
+			BTC: {coins: 70.0453008, status: 'OK'},
+			USDT: {coins: 500.56462343, status: 'OK'}
+		});
+		
+		
+		let middleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies2);
+		let anotherTradeSeeker = new TradeSeeker(profitLog, errorLog, 0, tradeScoutStub, utilities, false, cryptopiaTradeMaster2, middleware);
+		
+		anotherTradeSeeker.logicFlow(next, oldMarkets);
+		
+		expect(anotherTradeSeeker.middleware.marketBalances.getBalances()).to.deep.equal({
+			BTC: {coins: 70.0453008, status: 'OK'},
+			USDT: {coins: 500.56462343, status: 'OK'}
+		});
+		
+		expect(anotherTradeSeeker.passMinimumTrade).to.be.true;
+		expect(anotherTradeSeeker.potentialTrade.profit).to.be.equal(3.69998805);
+		expect(anotherTradeSeeker.potentialTrade.isProfitable()).to.be.true;
+		expect(anotherTradeSeeker.potentialTrade.isSufficientFundsTwoTrades()).to.be.true;
+		expect(anotherTradeSeeker.potentialTrade.isSufficientFundsThreeTrades()).to.be.false;
+		expect(anotherTradeSeeker.establishTrade(anotherTradeSeeker.currentMarket)).to.be.true;
+		expect(anotherTradeSeeker.potentialTrade.reCalculateTrade().lowest).to.be.equal(1);
+		
+	});
+	
 	
 });
+
+
+// it('should set values properly from mock data when only sufficient funds in two.', () => {
+// 	(async function () {
+//		
+// 		let balance3 = {
+// 			BTC: {coins: 70.0453008, status: 'OK'},
+// 			USDT: {coins: 500.56462343, status: 'OK'}
+// 		};
+//		
+// 		await cryptopiaCurrencies.setTestBalance(balance3);
+// 		let middleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies);
+// 		let anotherTradeSeeker = new TradeSeeker(profitLog, errorLog, 0, cryptopiaTradeScout, utilities, production, cryptopiaTradeMaster, middleware);
+// 		anotherTradeSeeker.logicFlow(null, oldMarkets);
+//		
+// 		expect(anotherTradeSeeker.passMinimumTrade).to.be.true;
+// 		expect(anotherTradeSeeker.potentialTrade.profit).to.be.equal(3.69998805);
+// 		expect(anotherTradeSeeker.potentialTrade.isProfitable()).to.be.true;
+// 		expect(anotherTradeSeeker.potentialTrade.isSufficientFundsTwoTrades()).to.be.true;
+// 		expect(anotherTradeSeeker.potentialTrade.isSufficientFundsThreeTrades()).to.be.false;
+// 		expect(anotherTradeSeeker.establishTrade()).to.be.true;
+// 		expect(anotherTradeSeeker.potentialTrade.reCalculateTrade()).to.be.equal(1);
+//		
+// 	})();
+// });
+
+// it('should properly recalculate trade amount when insufficient funds', () => {
+// 	(async function () {
+//		
+// 		let balance3 = {
+// 			LUX: {coins: 4.86332525, status: 'OK'}, BTC: {coins: 0.0453008, status: 'OK'},
+// 			USDT: {coins: 20.00, status: 'OK'}
+// 		};
+//		
+// 		await cryptopiaCurrencies.setTestBalance(balance3);
+// 		let middleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies);
+// 		let anotherTradeSeeker = new TradeSeeker(profitLog, errorLog, 0, cryptopiaTradeScout, utilities, production, cryptopiaTradeMaster, middleware);
+// 		anotherTradeSeeker.logicFlow(null, oldMarkets);
+//		
+// 		expect(anotherTradeSeeker.potentialTrade.reCalculateTrade()).to.be.equal(0.09226123);
+// 		// expect(trader.potentialTrade.completedTrade3.quantity).
+//		
+//		
+//		
+//		
+// 	})();
+// });
+	
+
+
+
+
+
 
 
 

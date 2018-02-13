@@ -96,7 +96,7 @@ export default class TradeSeeker {
 						//logic for doing a 2 Step Trade.
 					}
 					else{
-						trader.potentialTrade.executeTrade(trader.potentialTrade.reCalculateTrade()); //Seeing if we can do the trade with lower funds.
+						trader.potentialTrade.executeTrade(trader.potentialTrade.reCalculateTrade().lowest); //Seeing if we can do the trade with lower funds.
 						trader.currentMarket = [trader.potentialTrade.completedTrade1, trader.potentialTrade.completedTrade2, trader.potentialTrade.completedTrade3];
 						trader.passMinimumTrade = this.middleware.checkMinimumTrades(trader.currentMarket, this.currencies);
 						

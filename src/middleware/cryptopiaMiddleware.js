@@ -123,7 +123,7 @@ export class CryptopiaCurrencies {
 		}
 	}
 	
-	async getBalances() {
+	getBalances() {
 		return this.balance;
 	}
 	

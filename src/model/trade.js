@@ -95,20 +95,20 @@ export default class Trade {
 		}
 	}
 	
-	async isSufficientFundsTwoTrades(){
-		let balance = await this.middleware.marketBalances.getBalances();
+	isSufficientFundsTwoTrades(){
+		let balance = this.middleware.marketBalances.getBalances();
 		return this.determineEnoughFundsTwoTrades(balance);
 			//This is a drop down, trading off efficiency for less funds.
 	}
 	
-	async isSufficientFundsThreeTrades(){
-		let balance = await this.middleware.marketBalances.getBalances();
+	isSufficientFundsThreeTrades(){
+		let balance = this.middleware.marketBalances.getBalances();
 		return this.determineEnoughFundsThreeTrades(balance);
 		//Need to have enough of quantity all markets.
 	}
 	
-	async reCalculateTrade(){
-		let balance = await this.middleware.marketBalances.getBalances();
+	reCalculateTrade(){
+		let balance = this.middleware.marketBalances.getBalances();
 		return this.determineLeastFundsAvailable(balance);
 	}
 	
