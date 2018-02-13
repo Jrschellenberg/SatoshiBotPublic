@@ -95,6 +95,10 @@ export default class TradeSeeker {
 							trade: trader.potentialTrade,
 							passMinimumTrade: trader.passMinimumTrade,
 						}, `This written afterwards!!`);
+						
+						//trader.tradeMaster.performThreeWayTrade(trader.potentialTrade);
+						//return;
+						
 					}
 					else if(trader.potentialTrade.isSufficientFundsTwoTrades()){
 						this.profitLog.info({
@@ -133,6 +137,9 @@ export default class TradeSeeker {
 								passMinimumTrade: trader.passMinimumTrade,
 							}, `This written afterwards!!`);
 							
+							
+							//trader.tradeMaster.performThreeWayTrade(trader.potentialTrade);
+							//return;
 							
 						}
 						else if(trader.passMinimumTrade && trader.potentialTrade.isSufficientFundsTwoTrades()){
