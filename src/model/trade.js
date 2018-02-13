@@ -25,8 +25,7 @@ export default class Trade {
 		this.calculateStartTrade();
 		this.executeTrade(1);
 		
-		this.profit = this.calculateProfit();
-		this.displayProfit = this.profit.toString() + this.currencies[2];
+
 		
 	}
 	
@@ -62,6 +61,10 @@ export default class Trade {
 		this.completedTrade2.quantity = this.utilities.precisionRound(this.computeTrade(this.completedTrade3.quantity, this.trade3.rate, this.middleware.marketFee, 'buy'), 8);
 		
 		this.completedTrade1.quantity = this.completedTrade3.quantity;
+		
+		this.profit = this.calculateProfit();
+		this.displayProfit = this.profit.toString() + this.currencies[2];
+		
 	}
 	
 	isProfitable(){

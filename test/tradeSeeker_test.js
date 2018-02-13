@@ -230,19 +230,17 @@ describe('TradeSeeker - LogicFlow', () => {
 		});
 		
 		//expect(anotherTradeSeeker.currencies).to.be.equal(1);
-		expect(anotherTradeSeeker.potentialTrade.profit).to.be.equal(3.69998805);
+		expect(anotherTradeSeeker.potentialTrade.profit).to.be.equal(0.3413609);
 		expect(anotherTradeSeeker.potentialTrade.isProfitable()).to.be.true;
 		
 		//Can't test for false here because since we are lowering trade down it'll become lower enough to be sufficient !!!
 		
 		expect(anotherTradeSeeker.establishTrade(anotherTradeSeeker.currentMarket)).to.be.true;
-		//expect(anotherTradeSeeker.potentialTrade.reCalculateTrade().lowest).to.be.equal(1);
-		
-		
-		
-		// expect(anotherTradeSeeker.potentialTrade.reCalculateTrade()).to.be.equal(0.09226123);
+		expect(anotherTradeSeeker.potentialTrade.completedTrade3.quantity).to.be.equal(1.46355039);
+		expect(anotherTradeSeeker.potentialTrade.completedTrade2.quantity).to.be.equal(0.00237609);
+		expect(anotherTradeSeeker.potentialTrade.completedTrade1.quantity).to.be.equal(1.46355039);
+		//expect(anotherTradeSeeker.potentialTrade.reCalculateTrade().lowest).to.be.equal(0.09226);
 		// expect(trader.potentialTrade.completedTrade3.quantity).
-		
 	});
 	
 });
