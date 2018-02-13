@@ -124,8 +124,7 @@ export class CryptopiaCurrencies {
 	}
 	
 	async getBalances() {
-		const balance = await this.getAccountBalance();
-		return balance;
+		return this.balance;
 	}
 	
 	async setBalances() {
@@ -135,7 +134,8 @@ export class CryptopiaCurrencies {
 	}
 	
 	
-	setTestBalance(balance){
+	async setTestBalance(balance){
+		console.log("hiiii");
 		this.balance = balance;
 	}
 	
