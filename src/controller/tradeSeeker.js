@@ -4,7 +4,7 @@ import Trade from "../model/trade";
 
 function sleep(ms = 0) {
 	return new Promise(r => setTimeout(r, ms));
-}
+} //Should move this to utilities at some point...
 
 //Have Main Class as Master
 //These class as slaves

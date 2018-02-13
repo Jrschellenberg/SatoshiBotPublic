@@ -1,16 +1,21 @@
 import async from 'async';
+
+function sleep(ms = 0) {
+	return new Promise(r => setTimeout(r, ms));
+}
+
 export default class TradeMaster {
-	constructor(successfulTradeLog, errorLog, ){
-		this.successfulTradingLog = successfulTradeLog; 
+	constructor(successfulTradeLog, errorLog,) {
+		this.successfulTradingLog = successfulTradeLog;
 		this.errorLog = errorLog;
 		this.currentlyTrading = false;
 	}
 	
-	isCurrentlyTrading(){
+	isCurrentlyTrading() {
 		return this.currentlyTrading;
 	}
 	
-	performThreeWayTrade(trade){
+	performThreeWayTrade(trade) {
 		this.currentlyTrading = true;
 		
 		async.series({
@@ -33,20 +38,58 @@ export default class TradeMaster {
 			if (err) {
 				this.errorLog.error({
 					tradeType: "Trade errored out in Perform Three way Trade!!",
-					orders: order
+					orders: order,
+					trade: trade
 				}, `Trade missed Due to inSufficient funds!!!`);
-				return;
+				throw new Error("Program crashed due to messing up trades PLEASE GO CHECK IMMEDIATELY");
 			}
-			this.awaitCompleteTrade();
+			this.awaitCompleteTrade(order,trade);
 		})
 	}
 	
-	awaitCompleteTrade(){
-		
-		
+	awaitCompleteTrade(order,trade) {
+		let times = 0;
+		let isTrade1Finish;
+		let isTrade2Finish;
+		let isTrade3Finish;
+		async.forever((next) => {
+				sleep(800).then(() => {
+					isTrade1Finish = trade.middleware.checkOpenOrder(trade.completedTrade1.pair).length === 0;
+					isTrade2Finish = trade.middleware.checkOpenOrder(trade.completedTrade2.pair).length === 0;
+					isTrade3Finish = trade.middleware.checkOpenOrder(trade.completedTrade3.pair).length === 0;
+					
+					if (times === 10 || (isTrade1Finish && isTrade2Finish && isTrade3Finish)) {
+						next("finish");
+					}
+					else {
+						times++;
+						next();
+					}
+				});
+			},
+			(finish) => {
+				if (times === 10) {
+					this.errorLog.error({
+						tradeType: "Trades were submitted, BUT NEVER FINISHED CHECK NOW!!!",
+						times: times,
+						trade1Finish: isTrade1Finish,
+						trade2Finish: isTrade2Finish,
+						trade3Finish: isTrade3Finish,
+						orders: order,
+						trade: trade
+					}, `Trade missed Due to inSufficient funds!!!`);
+					throw new Error("Trades were submitted, BUT NEVER FINISHED CHECK NOW!!!");
+				}
+				
+				this.currentlyTrading = false;
+				this.successfulTradingLog.info({
+					tradeType: "Successfully executed Trade!!!!",
+					trade1Finish: isTrade1Finish,
+					trade2Finish: isTrade2Finish,
+					trade3Finish: isTrade3Finish,
+					orders: order,
+					trade: trade
+				}, `This written afterwards!!`);
+			});
 	}
-	
-	
-	
-	
 }
