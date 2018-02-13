@@ -39,8 +39,6 @@ describe('TradeMaster - Constructor', () => {
 		expect(tradeMaster.errorLog).to.be.equal(errorLog);
 		expect(tradeMaster.successfulTradingLog).to.be.equal(successLog);
 		expect(tradeMaster.currentlyTrading).to.be.false;
-		expect(tradeMaster.potentialTrade).to.be.null;
-		expect(tradeMaster.middleware).to.be.null;
 	});
 });
 describe('TradeMaster - isAvaiableForTrade', () => {

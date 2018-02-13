@@ -1,3 +1,5 @@
+require("babel-polyfill"); //This should go first
+
 import {CryptopiaMiddleware, CryptopiaCurrencies} from "../src/middleware/cryptopiaMiddleware";
 import {API_CREDENTIALS, CRYPTOPIA_CREDENTIALS} from "../src/service/secret";
 
@@ -80,3 +82,48 @@ describe('Cryptopia Middleware - reformatTypeString', () => {
 		expect(middleware.reformatTypeString('SELL')).to.be.equal('Sell');
 	});
 });
+
+ /*
+ Tests for private API... Uncomment these if you want to doublecheck the API's. Will have to setup everything again if using dif
+ Account.
+  */
+
+// describe('Cryptopia Middleware - submitOrder',  () => {
+// 	it('should return the trade data when trade is successful.', async () => {
+// 		let params = {
+// 			"pair": "ETN_USDT",
+// 			"rate": 0.00003,
+// 			"trade": "BUY",
+// 			"quantity": 70000
+// 		};
+//
+// 		const order = await middleware.submitOrder(params);
+// 		expect(order).to.deep.equal(1);
+// 	});
+// });
+
+
+
+// describe('Cryptopia Middleware - checkOpenOrder', () => {
+//
+// 	it('should throw Error if given incorrect values', async () => {
+//		
+// 		//let param = 355355352;
+// 		let param = "ETN_USDT";
+//
+// 		const openOrder = await middleware.checkOpenOrder(param);
+// 		let anyOrder;
+// 		if(openOrder.length === 0 ){
+// 			anyOrder = false
+// 		}
+// 		else{
+// 			anyOrder = true;
+// 		}
+// 		console.log(openOrder[0]);
+//		
+//
+// 		expect(openOrder).to.throw(Error);
+//
+// 	});
+//
+// });

@@ -29,6 +29,7 @@ export default class TradeSeeker {
 		this.production = production;
 		this.passMinimumTrade = null;
 		this.currentMarket = null;
+		this.holdPairing = false;
 		if (production) {
 			this.process();
 		}
@@ -48,7 +49,9 @@ export default class TradeSeeker {
 			try {
 				async.forever((next) => {
 						//Finding new work while waiting before starting to scout for trade..
+					if(!trader.holdPairing){
 						trader.assignMarketPairs(trader.tradeScout.getWork(trader.workerNumber)); //Find more work!
+					}
 						sleep(trader.middleware.API_TIMEOUT).then(() => {
 							//console.log(trader.currencies);
 							trader.currencyExchangeCalls(next);
@@ -78,8 +81,6 @@ export default class TradeSeeker {
 				console.log(`profit is ${trader.potentialTrade.profit}`);
 				if(trader.potentialTrade.isProfitable() && trader.passMinimumTrade ){
 					console.log("trade is profitable and has been copied to log..");
-
-					
 					
 					if(trader.potentialTrade.isSufficientFundsThreeTrades()){
 						//Logic for doing three fund Trade
@@ -172,6 +173,7 @@ export default class TradeSeeker {
 				}
 			}
 		}
+		trader.holdPairing = false;
 		next();
 	}
 	

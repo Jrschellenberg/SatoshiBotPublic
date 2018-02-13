@@ -13,4 +13,13 @@ export default class Utilities {
 		let factor = Math.pow(10, precision);
 		return Math.floor(num * factor)/factor;
 	}
+	
+	isEmptyObject(obj){
+		for (var key in obj) {
+			if (Object.prototype.hasOwnProperty.call(obj, key)) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

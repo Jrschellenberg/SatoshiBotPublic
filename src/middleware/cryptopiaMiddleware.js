@@ -1,9 +1,11 @@
 import TradeMiddleware from './tradeMiddleware';
+// import Utilities from '../utilities';
 const CRYPTOPIA_TRADE_FEE = 0.002;
 
 export class CryptopiaMiddleware extends TradeMiddleware {
 	constructor(marketListing, service, marketBalances) {
 		super(marketListing, CRYPTOPIA_TRADE_FEE, service, marketBalances);
+		// this.utilities = new Utilities();
 	}
 	
 	async getMarketListing(params) {
@@ -44,15 +46,26 @@ export class CryptopiaMiddleware extends TradeMiddleware {
 	}
 	
 	async checkOpenOrder(market){
-		const openOrder = await this.service.getOpenOrders({Market: market, Count: 1});
+		const reStringMarket = this.reformatPairString(market);
+		const openOrder = await this.service.getOpenOrders({Market: reStringMarket, Count: 1});
 		return openOrder;
 	}
 	
 	async submitOrder(params){
 		params.pair = this.reformatPairString(params.pair);
-		params.type = this.reformatTypeString(params.type);
-		const trade = await this.service.submitTrade({Market: params.pair, Type: params.trade, Rate: params.rate, Amount: params.quantity});
-		return trade;
+		params.trade = this.reformatTypeString(params.trade);
+		try{
+			const trade = await this.service.submitTrade({Market: params.pair, Type: params.trade, Rate: params.rate, Amount: params.quantity});
+			
+			// if(this.utilities.isEmptyObject(trade)){
+			// 	return false;
+			// }
+			return await trade;
+		}
+		catch(err){
+			return err;
+		}
+		
 		
 	}
 	reformatPairString(pair){
@@ -105,11 +118,7 @@ export class CryptopiaCurrencies {
 		this.service = service;
 		instance = this;
 	}
-	
-	async getAccountBalance() {
-		return await this.balance;
-	}
-	
+		
 	async setAccountBalance(coins) {
 		this.balance = {}; //Reset our balance to empty object once again...
 		for (let i = 0; i < coins.length; i++) {
@@ -132,12 +141,4 @@ export class CryptopiaCurrencies {
 		console.log("we getting back over to setting balances?");
 		await this.setAccountBalance(getBalances);
 	}
-	
-	
-	async setTestBalance(balance){
-		console.log("hiiii");
-		this.balance = balance;
-	}
-	
-	
 }

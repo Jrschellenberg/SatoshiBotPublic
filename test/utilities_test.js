@@ -37,3 +37,19 @@ describe('Utilities - PrecisionFloor', () => {
 		expect(utilities.precisionFloor(20.1, 5)).to.be.equal(20.1);
 	});
 });
+
+describe('Utilities - isEmptyObject',  () => {
+	it('should return true if an object is empty.', () => {
+		let obj = {};
+		expect(utilities.isEmptyObject(obj)).to.be.true;
+	});
+	
+	it('should return false if object has values in it ', () => {
+		let obj = {
+			test: "this some stuff"
+		}
+		expect(utilities.isEmptyObject(obj)).to.be.false;
+		
+	});
+	
+});
