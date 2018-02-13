@@ -78,38 +78,58 @@ export default class TradeSeeker {
 				console.log(`profit is ${trader.potentialTrade.profit}`);
 				if(trader.potentialTrade.isProfitable() && trader.passMinimumTrade ){
 					console.log("trade is profitable and has been copied to log..");
-					this.profitLog.info({
-						information: this.currentMarket,
-						market1: trader.pair1,
-						market2: trader.pair2,
-						market3: trader.pair3,
-						lowestPrice: trader.potentialTrade.lowestPrice,
-						trade: trader.potentialTrade,
-						passMinimumTrade: trader.passMinimumTrade,
-					}, `This written afterwards!!`);
+					// this.profitLog.info({
+					// 	information: this.currentMarket,
+					// 	market1: trader.pair1,
+					// 	market2: trader.pair2,
+					// 	market3: trader.pair3,
+					// 	lowestPrice: trader.potentialTrade.lowestPrice,
+					// 	trade: trader.potentialTrade,
+					// 	passMinimumTrade: trader.passMinimumTrade,
+					// }, `This written afterwards!!`);
 					
 					if(trader.potentialTrade.isSufficientFundsThreeTrades()){
 						//Logic for doing three fund Trade
+						this.profitLog.info({
+							tradeType: "Had All Three funds",
+							recalculate: false,
+							information: this.currentMarket,
+							market1: trader.pair1,
+							market2: trader.pair2,
+							market3: trader.pair3,
+							lowestPrice: trader.potentialTrade.lowestPrice,
+							trade: trader.potentialTrade,
+							passMinimumTrade: trader.passMinimumTrade,
+						}, `This written afterwards!!`);
 					}
 					else if(trader.potentialTrade.isSufficientFundsTwoTrades()){
-						
+						this.profitLog.info({
+							tradeType: "Only had Two fund Available",
+							recalculate: false,
+							information: this.currentMarket,
+							market1: trader.pair1,
+							market2: trader.pair2,
+							market3: trader.pair3,
+							lowestPrice: trader.potentialTrade.lowestPrice,
+							trade: trader.potentialTrade,
+							passMinimumTrade: trader.passMinimumTrade,
+						}, `This written afterwards!!`);
 						//logic for doing a 2 Step Trade.
 					}
 					else{
+						let oldLowest = trader.potentialTrade.lowestPrice;
+						let oldProfit = trader.potentialTrade.displayProfit;
 						trader.potentialTrade.executeTrade(trader.potentialTrade.reCalculateTrade().lowest); //Seeing if we can do the trade with lower funds.
 						trader.currentMarket = [trader.potentialTrade.completedTrade1, trader.potentialTrade.completedTrade2, trader.potentialTrade.completedTrade3];
 						trader.passMinimumTrade = this.middleware.checkMinimumTrades(trader.currentMarket, this.currencies);
 						
 						if(trader.passMinimumTrade && trader.potentialTrade.isSufficientFundsThreeTrades() ){
 							//Same call as above.
-							
-						}
-						else if(trader.passMinimumTrade && trader.potentialTrade.isSufficientFundsTwoTrades()){
-							
-							//same call as above.
-						}
-						else{
-							this.errorLog.error({
+							this.profitLog.info({
+								tradeType: "Had all 3 funds",
+								recalculate: true,
+								oldLowest: oldLowest,
+								oldProfit: oldProfit,
 								information: this.currentMarket,
 								market1: trader.pair1,
 								market2: trader.pair2,
@@ -117,7 +137,42 @@ export default class TradeSeeker {
 								lowestPrice: trader.potentialTrade.lowestPrice,
 								trade: trader.potentialTrade,
 								passMinimumTrade: trader.passMinimumTrade,
-							}, `Trade missed Due to inSufficient funds!!!`);
+							}, `This written afterwards!!`);
+							
+							
+						}
+						else if(trader.passMinimumTrade && trader.potentialTrade.isSufficientFundsTwoTrades()){
+							this.profitLog.info({
+								tradeType: "Had only two...",
+								recalculate: true,
+								oldLowest: oldLowest,
+								oldProfit: oldProfit,
+								information: this.currentMarket,
+								market1: trader.pair1,
+								market2: trader.pair2,
+								market3: trader.pair3,
+								lowestPrice: trader.potentialTrade.lowestPrice,
+								trade: trader.potentialTrade,
+								passMinimumTrade: trader.passMinimumTrade,
+							}, `This written afterwards!!`);
+							//same call as above.
+						}
+						else{
+							if(trader.passMinimumTrade) {
+								this.errorLog.error({
+									tradeType: "Missed trade due to lack of funds :(",
+									recalculate: true,
+									oldLowest: oldLowest,
+									oldProfit: oldProfit,
+									information: this.currentMarket,
+									market1: trader.pair1,
+									market2: trader.pair2,
+									market3: trader.pair3,
+									lowestPrice: trader.potentialTrade.lowestPrice,
+									trade: trader.potentialTrade,
+									passMinimumTrade: trader.passMinimumTrade,
+								}, `Trade missed Due to inSufficient funds!!!`);
+							}
 						}
 					}
 					//Else, skip trade....
@@ -183,13 +238,4 @@ export default class TradeSeeker {
 		}
 	}
 	
-	verifyTrade() {
-		let trader = this;
-		if (trader.potentialTrade.isSufficientFundsTwoTrades()) {
-			console.log("Account is empty or we are below minimum amount, Exiting the trade...");
-			return;
-		}
-		console.log("Sending Trade to Master worker...");
-		return;
-	}
 }

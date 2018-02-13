@@ -25,8 +25,6 @@ export default class Trade {
 		this.calculateStartTrade();
 		this.executeTrade(1);
 		
-
-		
 	}
 	
 	calculateStartTrade(){

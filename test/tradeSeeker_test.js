@@ -239,6 +239,7 @@ describe('TradeSeeker - LogicFlow', () => {
 		expect(anotherTradeSeeker.potentialTrade.completedTrade3.quantity).to.be.equal(1.46355039);
 		expect(anotherTradeSeeker.potentialTrade.completedTrade2.quantity).to.be.equal(0.00237609);
 		expect(anotherTradeSeeker.potentialTrade.completedTrade1.quantity).to.be.equal(1.46355039);
+		expect(anotherTradeSeeker.passMinimumTrade).to.be.true;
 		//expect(anotherTradeSeeker.potentialTrade.reCalculateTrade().lowest).to.be.equal(0.09226);
 		// expect(trader.potentialTrade.completedTrade3.quantity).
 	});
