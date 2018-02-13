@@ -116,7 +116,7 @@ export class CryptopiaCurrencies {
 			if (coins[i].Total !== 0) {
 				let key = coins[i].Symbol;
 				this.balance[key] = {
-					coins: coins[i].Total,
+					coins: coins[i].Available,
 					status: coins[i].Status
 				};
 			}

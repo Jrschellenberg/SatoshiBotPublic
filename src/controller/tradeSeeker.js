@@ -66,7 +66,7 @@ export default class TradeSeeker {
 	}
 	
 	logicFlow(next, oldMarkets) {
-		console.log(oldMarkets);
+		//console.log(oldMarkets);
 		let trader = this;
 		if (oldMarkets.one && oldMarkets.two && oldMarkets.three) { // Make sure we actually have data
 			let marketOne = oldMarkets.one.buy[0],
@@ -78,15 +78,8 @@ export default class TradeSeeker {
 				console.log(`profit is ${trader.potentialTrade.profit}`);
 				if(trader.potentialTrade.isProfitable() && trader.passMinimumTrade ){
 					console.log("trade is profitable and has been copied to log..");
-					// this.profitLog.info({
-					// 	information: this.currentMarket,
-					// 	market1: trader.pair1,
-					// 	market2: trader.pair2,
-					// 	market3: trader.pair3,
-					// 	lowestPrice: trader.potentialTrade.lowestPrice,
-					// 	trade: trader.potentialTrade,
-					// 	passMinimumTrade: trader.passMinimumTrade,
-					// }, `This written afterwards!!`);
+
+					
 					
 					if(trader.potentialTrade.isSufficientFundsThreeTrades()){
 						//Logic for doing three fund Trade

@@ -26,7 +26,7 @@ let Cryptopia = () => {
 		//Need to put in retries here.....
 		try {
 			let response = await request.post(reqOpts);
-			console.log(response);
+			//console.log(response);
 			response = JSON.parse(response.body);
 			return response.Success ? Promise.resolve(response.Data) : Promise.reject(response.Message);
 			
