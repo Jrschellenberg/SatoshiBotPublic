@@ -58,6 +58,7 @@ let errorLog = bunyan.createLogger({
 	//await  TradeSatoshiCurrencies.setBalances(tradeSatoshiService);
 	let cryptopiaCurrencies = new CryptopiaCurrencies(cryptopiaService);
 	await cryptopiaCurrencies.setBalances(); // Setting up our cryptopia balances for first time..
+	//console.log(cryptopiaCurrencies);
 	console.log(cryptopiaCurrencies.getBalances());
 	let production = true;
 	

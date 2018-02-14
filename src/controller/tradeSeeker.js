@@ -79,7 +79,7 @@ export default class TradeSeeker {
 			trader.passMinimumTrade = this.middleware.checkMinimumTrades(trader.currentMarket, this.currencies);
 			if(trader.establishTrade(this.currentMarket)){
 				console.log(`profit is ${trader.potentialTrade.profit}`);
-				if(trader.potentialTrade.isProfitable() && trader.passMinimumTrade ){
+				if(trader.potentialTrade.isProfitable() && trader.passMinimumTrade && trader.potentialTrade.isStatusOk() ){
 					console.log("trade is profitable and has been copied to log..");
 					
 					if(trader.potentialTrade.isSufficientFundsThreeTrades()){
