@@ -162,11 +162,18 @@ export default class Trade {
 		return obj;
 	}
 	
-	isAllStatusOk(balance){
-		
-		
-		
-		
+	isStatusOk(){
+		return this.isAllStatusOk(this.middleware.marketBalances.getBalances());
 	}
 	
+	isAllStatusOk(balance){
+		if(!balance){
+			throw new TypeError("Program could not grab your Balances and has crashed");
+		}
+		if(!balance[this.currencies[0]]){
+			return (balance[this.currencies[1]].status.toLowerCase() === "ok") &&  (balance[this.currencies[2]].status.toLowerCase() === "ok");
+		}
+		return (balance[this.currencies[1]].status.toLowerCase() === "ok") &&  (balance[this.currencies[2]].status.toLowerCase() === "ok")
+			&& (balance[this.currencies[0]].status.toLowerCase() === "ok");
+	}
 }

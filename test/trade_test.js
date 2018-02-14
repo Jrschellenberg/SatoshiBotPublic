@@ -246,11 +246,37 @@ describe('Trade - determineLeastFundsAvailable', () => {
 
 
 describe('Trade - isAllStatusOk', () => {
+	let balance = { BTC: { coins: 0.00573668, status: 'OK' },
+		ETH: { coins: 0.79861009, status: 'Maintenance' },
+		XMR: { coins: 0.02, status: 'Maintenance' },
+		NZDT: { coins: 64.68536503, status: 'OK' },
+		USDT: { coins: 43.41650288, status: 'OK' } };
+	
+	let balance8 = { BTC: { coins: 0.00573668, status: 'OK' },
+		XMR: { coins: 0.02, status: 'Maintenance' },
+		NZDT: { coins: 64.68536503, status: 'OK' },
+		USDT: { coins: 43.41650288, status: 'Maintenance' } };
+	
+	//let currencies = ["BTC", "XMR", "USDT"];
+	let balance4 = { BTC: { coins: 0.00573668, status: 'OK' },
+		XMR: { coins: 0.02, status: 'Maintenance' },
+		NZDT: { coins: 64.68536503, status: 'OK' },
+		USDT: { coins: 43.41650288, status: 'Ok' } };
+	
+	let balance2 = { BTC: { coins: 0.00573668, status: 'OK' },
+		ETH: { coins: 0.79861009, status: 'oK' },
+		XMR: { coins: 0.02, status: 'Maintenance' },
+		NZDT: { coins: 64.68536503, status: 'Ok' },
+		USDT: { coins: 43.41650288, status: 'ok' } };
+	
 	it('should return false if any status is not ok.', () => {
-		
-		
-		
+		expect(trade.isAllStatusOk(balance)).to.be.false;
+		expect(trade.isAllStatusOk(balance8)).to.be.false;
 	});
 	
-	
+	it('should return true if all status are ok', () => {
+		expect(trade.isAllStatusOk(balance4)).to.be.true;
+		expect(trade.isAllStatusOk(balance2)).to.be.true;
+		
+	});
 });
