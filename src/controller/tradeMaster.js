@@ -17,7 +17,6 @@ export default class TradeMaster {
 	
 	performThreeWayTrade(trade) {
 		this.currentlyTrading = true;
-		
 		async.series({
 			one: async (callback) => {
 				//console.log(trader.pair1);
@@ -43,12 +42,16 @@ export default class TradeMaster {
 				}, `Trade missed Due to inSufficient funds!!!`);
 				throw new Error("Program crashed due to messing up trades PLEASE GO CHECK IMMEDIATELY"); //1 of the three trades failed :(
 			}
-			if (this.isTradeComplete(order, trade)) {
-				return true;  //The three trades successfully went through!
-			}
-			else {
-				return false; //Trade is still open :(
-			}
+			sleep(800).then( () => {
+				if (this.isTradeComplete(order, trade)) {  //Finished updating balances, it is ok to attempt to trade again!.
+					this.currentlyTrading = false;
+					return true;  //The three trades successfully went through!
+				}
+				else {
+					this.currentlyTrading = false;
+					return false; //Trade is still open :(
+				}
+			});
 			
 		})
 	}
@@ -59,7 +62,6 @@ export default class TradeMaster {
 		let isTrade2Open = true;
 		let isTrade3Open = true;
 		let result = false;
-		let t = trade;
 		async.whilst(
 			() => {
 				return ((times < 10) && (isTrade1Open || isTrade2Open || isTrade3Open))
@@ -78,7 +80,7 @@ export default class TradeMaster {
 					cb(null, times);
 				});
 			},
-			(err, n) => {
+			async (err, n) => {
 				if(err){
 					//throw some error here..
 				}
@@ -87,13 +89,13 @@ export default class TradeMaster {
 					this.errorLog.error({
 						tradeType: "Trades were submitted, BUT NEVER FINISHED CHECK NOW!!!",
 						times: times,
-						trade1Finish: isTrade1Open,
-						trade2Finish: isTrade2Open,
-						trade3Finish: isTrade3Open,
+						trade1Open: isTrade1Open,
+						trade2Open: isTrade2Open,
+						trade3Open: isTrade3Open,
 						orders: order,
 						trade: trade
 					}, `Trade missed Due to inSufficient funds!!!`);
-					
+					await trade.middleware.marketBalances.setBalances();
 					result = false;
 					return false;
 					//throw new Error("Trades were submitted, BUT NEVER FINISHED CHECK NOW!!!");
@@ -101,12 +103,13 @@ export default class TradeMaster {
 				this.currentlyTrading = false;
 				this.successfulTradingLog.info({
 					tradeType: "Successfully executed Trade!!!!",
-					trade1Finish: isTrade1Open,
-					trade2Finish: isTrade2Open,
-					trade3Finish: isTrade3Open,
+					trade1Open: isTrade1Open,
+					trade2Open: isTrade2Open,
+					trade3Open: isTrade3Open,
 					orders: order,
 					trade: trade
 				}, `This written afterwards!!`);
+				await trade.middleware.marketBalances.setBalances(); //Update our balances to reflect what is now available for us..
 				result = true;
 				return true;
 			});

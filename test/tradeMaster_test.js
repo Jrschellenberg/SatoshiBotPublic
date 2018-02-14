@@ -212,22 +212,34 @@ trade.completedTrade3 = {
 	quantity: 0.02
 };
 
-describe('Trademaster - isTradeComplete', () => {
-
-	it('should have values set up properly', () => {
-		expect(trade.completedTrade1).to.deep.equal(tradeInformation.completedTrade1);
-		expect(trade.completedTrade2).to.deep.equal(tradeInformation.completedTrade2);
-		expect(trade.completedTrade3).to.deep.equal(tradeInformation.completedTrade3);
-
-	});
-
-	it('should return  while there are no open trades', () => {
-		let order = {};
-		expect(tradeMaster.isTradeComplete(order, trade)).to.be.true;
-	});
 
 
+/*
+========================================================================================================================
+																		THESE TESTS MAKE ACTUAL TRADES PROCEED WITH CAUTION
+========================================================================================================================
+ */
+
+// describe('Trademaster - isTradeComplete', () => {
+//
+// 	it('should have values set up properly', () => {
+// 		expect(trade.completedTrade1).to.deep.equal(tradeInformation.completedTrade1);
+// 		expect(trade.completedTrade2).to.deep.equal(tradeInformation.completedTrade2);
+// 		expect(trade.completedTrade3).to.deep.equal(tradeInformation.completedTrade3);
+//
+// 	});
+//
+// 	// it('should return false if there are open trades still', () => {
+// 	// 	let order = {};
+// 	// 	expect(tradeMaster.isTradeComplete(order, trade)).to.be.false;
+// 	// });
+// });
 
 
-});
+// describe('Trademaster - performThreeWayTrade', () => {
+//	
+// 	it('should submit three trades and return false if the trades remain open after 8 seconds', () => {
+// 		expect(tradeMaster.performThreeWayTrade(trade)).to.be.false;
+// 	});
+// });
 

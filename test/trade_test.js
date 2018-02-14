@@ -243,3 +243,14 @@ describe('Trade - determineLeastFundsAvailable', () => {
 		expect(trade.determineLeastFundsAvailable(balance3)).to.deep.equal(objExpecting);
 	});
 });
+
+
+describe('Trade - isAllStatusOk', () => {
+	it('should return false if any status is not ok.', () => {
+		
+		
+		
+	});
+	
+	
+});

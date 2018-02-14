@@ -96,8 +96,8 @@ export default class TradeSeeker {
 							passMinimumTrade: trader.passMinimumTrade,
 						}, `This written afterwards!!`);
 						
-						//trader.tradeMaster.performThreeWayTrade(trader.potentialTrade);
-						//return;
+						trader.tradeMaster.isCurrentlyTrading() ? this.holdPairing = true : trader.tradeMaster.performThreeWayTrade(trader.potentialTrade);
+						next();
 						
 					}
 					else if(trader.potentialTrade.isSufficientFundsTwoTrades()){
@@ -122,6 +122,7 @@ export default class TradeSeeker {
 						trader.passMinimumTrade = this.middleware.checkMinimumTrades(trader.currentMarket, this.currencies);
 						
 						if(trader.passMinimumTrade && trader.potentialTrade.isSufficientFundsThreeTrades() ){
+							
 							//Same call as above.
 							this.profitLog.info({
 								tradeType: "Had all 3 funds",
@@ -137,10 +138,8 @@ export default class TradeSeeker {
 								passMinimumTrade: trader.passMinimumTrade,
 							}, `This written afterwards!!`);
 							
-							
-							//trader.tradeMaster.performThreeWayTrade(trader.potentialTrade);
-							//return;
-							
+							trader.tradeMaster.isCurrentlyTrading() ? this.holdPairing = true : trader.tradeMaster.performThreeWayTrade(trader.potentialTrade);
+							next();
 						}
 						else if(trader.passMinimumTrade && trader.potentialTrade.isSufficientFundsTwoTrades()){
 							this.profitLog.info({
@@ -177,6 +176,8 @@ export default class TradeSeeker {
 						}
 					}
 					//Else, skip trade....
+					
+					//Update balances..
 				}
 			}
 		}

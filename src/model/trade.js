@@ -161,4 +161,12 @@ export default class Trade {
 		obj['lowest'] = this.utilities.precisionFloor(lowest, 5);
 		return obj;
 	}
+	
+	isAllStatusOk(balance){
+		
+		
+		
+		
+	}
+	
 }
