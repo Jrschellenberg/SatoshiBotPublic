@@ -41,55 +41,76 @@ export default class TradeMaster {
 					orders: order,
 					trade: trade
 				}, `Trade missed Due to inSufficient funds!!!`);
-				throw new Error("Program crashed due to messing up trades PLEASE GO CHECK IMMEDIATELY");
+				throw new Error("Program crashed due to messing up trades PLEASE GO CHECK IMMEDIATELY"); //1 of the three trades failed :(
 			}
-			this.awaitCompleteTrade(order,trade);
+			if (this.isTradeComplete(order, trade)) {
+				return true;  //The three trades successfully went through!
+			}
+			else {
+				return false; //Trade is still open :(
+			}
+			
 		})
 	}
 	
-	awaitCompleteTrade(order,trade) {
+	isTradeComplete(order, trade) {
 		let times = 0;
-		let isTrade1Finish;
-		let isTrade2Finish;
-		let isTrade3Finish;
-		async.forever((next) => {
-				sleep(800).then(() => {
-					isTrade1Finish = trade.middleware.checkOpenOrder(trade.completedTrade1.pair).length === 0;
-					isTrade2Finish = trade.middleware.checkOpenOrder(trade.completedTrade2.pair).length === 0;
-					isTrade3Finish = trade.middleware.checkOpenOrder(trade.completedTrade3.pair).length === 0;
+		let isTrade1Open = true;
+		let isTrade2Open = true;
+		let isTrade3Open = true;
+		let result = false;
+		let t = trade;
+		async.whilst(
+			() => {
+				return ((times < 10) && (isTrade1Open || isTrade2Open || isTrade3Open))
+			},
+			(cb) => {
+				sleep(800).then(async () => {
+					const trade1 = await trade.middleware.checkOpenOrder(trade.completedTrade1.pair);
+					const trade2 = await trade.middleware.checkOpenOrder(trade.completedTrade2.pair);  //.length >= 1;
+					const trade3 = await trade.middleware.checkOpenOrder(trade.completedTrade3.pair); //.length >= 1;
 					
-					if (times === 10 || (isTrade1Finish && isTrade2Finish && isTrade3Finish)) {
-						next("finish");
-					}
-					else {
-						times++;
-						next();
-					}
+					isTrade1Open = trade1.length >= 1;
+					isTrade2Open = trade2.length >= 1;
+					isTrade3Open = trade3.length >= 1;
+					
+					times++;
+					cb(null, times);
 				});
 			},
-			(finish) => {
+			(err, n) => {
+				if(err){
+					//throw some error here..
+				}
+				
 				if (times === 10) {
 					this.errorLog.error({
 						tradeType: "Trades were submitted, BUT NEVER FINISHED CHECK NOW!!!",
 						times: times,
-						trade1Finish: isTrade1Finish,
-						trade2Finish: isTrade2Finish,
-						trade3Finish: isTrade3Finish,
+						trade1Finish: isTrade1Open,
+						trade2Finish: isTrade2Open,
+						trade3Finish: isTrade3Open,
 						orders: order,
 						trade: trade
 					}, `Trade missed Due to inSufficient funds!!!`);
-					throw new Error("Trades were submitted, BUT NEVER FINISHED CHECK NOW!!!");
+					
+					result = false;
+					return false;
+					//throw new Error("Trades were submitted, BUT NEVER FINISHED CHECK NOW!!!");
 				}
-				
 				this.currentlyTrading = false;
 				this.successfulTradingLog.info({
 					tradeType: "Successfully executed Trade!!!!",
-					trade1Finish: isTrade1Finish,
-					trade2Finish: isTrade2Finish,
-					trade3Finish: isTrade3Finish,
+					trade1Finish: isTrade1Open,
+					trade2Finish: isTrade2Open,
+					trade3Finish: isTrade3Open,
 					orders: order,
 					trade: trade
 				}, `This written afterwards!!`);
+				result = true;
+				return true;
 			});
+		return result;
+		
 	}
 }

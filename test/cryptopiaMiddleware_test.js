@@ -107,7 +107,7 @@ describe('Cryptopia Middleware - reformatTypeString', () => {
 // describe('Cryptopia Middleware - checkOpenOrder', () => {
 //
 // 	it('should throw Error if given incorrect values', async () => {
-//		
+//
 // 		//let param = 355355352;
 // 		let param = "ETN_USDT";
 //
@@ -120,7 +120,7 @@ describe('Cryptopia Middleware - reformatTypeString', () => {
 // 			anyOrder = true;
 // 		}
 // 		console.log(openOrder[0]);
-//		
+//
 //
 // 		expect(openOrder).to.throw(Error);
 //
