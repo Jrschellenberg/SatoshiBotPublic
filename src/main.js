@@ -24,7 +24,7 @@ const cryptopiaOptions = {
 };
 cryptopiaService.setOptions(cryptopiaOptions);
 
-let NUMBER_SLAVES = 10;
+let NUMBER_SLAVES = 7;
 
 let successLog = bunyan.createLogger({
 	name: "myapp",

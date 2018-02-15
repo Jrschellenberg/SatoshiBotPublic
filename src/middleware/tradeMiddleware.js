@@ -1,4 +1,4 @@
-const API_TIMEOUT = 800;
+const API_TIMEOUT = 700;
 
 export default class TradeMiddleware {
 	constructor(marketListing, marketFee, service, marketBalances){

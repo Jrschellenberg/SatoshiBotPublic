@@ -67,7 +67,7 @@ export default class TradeMaster {
 				return ((times < 10) && (isTrade1Open || isTrade2Open || isTrade3Open))
 			},
 			(cb) => {
-				sleep(800).then(async () => {
+				sleep(900).then(async () => {
 					const trade1 = await trade.middleware.checkOpenOrder(trade.completedTrade1.pair);
 					const trade2 = await trade.middleware.checkOpenOrder(trade.completedTrade2.pair);  //.length >= 1;
 					const trade3 = await trade.middleware.checkOpenOrder(trade.completedTrade3.pair); //.length >= 1;

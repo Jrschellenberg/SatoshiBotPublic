@@ -29,7 +29,6 @@ export default class TradeSeeker {
 		this.production = production;
 		this.passMinimumTrade = null;
 		this.currentMarket = null;
-		this.holdPairing = false;
 		if (production) {
 			this.process();
 		}
@@ -49,9 +48,9 @@ export default class TradeSeeker {
 			try {
 				async.forever((next) => {
 						//Finding new work while waiting before starting to scout for trade..
-					if(!trader.holdPairing){
+
 						trader.assignMarketPairs(trader.tradeScout.getWork(trader.workerNumber)); //Find more work!
-					}
+
 						sleep(trader.middleware.API_TIMEOUT).then(() => {
 							//console.log(trader.currencies);
 							trader.currencyExchangeCalls(next);
@@ -96,8 +95,8 @@ export default class TradeSeeker {
 							passMinimumTrade: trader.passMinimumTrade,
 						}, `This written afterwards!!`);
 						
-						trader.tradeMaster.isCurrentlyTrading() ? this.holdPairing = true : trader.tradeMaster.performThreeWayTrade(trader.potentialTrade);
-						next();
+						trader.tradeMaster.isCurrentlyTrading() ? next() : trader.tradeMaster.performThreeWayTrade(trader.potentialTrade);
+						//next();
 						
 					}
 					else if(trader.potentialTrade.isSufficientFundsTwoTrades()){
@@ -138,8 +137,7 @@ export default class TradeSeeker {
 								passMinimumTrade: trader.passMinimumTrade,
 							}, `This written afterwards!!`);
 							
-							trader.tradeMaster.isCurrentlyTrading() ? this.holdPairing = true : trader.tradeMaster.performThreeWayTrade(trader.potentialTrade);
-							next();
+							trader.tradeMaster.isCurrentlyTrading() ? next() : trader.tradeMaster.performThreeWayTrade(trader.potentialTrade);
 						}
 						else if(trader.passMinimumTrade && trader.potentialTrade.isSufficientFundsTwoTrades()){
 							this.profitLog.info({
@@ -181,7 +179,7 @@ export default class TradeSeeker {
 				}
 			}
 		}
-		trader.holdPairing = false;
+		//trader.holdPairing = false;
 		next();
 	}
 	
