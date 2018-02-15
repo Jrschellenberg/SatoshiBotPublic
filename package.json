@@ -3,8 +3,16 @@
   "version": "1.0.0",
   "description": "bot to do trade on tradeSatoshi",
   "main": "main.js",
+  "nyc": {
+    "require": [
+      "babel-register"
+    ],
+    "sourceMap": false,
+    "instrument": false
+  },
   "scripts": {
-    "test": "mocha --compilers js:babel-core/register",
+    "test": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text mocha test/*.js",
+    "quickTest": "mocha --compilers js:babel-core/register",
     "build": "./node_modules/.bin/babel src -d lib",
     "start": "node src/targetMarkets.js && npm run build && node lib/main.js",
     "crypt": "npm run build && node lib/examples/cryptopiaExamples.js"
@@ -28,6 +36,7 @@
   "devDependencies": {
     "babel": "^6.23.0",
     "babel-cli": "^6.26.0",
+    "babel-plugin-istanbul": "^4.1.5",
     "babel-plugin-syntax-async-functions": "^6.13.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-regenerator": "^6.26.0",
@@ -35,6 +44,9 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-es2015": "^6.24.1",
     "chai": "^4.1.2",
-    "mocha": "^5.0.0"
+    "cross-env": "^5.1.3",
+    "mocha": "^5.0.0",
+    "nyc": "^11.4.1",
+    "sinon": "^4.3.0"
   }
 }

@@ -1,9 +1,11 @@
 import TradeMiddleware from './tradeMiddleware';
+// import Utilities from '../utilities';
 const CRYPTOPIA_TRADE_FEE = 0.002;
 
 export class CryptopiaMiddleware extends TradeMiddleware {
 	constructor(marketListing, service, marketBalances) {
 		super(marketListing, CRYPTOPIA_TRADE_FEE, service, marketBalances);
+		// this.utilities = new Utilities();
 	}
 	
 	async getMarketListing(params) {
@@ -41,6 +43,37 @@ export class CryptopiaMiddleware extends TradeMiddleware {
 			console.log("Error in getMarketListing function!!!");
 			console.log(err);
 		}
+	}
+	
+	async checkOpenOrder(market){
+		const reStringMarket = this.reformatPairString(market);
+		const openOrder = await this.service.getOpenOrders({Market: reStringMarket, Count: 1});
+		return openOrder;
+	}
+	
+	async submitOrder(params){
+		params.pair = this.reformatPairString(params.pair);
+		params.trade = this.reformatTypeString(params.trade);
+		try{
+			const trade = await this.service.submitTrade({Market: params.pair, Type: params.trade, Rate: params.rate, Amount: params.quantity});
+			
+			// if(this.utilities.isEmptyObject(trade)){
+			// 	return false;
+			// }
+			return await trade;
+		}
+		catch(err){
+			return err;
+		}
+		
+		
+	}
+	reformatPairString(pair){
+		return pair.replace('_', '/');
+	}
+	reformatTypeString(type){
+		type = type.toLowerCase();
+		return type.charAt(0).toUpperCase() + type.slice(1);
 	}
 	
 	checkMinimumTrades(markets, currencies) {
@@ -85,35 +118,27 @@ export class CryptopiaCurrencies {
 		this.service = service;
 		instance = this;
 	}
-	
-	async getAccountBalance() {
-		return await this.balance;
-	}
-	
+		
 	async setAccountBalance(coins) {
 		this.balance = {}; //Reset our balance to empty object once again...
 		for (let i = 0; i < coins.length; i++) {
 			if (coins[i].Total !== 0) {
 				let key = coins[i].Symbol;
 				this.balance[key] = {
-					coins: coins[i].Total,
+					coins: coins[i].Available,
 					status: coins[i].Status
 				};
 			}
 		}
 	}
 	
-	async getBalances() {
-		const balance = await this.getAccountBalance();
-		return balance;
+	getBalances() {
+		return this.balance;
 	}
 	
 	async setBalances() {
 		const getBalances = await this.service.getBalance();
-		//console.log(getBalances);
-		console.log("we getting back over here?");
+		console.log("we getting back over to setting balances?");
 		await this.setAccountBalance(getBalances);
 	}
-	
-	
 }

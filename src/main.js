@@ -8,6 +8,7 @@ import Utilities from './utilities';
 import {satoshiMarkets} from "./satoshiMarkets";
 import {cryptopiaMarkets} from "./cryptopiaMarkets";
 import {API_CREDENTIALS, CRYPTOPIA_CREDENTIALS} from "./service/secret";
+import TradeMaster from "./controller/tradeMaster";
 
 const tradeSatoshiService = require('./service/satoshiAPI')();
 const tradeSatoshiOptions = {
@@ -23,8 +24,17 @@ const cryptopiaOptions = {
 };
 cryptopiaService.setOptions(cryptopiaOptions);
 
-let NUMBER_SLAVES = 1;
+let NUMBER_SLAVES = 7;
 
+let successLog = bunyan.createLogger({
+	name: "myapp",
+	streams: [
+		{
+			level: 'info',
+			path: './Success.log'
+		}
+	]
+});
 let profitLog = bunyan.createLogger({
 	name: "myapp",
 	streams: [
@@ -48,7 +58,13 @@ let errorLog = bunyan.createLogger({
 	//await  TradeSatoshiCurrencies.setBalances(tradeSatoshiService);
 	let cryptopiaCurrencies = new CryptopiaCurrencies(cryptopiaService);
 	await cryptopiaCurrencies.setBalances(); // Setting up our cryptopia balances for first time..
+	//console.log(cryptopiaCurrencies);
+	console.log(cryptopiaCurrencies.getBalances());
 	let production = true;
+	
+	let cryptopiaTradeMaster = new TradeMaster(successLog, errorLog);
+	let cryptopiaMiddleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies );
+	//let cryptopiaMiddleware = new 
 	// let balance = await cryptopiaCurrencies.getBalances();
 	// console.log(balance);
 	
@@ -76,8 +92,8 @@ let errorLog = bunyan.createLogger({
 		// new TradeSeeker(profitLog, errorLog, i, satoshiTradeScout, utilities, production
 		// 	new SatoshiMiddleware('satoshi', TRADE_SATOSHI_TRADE_FEE, tradeSatoshiService ));
 
-		new TradeSeeker(profitLog, errorLog, i, cryptopiaTradeScout, utilities, production,
-			new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies ));
+		new TradeSeeker(profitLog, errorLog, i, cryptopiaTradeScout, utilities, production, cryptopiaTradeMaster,
+			cryptopiaMiddleware);
 	}
 })();
 
