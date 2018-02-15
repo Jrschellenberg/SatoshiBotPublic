@@ -66,7 +66,7 @@ export default class Trade {
 	}
 	
 	isProfitable(){
-		return this.profit >= 0 && this.profit < 2.7; //Adding in a check here for crazy profit values that were crashing program.
+		return this.profit >= 0;
 	}
 	
 	calculateProfit(){
