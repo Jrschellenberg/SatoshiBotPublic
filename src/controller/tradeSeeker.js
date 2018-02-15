@@ -99,20 +99,20 @@ export default class TradeSeeker {
 						//next();
 						
 					}
-					else if(trader.potentialTrade.isSufficientFundsTwoTrades()){
-						this.profitLog.info({
-							tradeType: "Only had Two fund Available",
-							recalculate: false,
-							information: this.currentMarket,
-							market1: trader.pair1,
-							market2: trader.pair2,
-							market3: trader.pair3,
-							lowestPrice: trader.potentialTrade.lowestPrice,
-							trade: trader.potentialTrade,
-							passMinimumTrade: trader.passMinimumTrade,
-						}, `This written afterwards!!`);
-						//logic for doing a 2 Step Trade.
-					}
+					// else if(trader.potentialTrade.isSufficientFundsTwoTrades()){
+					// 	this.profitLog.info({
+					// 		tradeType: "Only had Two fund Available",
+					// 		recalculate: false,
+					// 		information: this.currentMarket,
+					// 		market1: trader.pair1,
+					// 		market2: trader.pair2,
+					// 		market3: trader.pair3,
+					// 		lowestPrice: trader.potentialTrade.lowestPrice,
+					// 		trade: trader.potentialTrade,
+					// 		passMinimumTrade: trader.passMinimumTrade,
+					// 	}, `This written afterwards!!`);
+					// 	//logic for doing a 2 Step Trade.
+					// }
 					else{
 						let oldLowest = trader.potentialTrade.lowestPrice;
 						let oldProfit = trader.potentialTrade.displayProfit;
@@ -141,23 +141,23 @@ export default class TradeSeeker {
 							
 							trader.tradeMaster.isCurrentlyTrading() ? next() : trader.tradeMaster.performThreeWayTrade(trader.potentialTrade);
 						}
-						else if(trader.passMinimumTrade && trader.potentialTrade.isSufficientFundsTwoTrades()){
-							this.profitLog.info({
-								tradeType: "Had only two...",
-								recalculate: true,
-								oldLowest: oldLowest,
-								oldProfit: oldProfit,
-								oldMarket: oldMarket,
-								information: this.currentMarket,
-								market1: trader.pair1,
-								market2: trader.pair2,
-								market3: trader.pair3,
-								lowestPrice: trader.potentialTrade.lowestPrice,
-								trade: trader.potentialTrade,
-								passMinimumTrade: trader.passMinimumTrade,
-							}, `This written afterwards!!`);
-							//same call as above.
-						}
+						// else if(trader.passMinimumTrade && trader.potentialTrade.isSufficientFundsTwoTrades()){
+						// 	this.profitLog.info({
+						// 		tradeType: "Had only two...",
+						// 		recalculate: true,
+						// 		oldLowest: oldLowest,
+						// 		oldProfit: oldProfit,
+						// 		oldMarket: oldMarket,
+						// 		information: this.currentMarket,
+						// 		market1: trader.pair1,
+						// 		market2: trader.pair2,
+						// 		market3: trader.pair3,
+						// 		lowestPrice: trader.potentialTrade.lowestPrice,
+						// 		trade: trader.potentialTrade,
+						// 		passMinimumTrade: trader.passMinimumTrade,
+						// 	}, `This written afterwards!!`);
+						// 	//same call as above.
+						// }
 						else{
 							if(trader.passMinimumTrade) {
 								this.errorLog.error({
