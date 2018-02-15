@@ -70,7 +70,7 @@ export default class TradeSeeker {
 	logicFlow(next, oldMarkets) {
 		//console.log(oldMarkets);
 		let trader = this;
-		if (oldMarkets.one && oldMarkets.two && oldMarkets.three) { // Make sure we actually have data
+		if (oldMarkets.one && oldMarkets.two && oldMarkets.three ) { // Make sure we actually have data
 			let marketOne = oldMarkets.one.buy[0],
 				marketTwo = oldMarkets.two.sell[0],
 				marketThree = oldMarkets.three.sell[0];
@@ -240,6 +240,10 @@ export default class TradeSeeker {
 			console.log(err);
 			return false;
 		}
+	}
+	
+	isValidAPICall(markets){
+		return (markets.one.buy[0].rate < markets.one.sell[0].rate) && (markets.two.buy[0].rate < markets.two.sell[0].rate) && (markets.three.buy[0].rate < markets.three.sell[0].rate);
 	}
 	
 }

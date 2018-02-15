@@ -41,15 +41,15 @@ let trade = new Trade(tradeListing1, tradeListing2, tradeListing3, currencies, u
 
 describe('Trade - Constructor', () => {
 	it('should set values to expected values', () => {
-		expect(trade.completedTrade1.rate).to.be.equal(887.77332964);
+		expect(trade.completedTrade1.rate).to.be.equal(887.77332964 - 0.00000002);
 		expect(trade.completedTrade1.trade).to.be.equal('SELL');
 		expect(trade.completedTrade1.quantity).to.be.equal(0.04750243);
 		
-		expect(trade.completedTrade2.rate).to.be.equal(0.80385059);
+		expect(trade.completedTrade2.rate).to.be.equal(0.80385059 + 0.00000002);
 		expect(trade.completedTrade2.trade).to.be.equal('BUY');
 		expect(trade.completedTrade2.quantity).to.be.equal(53.25581758);
 		
-		expect(trade.completedTrade3.rate).to.be.equal(1118.87999281);
+		expect(trade.completedTrade3.rate).to.be.equal(1118.87999281 + 0.00000002);
 		expect(trade.completedTrade3.trade).to.be.equal('BUY');
 		expect(trade.completedTrade3.quantity).to.be.equal(0.04750243);
 		
@@ -71,14 +71,14 @@ describe('Trade - Constructor', () => {
 		expect(trade.middleware).to.be.equal(middleware);
 		expect(trade.utilities).to.be.equal(utilities);
 		
-		expect(trade.profit).to.be.equal(-0.80812126);
+		expect(trade.profit).to.be.equal(-0.80812232);
 	});
 });
 
 describe('Trade - calculateProfitEarned', () => {
 	it('should properly calculate profit when supplied with proper input', () => {
 		expect(trade.calculateProfitEarned(trade.completedTrade1.rate, trade.completedTrade1.quantity, trade.middleware.marketFee))
-			.to.be.equal(42.087047666196845);
+			.to.be.equal(42.08704766524869);
 	});
 });
 
@@ -86,13 +86,13 @@ describe('Trade - calculateAmountSpent', () => {
 	it('should properly calculate amount spent when supplied with proper input', () => {
 		expect(trade.calculateAmountSpent(trade.completedTrade3.quantity, trade.completedTrade3.rate,
 			trade.completedTrade2.rate, trade.middleware.marketFee))
-			.to.be.equal(42.895168921405144);
+			.to.be.equal(42.89516998941422);
 	});
 });
 
 describe('Trade - calculateProfit', () => {
 	it('should properly calculate profit and in which currency when supplied with correct input', () => {
-		expect(trade.calculateProfit()).to.be.equal(-0.80812126);
+		expect(trade.calculateProfit()).to.be.equal(-0.80812232);
 	});
 });
 
@@ -122,8 +122,8 @@ describe('Trade - determineEnoughFundsThreeTrades', () => {
 		USDT: {coins: 500.56462343, status: 'OK'}
 	};
 	let balance4 = {
-		ETH: {coins: 0.04750243, status: 'OK'}, NZDT: {coins: 53.25581758, status: 'OK'}, //True
-		USDT: {coins: 42.89533983, status: 'OK'}
+		ETH: {coins: 0.04850243, status: 'OK'}, NZDT: {coins: 53.35581758, status: 'OK'}, //True
+		USDT: {coins: 42.99533983, status: 'OK'}
 	};
 	let balance5 = {
 		ETH: {coins: 2.04750243, status: 'OK'}, NZDT: {coins: 533.25581758, status: 'OK'}, //True
@@ -175,8 +175,8 @@ describe('Trade - determineEnoughFundsTwoTrades', () => {
 		USDT: {coins: 50.56462343, status: 'OK'}
 	};
 	let balance4 = {
-		NZDT: {coins: 70.0453008, status: 'OK'},
-		USDT: {coins: 42.89533983, status: 'OK'}
+		NZDT: {coins: 70.1453008, status: 'OK'},
+		USDT: {coins: 42.99533983, status: 'OK'}
 	};
 	
 	it('should return false if user does not have sufficient funds', () => {
