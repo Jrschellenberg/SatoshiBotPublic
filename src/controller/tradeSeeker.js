@@ -117,6 +117,7 @@ export default class TradeSeeker {
 						let oldLowest = trader.potentialTrade.lowestPrice;
 						let oldProfit = trader.potentialTrade.displayProfit;
 						trader.potentialTrade.executeTrade(trader.potentialTrade.reCalculateTrade().lowest); //Seeing if we can do the trade with lower funds.
+						let oldMarket = this.currentMarket;
 						trader.currentMarket = [trader.potentialTrade.completedTrade1, trader.potentialTrade.completedTrade2, trader.potentialTrade.completedTrade3];
 						trader.passMinimumTrade = this.middleware.checkMinimumTrades(trader.currentMarket, this.currencies);
 						
@@ -128,6 +129,7 @@ export default class TradeSeeker {
 								recalculate: true,
 								oldLowest: oldLowest,
 								oldProfit: oldProfit,
+								oldMarket: oldMarket,
 								information: this.currentMarket,
 								market1: trader.pair1,
 								market2: trader.pair2,
@@ -145,6 +147,7 @@ export default class TradeSeeker {
 								recalculate: true,
 								oldLowest: oldLowest,
 								oldProfit: oldProfit,
+								oldMarket: oldMarket,
 								information: this.currentMarket,
 								market1: trader.pair1,
 								market2: trader.pair2,

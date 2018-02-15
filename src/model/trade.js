@@ -46,9 +46,9 @@ export default class Trade {
 		this.completedTrade2.pair = this.trade2.pair;
 		this.completedTrade3.pair = this.trade3.pair;
 		
-		this.completedTrade1.rate = this.trade1.rate;
-		this.completedTrade2.rate = this.trade2.rate;
-		this.completedTrade3.rate = this.trade3.rate;
+		this.completedTrade1.rate = this.trade1.rate - 0.00000002;
+		this.completedTrade2.rate = this.trade2.rate + 0.00000002;
+		this.completedTrade3.rate = this.trade3.rate + 0.00000002;
 		
 		this.completedTrade1.trade = 'SELL';
 		this.completedTrade2.trade = 'BUY';
@@ -66,7 +66,7 @@ export default class Trade {
 	}
 	
 	isProfitable(){
-		return this.profit >= 0;
+		return this.profit >= 0 && this.profit < 2.7; //Adding in a check here for crazy profit values that were crashing program.
 	}
 	
 	calculateProfit(){
