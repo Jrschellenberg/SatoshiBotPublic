@@ -147,7 +147,7 @@ describe('TradeSeeker - LogicFlow', () => {
 		});
 		expect(anotherTradeSeeker.passMinimumTrade).to.be.true;
 		expect(anotherTradeSeeker.potentialTrade.profit).to.be.equal(3.69731203);
-		expect(anotherTradeSeeker.potentialTrade.isProfitable()).to.be.false; //have to change ot false for now because profit is too high
+		expect(anotherTradeSeeker.potentialTrade.isProfitable()).to.be.true;
 		expect(anotherTradeSeeker.currentMarket).to.deep.equal([
 			{
 				quantity: 231.19800452,
@@ -199,7 +199,7 @@ describe('TradeSeeker - LogicFlow', () => {
 		
 		expect(anotherTradeSeeker.passMinimumTrade).to.be.true;
 		expect(anotherTradeSeeker.potentialTrade.profit).to.be.equal(3.69731203);
-		expect(anotherTradeSeeker.potentialTrade.isProfitable()).to.be.false;  //Will have to chang ethis back after fix profitable bug.
+		expect(anotherTradeSeeker.potentialTrade.isProfitable()).to.be.true;  
 		expect(anotherTradeSeeker.potentialTrade.isSufficientFundsTwoTrades()).to.be.true;
 		expect(anotherTradeSeeker.potentialTrade.isSufficientFundsThreeTrades()).to.be.false;
 		expect(anotherTradeSeeker.establishTrade(anotherTradeSeeker.currentMarket)).to.be.true;
@@ -230,22 +230,17 @@ describe('TradeSeeker - LogicFlow', () => {
 		});
 		
 		//expect(anotherTradeSeeker.currencies).to.be.equal(1);
-		expect(anotherTradeSeeker.potentialTrade.profit).to.be.equal(3.69731203); //Doesn't even recalculate atm b/c we changed profits....
-		expect(anotherTradeSeeker.potentialTrade.isProfitable()).to.be.false; //will hav to chagne this back later when fix profitable bug.
+		expect(anotherTradeSeeker.potentialTrade.profit).to.be.equal(0.34111401); //Doesn't even recalculate atm b/c we changed profits....
+		expect(anotherTradeSeeker.potentialTrade.isProfitable()).to.be.true; //will hav to chagne this back later when fix profitable bug.
 		
 		//Can't test for false here because since we are lowering trade down it'll become lower enough to be sufficient !!!
 		
-		// expect(anotherTradeSeeker.establishTrade(anotherTradeSeeker.currentMarket)).to.be.true;
-		// expect(anotherTradeSeeker.potentialTrade.completedTrade3.quantity).to.be.equal(1.46355039);
-		// expect(anotherTradeSeeker.potentialTrade.completedTrade2.quantity).to.be.equal(0.00237609);
-		// expect(anotherTradeSeeker.potentialTrade.completedTrade1.quantity).to.be.equal(1.46355039);
-		// expect(anotherTradeSeeker.passMinimumTrade).to.be.true;
-		/*
-		=====================================
-		UNCOMMENT ABOVE WHEN FIX PROFIT BUG
-		=====================================
-		 */
-		
+		expect(anotherTradeSeeker.establishTrade(anotherTradeSeeker.currentMarket)).to.be.true;
+		expect(anotherTradeSeeker.potentialTrade.completedTrade3.quantity).to.be.equal(1.46355039);
+		expect(anotherTradeSeeker.potentialTrade.completedTrade2.quantity).to.be.equal(0.00237612);
+		expect(anotherTradeSeeker.potentialTrade.completedTrade1.quantity).to.be.equal(1.46355039);
+		expect(anotherTradeSeeker.passMinimumTrade).to.be.true;
+
 		
 		//expect(anotherTradeSeeker.potentialTrade.reCalculateTrade().lowest).to.be.equal(0.09226);
 		// expect(trader.potentialTrade.completedTrade3.quantity).
@@ -302,10 +297,161 @@ describe('TradeSeeker - isValidAPICall', () => {
 		}
 	};
 	
+	const badMarket1 = {
+		one: {
+			buy: [
+				{
+					quantity: 0.10000000,
+					rate: 10099.00000000
+				}
+			],
+			sell: [
+				{
+					quantity: 0.05000000,
+					rate:  10099.12102449
+				}
+			]
+		},
+		
+		two: {
+			buy: [
+				{
+					quantity: 308.50666351,
+					rate: 0.78599994
+				}
+			],
+			sell: [
+				{
+					quantity:  13.00000000,
+					rate:  0.78600016
+				}
+			]
+			
+		},
+		
+		three: {
+			buy: [
+				{
+					quantity: 0.00103377,
+					rate: 12550.00020001
+				}
+			],
+			sell: [
+				{
+					quantity: 0.00069900,
+					rate:  11837.99999947
+				}
+			]
+		}
+	};
+	
+	const badMarket2 = {
+		one: {
+			buy: [
+				{
+					quantity: 0.10000000,
+					rate: 10099.00000000
+				}
+			],
+			sell: [
+				{
+					quantity: 0.05000000,
+					rate:  10099.12102449
+				}
+			]
+		},
+		
+		two: {
+			buy: [
+				{
+					quantity: 308.50666351,
+					rate: 0.79599994
+				}
+			],
+			sell: [
+				{
+					quantity:  13.00000000,
+					rate:  0.78600016
+				}
+			]
+			
+		},
+		
+		three: {
+			buy: [
+				{
+					quantity: 0.00103377,
+					rate: 12550.00020001
+				}
+			],
+			sell: [
+				{
+					quantity: 0.00069900,
+					rate:  11837.99999947
+				}
+			]
+		}
+	};
+	
+	const badMarket3 = {
+		one: {
+			buy: [
+				{
+					quantity: 0.10000000,
+					rate: 10099.00000000
+				}
+			],
+			sell: [
+				{
+					quantity: 0.05000000,
+					rate:  10098.12102449
+				}
+			]
+		},
+		
+		two: {
+			buy: [
+				{
+					quantity: 308.50666351,
+					rate: 0.78599994
+				}
+			],
+			sell: [
+				{
+					quantity:  13.00000000,
+					rate:  0.78600016
+				}
+			]
+			
+		},
+		
+		three: {
+			buy: [
+				{
+					quantity: 0.00103377,
+					rate: 12550.00020001
+				}
+			],
+			sell: [
+				{
+					quantity: 0.00069900,
+					rate:  11837.99999947
+				}
+			]
+		}
+	};
+	
+	
+	
 	it('should return false when api call brings in bad information', () => {
 		expect(tradeSeeker.isValidAPICall(goodMarket)).to.be.true;
 	});
-	
+	it('should return false if 1 of the markets sell is less than the buy', () => {
+		expect(tradeSeeker.isValidAPICall(badMarket1)).to.be.false;
+		expect(tradeSeeker.isValidAPICall(badMarket2)).to.be.false;
+		expect(tradeSeeker.isValidAPICall(badMarket3)).to.be.false;
+		
+	});
 	
 });
 

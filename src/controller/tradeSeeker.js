@@ -70,7 +70,7 @@ export default class TradeSeeker {
 	logicFlow(next, oldMarkets) {
 		//console.log(oldMarkets);
 		let trader = this;
-		if (oldMarkets.one && oldMarkets.two && oldMarkets.three ) { // Make sure we actually have data
+		if (oldMarkets.one && oldMarkets.two && oldMarkets.three && trader.isValidAPICall(oldMarkets)) { // Make sure we actually have data & that it is valid data..
 			let marketOne = oldMarkets.one.buy[0],
 				marketTwo = oldMarkets.two.sell[0],
 				marketThree = oldMarkets.three.sell[0];
