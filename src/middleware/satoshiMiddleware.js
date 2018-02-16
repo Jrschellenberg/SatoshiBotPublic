@@ -23,7 +23,7 @@ export class SatoshiMiddleware extends TradeMiddleware {
 					sell: [
 						{
 							quantity: market.sell[0].quantity,
-							rate: market.sell[0].quantity
+							rate: market.sell[0].rate
 						}
 					]
 				};

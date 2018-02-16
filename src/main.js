@@ -24,7 +24,7 @@ const cryptopiaOptions = {
 };
 cryptopiaService.setOptions(cryptopiaOptions);
 
-let NUMBER_SLAVES = 7;
+let NUMBER_SLAVES = 1;
 
 let successLog = bunyan.createLogger({
 	name: "myapp",
@@ -57,9 +57,9 @@ let errorLog = bunyan.createLogger({
 (async function () {
 	let production = true;
 	
-	let cryptopiaCurrencies = new CryptopiaCurrencies(cryptopiaService);
-	await cryptopiaCurrencies.setBalances(); // Setting up our cryptopia balances for first time..
-	console.log(cryptopiaCurrencies.getBalances());
+	// let cryptopiaCurrencies = new CryptopiaCurrencies(cryptopiaService);
+	// await cryptopiaCurrencies.setBalances(); // Setting up our cryptopia balances for first time..
+	// console.log(cryptopiaCurrencies.getBalances());
 
 	
 	let satoshiCurrencies = new TradeSatoshiCurrencies(tradeSatoshiService);
