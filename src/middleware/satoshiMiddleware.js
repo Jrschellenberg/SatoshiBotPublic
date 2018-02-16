@@ -77,10 +77,27 @@ export class TradeSatoshiCurrencies {
 		instance = this;
 	}
 	
+	async setAccountBalance(coins) {
+		this.balance = {}; //Reset our balance to empty object once again...
+		for (let i = 0; i < coins.length; i++) {
+			if (coins[i].Total !== 0) {
+				let key = coins[i].currency;
+				this.balance[key] = {
+					coins: coins[i].available,
+					status: 'ok' //No status on satoshi api..... le sigh
+				};
+			}
+		}
+	}
+	
+	getBalances() {
+		return this.balance;
+	}
+	
 	async setBalances() {
 		const getBalances = await this.service.getBalances();
 		console.log("we getting back over to setting balances?");
-		//await this.setAccountBalance(getBalances);
+		await this.setAccountBalance(getBalances);
 	}
 	
 	

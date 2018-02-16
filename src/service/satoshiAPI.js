@@ -27,6 +27,7 @@ let TradeSatoshi = () => {
 	    //Need to put in retries here.....
         try {
             let response = await request.post(reqOpts);
+            console.log(response);
 	          response = JSON.parse(response.body);
             return response.success ? Promise.resolve(response.result) : Promise.reject(response.message);
           

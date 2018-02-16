@@ -85,6 +85,7 @@ export default class TradeSeeker {
 						//Logic for doing three fund Trade
 						this.profitLog.info({
 							tradeType: "Had All Three funds",
+							oldMarkets: oldMarkets,
 							recalculate: false,
 							information: this.currentMarket,
 							market1: trader.pair1,
@@ -127,6 +128,7 @@ export default class TradeSeeker {
 							this.profitLog.info({
 								tradeType: "Had all 3 funds",
 								recalculate: true,
+								oldMarkets: oldMarkets,
 								oldLowest: oldLowest,
 								oldProfit: oldProfit,
 								oldMarket: oldMarket,
@@ -163,6 +165,7 @@ export default class TradeSeeker {
 								this.errorLog.error({
 									tradeType: "Missed trade due to lack of funds :(",
 									recalculate: true,
+									oldMarkets: oldMarkets,
 									oldLowest: oldLowest,
 									oldProfit: oldProfit,
 									information: this.currentMarket,
