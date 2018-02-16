@@ -55,35 +55,34 @@ let errorLog = bunyan.createLogger({
 });
 
 (async function () {
+	let production = true;
+	
+	let cryptopiaCurrencies = new CryptopiaCurrencies(cryptopiaService);
+	await cryptopiaCurrencies.setBalances(); // Setting up our cryptopia balances for first time..
+	console.log(cryptopiaCurrencies.getBalances());
 
-	// let cryptopiaCurrencies = new CryptopiaCurrencies(cryptopiaService);
-	// await cryptopiaCurrencies.setBalances(); // Setting up our cryptopia balances for first time..
-	// console.log(cryptopiaCurrencies.getBalances());
-	// let production = true;
-	// let cryptopiaTradeMaster = new TradeMaster(successLog, errorLog);
-	// let cryptopiaMiddleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies );
-	
-	
 	
 	let satoshiCurrencies = new TradeSatoshiCurrencies(tradeSatoshiService);
 	await satoshiCurrencies.setBalances();
+	console.log(satoshiCurrencies.getBalances());
 	
+	//let cryptopiaMiddleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies );
+	let satoshiMiddleware = new SatoshiMiddleware('satoshi',  tradeSatoshiService, satoshiCurrencies );
 	
-	
-	
-// 	const utilities = new Utilities();
-//	
-// 	 let satoshiTradeScout = new TradeScout(NUMBER_SLAVES, satoshiMarkets);
-//
-// 	 let cryptopiaTradeScout = new TradeScout(NUMBER_SLAVES, cryptopiaMarkets);
-//
-// 	for(let i=0; i<NUMBER_SLAVES; i++){
-// 		// new TradeSeeker(profitLog, errorLog, i, satoshiTradeScout, utilities, production
-// 		// 	new SatoshiMiddleware('satoshi', TRADE_SATOSHI_TRADE_FEE, tradeSatoshiService ));
-//
-// 		new TradeSeeker(profitLog, errorLog, i, cryptopiaTradeScout, utilities, production, cryptopiaTradeMaster,
-// 			cryptopiaMiddleware);
-// 	}
+	let tradeMaster = new TradeMaster(successLog, errorLog);
+	const utilities = new Utilities();
+
+	 let satoshiTradeScout = new TradeScout(NUMBER_SLAVES, satoshiMarkets);
+	// let cryptopiaTradeScout = new TradeScout(NUMBER_SLAVES, cryptopiaMarkets);
+
+	for(let i=0; i<NUMBER_SLAVES; i++){
+		new TradeSeeker(profitLog, errorLog, i, satoshiTradeScout, utilities, production, tradeMaster,
+			satoshiMiddleware);
+			
+		//
+		// new TradeSeeker(profitLog, errorLog, i, cryptopiaTradeScout, utilities, production, tradeMaster,
+		// 	cryptopiaMiddleware);
+	}
 	
 	
 	

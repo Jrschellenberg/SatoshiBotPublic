@@ -63,8 +63,6 @@ export class SatoshiMiddleware extends TradeMiddleware {
 		return passedChecks[0] && passedChecks[1];
 	}
 	
-	
-	
 }
 
 let instance = null;
@@ -80,7 +78,7 @@ export class TradeSatoshiCurrencies {
 	async setAccountBalance(coins) {
 		this.balance = {}; //Reset our balance to empty object once again...
 		for (let i = 0; i < coins.length; i++) {
-			if (coins[i].Total !== 0) {
+			if (coins[i].total !== 0) {
 				let key = coins[i].currency;
 				this.balance[key] = {
 					coins: coins[i].available,
