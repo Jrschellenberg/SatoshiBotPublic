@@ -51,12 +51,12 @@ export class SatoshiMiddleware extends TradeMiddleware {
 		let passedChecks = [false, false];
 		
 		if (super.isUSDT(currencyThree) || super.isBTC(currencyThree) || super.isLTC(currencyThree) || super.isDOGE(currencyThree) || super.isBCH(currencyThree)) {
-			if (marketOneTrade > 0.000005 && marketTwoTrade > 0.000005) {
+			if (marketOneTrade > 0.00008 && marketTwoTrade > 0.00008) {
 				passedChecks[0] = true;
 			}
 		}
 		if (super.isUSDT(currencyTwo) || super.isBTC(currencyTwo) || super.isLTC(currencyTwo) || super.isDOGE(currencyTwo) || super.isBCH(currencyTwo)) {
-			if (marketThreeTrade > 0.000005) {
+			if (marketThreeTrade > 0.00008) {
 				passedChecks[1] = true;
 			}
 		}
