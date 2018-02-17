@@ -3,6 +3,10 @@ const SATOSHI_TRADE_FEE = 0.002;
 export class SatoshiMiddleware extends TradeMiddleware {
 	constructor(marketListing, service, marketBalances){
 		super(marketListing, SATOSHI_TRADE_FEE, service, marketBalances);
+		
+		/*
+		IMPORTANT! MUST HAVE PARAMS BE LOWERCASE ALL LOWERCASE FOR PRIVATE FUNCTIONS!!!!!
+		 */
 	}
 	
 	async getMarketListing(params){
@@ -43,7 +47,7 @@ export class SatoshiMiddleware extends TradeMiddleware {
 	
 	async checkOpenOrder(market){
 		//const reStringMarket = this.reformatPairString(market);
-		const openOrder = await this.service.getOpenOrders({Market: market, Count: 1});
+		const openOrder = await this.service.getOrders({market: market, count: 1});
 		return openOrder;
 	}
 	
@@ -51,7 +55,7 @@ export class SatoshiMiddleware extends TradeMiddleware {
 		//params.pair = this.reformatPairString(params.pair);
 		params.trade = this.reformatTypeString(params.trade);
 		try{
-			const trade = await this.service.submitTrade({Market: params.pair, Type: params.trade, Price: params.rate, Amount: params.quantity});
+			const trade = await this.service.submitOrder({market: params.pair, type: params.trade, price: params.rate, amount: params.quantity});
 			
 			return await trade;
 		}
@@ -64,7 +68,6 @@ export class SatoshiMiddleware extends TradeMiddleware {
 		type = type.toLowerCase();
 		return type.charAt(0).toUpperCase() + type.slice(1);
 	}
-	
 	
 	checkMinimumTrades(markets, currencies) {
 		let marketOneTrade = markets[0].rate * markets[0].quantity,
@@ -121,7 +124,4 @@ export class TradeSatoshiCurrencies {
 		console.log("we getting back over to setting balances?");
 		await this.setAccountBalance(getBalances);
 	}
-	
-	
-	
 }

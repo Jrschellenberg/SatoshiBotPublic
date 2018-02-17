@@ -22,7 +22,7 @@ let TradeSatoshi = () => {
 		    },
 		    body: JSON.stringify(params),
         maxAttempts: 20,
-        retryDelay: 2000
+        retryDelay: 3000
 	    };
 	    //Need to put in retries here.....
         try {
@@ -109,7 +109,7 @@ let TradeSatoshi = () => {
         submitOrder: async (params = {}) => {
             if (!params.market) {
                 return Promise.reject("submitOrder(), You must supply a valid market or trade pair Id!");
-            } else if (params.type && params.type !== 'Buy' && params.type !== 'Sel') {
+            } else if (params.type && params.type !== 'Buy' && params.type !== 'Sell') {
                 return Promise.reject("submitOrder(), You must supply a valid Type, e.g. 'Sell' or 'Buy'!");
             }  else if (!params.amount || typeof params.amount !== 'number') {
 	              return Promise.reject("submitOrder(), You must supply a valid Amount, e.g. Amount: '123.00000000'!");
