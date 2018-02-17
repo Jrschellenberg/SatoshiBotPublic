@@ -65,9 +65,8 @@ export class CryptopiaMiddleware extends TradeMiddleware {
 		catch(err){
 			return err;
 		}
-		
-		
 	}
+	
 	reformatPairString(pair){
 		return pair.replace('_', '/');
 	}

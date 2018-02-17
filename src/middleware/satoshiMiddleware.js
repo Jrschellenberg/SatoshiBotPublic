@@ -41,6 +41,30 @@ export class SatoshiMiddleware extends TradeMiddleware {
 		}
 	}
 	
+	async checkOpenOrder(market){
+		//const reStringMarket = this.reformatPairString(market);
+		const openOrder = await this.service.getOpenOrders({Market: market, Count: 1});
+		return openOrder;
+	}
+	
+	async submitOrder(params){
+		//params.pair = this.reformatPairString(params.pair);
+		params.trade = this.reformatTypeString(params.trade);
+		try{
+			const trade = await this.service.submitTrade({Market: params.pair, Type: params.trade, Price: params.rate, Amount: params.quantity});
+			
+			return await trade;
+		}
+		catch(err){
+			return err;
+		}
+	}
+	
+	reformatTypeString(type){
+		type = type.toLowerCase();
+		return type.charAt(0).toUpperCase() + type.slice(1);
+	}
+	
 	
 	checkMinimumTrades(markets, currencies) {
 		let marketOneTrade = markets[0].rate * markets[0].quantity,

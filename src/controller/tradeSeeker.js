@@ -95,11 +95,28 @@ export default class TradeSeeker {
 					}, `This written afterwards!!`);
 					
 					
-					// if(trader.potentialTrade.isSufficientFundsThreeTrades()){
-					// 	//Logic for doing three fund Trade
+					if(trader.potentialTrade.isSufficientFundsThreeTrades()){
+						//Logic for doing three fund Trade
+						this.profitLog.info({
+							tradeType: "Had All Three funds",
+							oldMarkets: oldMarkets,
+							recalculate: false,
+							information: this.currentMarket,
+							market1: trader.pair1,
+							market2: trader.pair2,
+							market3: trader.pair3,
+							lowestPrice: trader.potentialTrade.lowestPrice,
+							trade: trader.potentialTrade,
+							passMinimumTrade: trader.passMinimumTrade,
+						}, `This written afterwards!!`);
+
+						trader.tradeMaster.isCurrentlyTrading() ? next() : trader.tradeMaster.performThreeWayTrade(trader.potentialTrade);
+						//next();
+
+					}
+					// else if(trader.potentialTrade.isSufficientFundsTwoTrades()){
 					// 	this.profitLog.info({
-					// 		tradeType: "Had All Three funds",
-					// 		oldMarkets: oldMarkets,
+					// 		tradeType: "Only had Two fund Available",
 					// 		recalculate: false,
 					// 		information: this.currentMarket,
 					// 		market1: trader.pair1,
@@ -109,90 +126,73 @@ export default class TradeSeeker {
 					// 		trade: trader.potentialTrade,
 					// 		passMinimumTrade: trader.passMinimumTrade,
 					// 	}, `This written afterwards!!`);
-					//	
-					// 	trader.tradeMaster.isCurrentlyTrading() ? next() : trader.tradeMaster.performThreeWayTrade(trader.potentialTrade);
-					// 	//next();
-					//	
+					// 	//logic for doing a 2 Step Trade.
 					// }
-					// // else if(trader.potentialTrade.isSufficientFundsTwoTrades()){
-					// // 	this.profitLog.info({
-					// // 		tradeType: "Only had Two fund Available",
-					// // 		recalculate: false,
-					// // 		information: this.currentMarket,
-					// // 		market1: trader.pair1,
-					// // 		market2: trader.pair2,
-					// // 		market3: trader.pair3,
-					// // 		lowestPrice: trader.potentialTrade.lowestPrice,
-					// // 		trade: trader.potentialTrade,
-					// // 		passMinimumTrade: trader.passMinimumTrade,
-					// // 	}, `This written afterwards!!`);
-					// // 	//logic for doing a 2 Step Trade.
-					// // }
-					// else{
-					// 	let oldLowest = trader.potentialTrade.lowestPrice;
-					// 	let oldProfit = trader.potentialTrade.displayProfit;
-					// 	trader.potentialTrade.executeTrade(trader.potentialTrade.reCalculateTrade().lowest); //Seeing if we can do the trade with lower funds.
-					// 	let oldMarket = this.currentMarket;
-					// 	trader.currentMarket = [trader.potentialTrade.completedTrade1, trader.potentialTrade.completedTrade2, trader.potentialTrade.completedTrade3];
-					// 	trader.passMinimumTrade = this.middleware.checkMinimumTrades(trader.currentMarket, this.currencies);
-					//	
-					// 	if(trader.passMinimumTrade && trader.potentialTrade.isSufficientFundsThreeTrades() ){
-					//		
-					// 		//Same call as above.
-					// 		this.profitLog.info({
-					// 			tradeType: "Had all 3 funds",
-					// 			recalculate: true,
-					// 			oldMarkets: oldMarkets,
-					// 			oldLowest: oldLowest,
-					// 			oldProfit: oldProfit,
-					// 			oldMarket: oldMarket,
-					// 			information: this.currentMarket,
-					// 			market1: trader.pair1,
-					// 			market2: trader.pair2,
-					// 			market3: trader.pair3,
-					// 			lowestPrice: trader.potentialTrade.lowestPrice,
-					// 			trade: trader.potentialTrade,
-					// 			passMinimumTrade: trader.passMinimumTrade,
-					// 		}, `This written afterwards!!`);
-					//		
-					// 		trader.tradeMaster.isCurrentlyTrading() ? next() : trader.tradeMaster.performThreeWayTrade(trader.potentialTrade);
-					// 	}
-					// 	// else if(trader.passMinimumTrade && trader.potentialTrade.isSufficientFundsTwoTrades()){
-					// 	// 	this.profitLog.info({
-					// 	// 		tradeType: "Had only two...",
-					// 	// 		recalculate: true,
-					// 	// 		oldLowest: oldLowest,
-					// 	// 		oldProfit: oldProfit,
-					// 	// 		oldMarket: oldMarket,
-					// 	// 		information: this.currentMarket,
-					// 	// 		market1: trader.pair1,
-					// 	// 		market2: trader.pair2,
-					// 	// 		market3: trader.pair3,
-					// 	// 		lowestPrice: trader.potentialTrade.lowestPrice,
-					// 	// 		trade: trader.potentialTrade,
-					// 	// 		passMinimumTrade: trader.passMinimumTrade,
-					// 	// 	}, `This written afterwards!!`);
-					// 	// 	//same call as above.
-					// 	// }
-					// 	else{
-					// 		if(trader.passMinimumTrade) {
-					// 			this.errorLog.error({
-					// 				tradeType: "Missed trade due to lack of funds :(",
-					// 				recalculate: true,
-					// 				oldMarkets: oldMarkets,
-					// 				oldLowest: oldLowest,
-					// 				oldProfit: oldProfit,
-					// 				information: this.currentMarket,
-					// 				market1: trader.pair1,
-					// 				market2: trader.pair2,
-					// 				market3: trader.pair3,
-					// 				lowestPrice: trader.potentialTrade.lowestPrice,
-					// 				trade: trader.potentialTrade,
-					// 				passMinimumTrade: trader.passMinimumTrade,
-					// 			}, `Trade missed Due to inSufficient funds!!!`);
-					// 		}
-					// 	}
-					// }
+					else{
+						let oldLowest = trader.potentialTrade.lowestPrice;
+						let oldProfit = trader.potentialTrade.displayProfit;
+						trader.potentialTrade.executeTrade(trader.potentialTrade.reCalculateTrade().lowest); //Seeing if we can do the trade with lower funds.
+						let oldMarket = this.currentMarket;
+						trader.currentMarket = [trader.potentialTrade.completedTrade1, trader.potentialTrade.completedTrade2, trader.potentialTrade.completedTrade3];
+						trader.passMinimumTrade = this.middleware.checkMinimumTrades(trader.currentMarket, this.currencies);
+
+						if(trader.passMinimumTrade && trader.potentialTrade.isSufficientFundsThreeTrades() ){
+
+							//Same call as above.
+							this.profitLog.info({
+								tradeType: "Had all 3 funds",
+								recalculate: true,
+								oldMarkets: oldMarkets,
+								oldLowest: oldLowest,
+								oldProfit: oldProfit,
+								oldMarket: oldMarket,
+								information: this.currentMarket,
+								market1: trader.pair1,
+								market2: trader.pair2,
+								market3: trader.pair3,
+								lowestPrice: trader.potentialTrade.lowestPrice,
+								trade: trader.potentialTrade,
+								passMinimumTrade: trader.passMinimumTrade,
+							}, `This written afterwards!!`);
+
+							trader.tradeMaster.isCurrentlyTrading() ? next() : trader.tradeMaster.performThreeWayTrade(trader.potentialTrade);
+						}
+						// else if(trader.passMinimumTrade && trader.potentialTrade.isSufficientFundsTwoTrades()){
+						// 	this.profitLog.info({
+						// 		tradeType: "Had only two...",
+						// 		recalculate: true,
+						// 		oldLowest: oldLowest,
+						// 		oldProfit: oldProfit,
+						// 		oldMarket: oldMarket,
+						// 		information: this.currentMarket,
+						// 		market1: trader.pair1,
+						// 		market2: trader.pair2,
+						// 		market3: trader.pair3,
+						// 		lowestPrice: trader.potentialTrade.lowestPrice,
+						// 		trade: trader.potentialTrade,
+						// 		passMinimumTrade: trader.passMinimumTrade,
+						// 	}, `This written afterwards!!`);
+						// 	//same call as above.
+						// }
+						else{
+							if(trader.passMinimumTrade) {
+								this.errorLog.error({
+									tradeType: "Missed trade due to lack of funds :(",
+									recalculate: true,
+									oldMarkets: oldMarkets,
+									oldLowest: oldLowest,
+									oldProfit: oldProfit,
+									information: this.currentMarket,
+									market1: trader.pair1,
+									market2: trader.pair2,
+									market3: trader.pair3,
+									lowestPrice: trader.potentialTrade.lowestPrice,
+									trade: trader.potentialTrade,
+									passMinimumTrade: trader.passMinimumTrade,
+								}, `Trade missed Due to inSufficient funds!!!`);
+							}
+						}
+					}
 					//Else, skip trade....
 					
 					//Update balances..
