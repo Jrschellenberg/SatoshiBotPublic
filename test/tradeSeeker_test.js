@@ -101,9 +101,22 @@ describe('TradeSeeker - LogicFlow', () => {
 						quantity: 231.19800452,
 						rate: 13.92580232
 					}
+				],
+				sell: [
+					{
+						quantity: 230.203,
+						rate: 15.20
+					}
 				]
+				
 			},
 			two: {
+				buy: [
+					{
+						quantity: 0.249,
+						rate: 8300
+					}
+				],
 				sell: [
 					{
 						quantity: 0.02570287,
@@ -112,6 +125,12 @@ describe('TradeSeeker - LogicFlow', () => {
 				]
 			},
 			three: {
+				buy: [
+					{
+						quantity: 0.1053,
+						rate: 0.0001300
+					}
+				],
 				sell: [
 					{
 						quantity: 1386.25271649,

@@ -67,8 +67,7 @@ export default class TradeSeeker {
 		})();
 	}
 	
-	logicFlow(next, oldMarkets) {
-		//console.log(oldMarkets);
+	logicFlow(oldMarkets) {
 		let trader = this;
 		if (oldMarkets.one && oldMarkets.two && oldMarkets.three && trader.isValidAPICall(oldMarkets)) { // Make sure we actually have data & that it is valid data..
 			let marketOne = oldMarkets.one.buy[0],
@@ -81,10 +80,25 @@ export default class TradeSeeker {
 				if(trader.potentialTrade.isProfitable() && trader.passMinimumTrade && trader.potentialTrade.isStatusOk() ){
 					console.log("trade is profitable and has been copied to log..");
 					
+					this.profitLog.info({
+						tradeType: "Logging Trade",
+						oldMarkets: oldMarkets,
+						recalculate: false,
+						information: this.currentMarket,
+						market1: trader.pair1,
+						market2: trader.pair2,
+						market3: trader.pair3,
+						lowestPrice: trader.potentialTrade.lowestPrice,
+						trade: trader.potentialTrade,
+						passMinimumTrade: trader.passMinimumTrade,
+					}, `This written afterwards!!`);
+					
+					
 					if(trader.potentialTrade.isSufficientFundsThreeTrades()){
 						//Logic for doing three fund Trade
 						this.profitLog.info({
 							tradeType: "Had All Three funds",
+							oldMarkets: oldMarkets,
 							recalculate: false,
 							information: this.currentMarket,
 							market1: trader.pair1,
@@ -94,10 +108,16 @@ export default class TradeSeeker {
 							trade: trader.potentialTrade,
 							passMinimumTrade: trader.passMinimumTrade,
 						}, `This written afterwards!!`);
+
 						
-						trader.tradeMaster.isCurrentlyTrading() ? next() : trader.tradeMaster.performThreeWayTrade(trader.potentialTrade);
-						//next();
-						
+						if(!trader.tradeMaster.isCurrentlyTrading()){
+							trader.tradeMaster.performThreeWayTrade(trader.potentialTrade);
+						}
+						marketOne = null;
+						marketTwo = null;
+						marketThree = null;
+						trader.setAllNull();
+						return;
 					}
 					// else if(trader.potentialTrade.isSufficientFundsTwoTrades()){
 					// 	this.profitLog.info({
@@ -120,13 +140,14 @@ export default class TradeSeeker {
 						let oldMarket = this.currentMarket;
 						trader.currentMarket = [trader.potentialTrade.completedTrade1, trader.potentialTrade.completedTrade2, trader.potentialTrade.completedTrade3];
 						trader.passMinimumTrade = this.middleware.checkMinimumTrades(trader.currentMarket, this.currencies);
-						
+
 						if(trader.passMinimumTrade && trader.potentialTrade.isSufficientFundsThreeTrades() ){
-							
+
 							//Same call as above.
 							this.profitLog.info({
 								tradeType: "Had all 3 funds",
 								recalculate: true,
+								oldMarkets: oldMarkets,
 								oldLowest: oldLowest,
 								oldProfit: oldProfit,
 								oldMarket: oldMarket,
@@ -139,7 +160,14 @@ export default class TradeSeeker {
 								passMinimumTrade: trader.passMinimumTrade,
 							}, `This written afterwards!!`);
 							
-							trader.tradeMaster.isCurrentlyTrading() ? next() : trader.tradeMaster.performThreeWayTrade(trader.potentialTrade);
+							if(!trader.tradeMaster.isCurrentlyTrading()){
+								trader.tradeMaster.performThreeWayTrade(trader.potentialTrade);
+							}
+							marketOne = null;
+							marketTwo = null;
+							marketThree = null;
+							trader.setAllNull();
+							return;
 						}
 						// else if(trader.passMinimumTrade && trader.potentialTrade.isSufficientFundsTwoTrades()){
 						// 	this.profitLog.info({
@@ -163,6 +191,7 @@ export default class TradeSeeker {
 								this.errorLog.error({
 									tradeType: "Missed trade due to lack of funds :(",
 									recalculate: true,
+									oldMarkets: oldMarkets,
 									oldLowest: oldLowest,
 									oldProfit: oldProfit,
 									information: this.currentMarket,
@@ -176,14 +205,20 @@ export default class TradeSeeker {
 							}
 						}
 					}
-					//Else, skip trade....
-					
-					//Update balances..
 				}
 			}
 		}
-		//trader.holdPairing = false;
-		next();
+	}
+	
+	
+	setAllNull(){
+		this.potentialTrade = null;
+		this.pair1 = null;
+		this.pair2 = null;
+		this.pair3 = null;
+		this.passMinimumTrade = null;
+		this.currentMarket = null;
+		
 	}
 	
 	/*
@@ -191,27 +226,36 @@ export default class TradeSeeker {
 	 */
 	currencyExchangeCalls(next) {
 		let trader = this;
+		let trade1, trade2, trade3;
 		async.series({
 			one: async (callback) => {
 				//console.log(trader.pair1);
 				const markets = await  trader.middleware.getMarketListing({market: trader.pair1, depth: 1}); // BTC_USDT
-				callback(null, markets);
+				trade1 = markets;
+				callback(null, trade1);
 			},
 			two: async (callback) => {
 				//console.log(trader.pair2);
 				const markets = await  trader.middleware.getMarketListing({market: trader.pair2, depth: 1}); // BTC_USDT
-				callback(null, markets);
+				trade2 = markets;
+				callback(null, trade2);
 			},
 			three: async (callback) => {
 				//console.log(trader.pair3);
 				const markets = await  trader.middleware.getMarketListing({market: trader.pair3, depth: 1});  // GRLC_BTC
-				callback(null, markets);
+				trade3 = markets;
+				callback(null, trade3);
 			}
 		}, (err, markets) => {
 			if (err) {
 				next();
 			}
-			trader.logicFlow(next, markets)
+			trader.logicFlow(markets);
+			trade1 = null;
+			trade2 = null;
+			trade3 = null;
+			next();
+			
 			//trader.isProfitableTrade(next, markets);
 		})
 	}
@@ -225,15 +269,6 @@ export default class TradeSeeker {
 			let tradeListingThree = new TradeListing(newMarkets[2], trader.pair3, "sell");
 			
 			trader.potentialTrade = new Trade(tradeListingOne, tradeListingTwo, tradeListingThree, trader.currencies, trader.utilities, trader.middleware);
-			// this.profitLog.info({
-			// 	information: newMarkets,
-			// 	market1: trader.pair1,
-			// 	market2: trader.pair2,
-			// 	market3: trader.pair3,
-			// 	lowestPrice: trader.potentialTrade.lowestPrice,
-			// 	trade: trader.potentialTrade,
-			// 	passMinimumTrade: trader.passMinimumTrade,
-			// }, `This written afterwards!!`);
 			return true;
 		}
 		catch (err) {

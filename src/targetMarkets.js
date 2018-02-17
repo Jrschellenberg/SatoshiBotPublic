@@ -1,10 +1,6 @@
 let fs = require('fs');
 
 let targetMarketsSatoshi = [
-	'1337',
-	'808',
-	'ATOM',
-	'BCC',
 	'BCH',
 	'BLK',
 	'BOLI',
@@ -31,6 +27,7 @@ let targetMarketsSatoshi = [
 	'EMC2',
 	'SFI',
 	'DOGE',
+	'USDT',
 	'XP'
 ];
 
@@ -90,10 +87,12 @@ function scrapeMarkets(array, filename, market) {
 }
 function isMainMarket(i, j, k, arr, market){
 	if((market.toLowerCase() === 'satoshi') &&
-		(arr[i].toLowerCase() === "btc" || arr[i].toLowerCase() ==="ltc" || arr[i].toLowerCase() ==="doge" || arr[i].toLowerCase() ==="bch")
-	&& (arr[j].toLowerCase() ==="btc" || arr[j].toLowerCase() ==="ltc" || arr[j].toLowerCase() ==="doge" || arr[j].toLowerCase() ==="bch")){
-		//console.log(arr[i]);
-		return true;
+		(arr[i].toLowerCase() !== 'usdt' && arr[i].toLowerCase() !=='btc')
+	&& (arr[j].toLowerCase() ==="btc" || arr[j].toLowerCase() ==="ltc" || arr[j].toLowerCase() ==="doge" || arr[j].toLowerCase() ==="bch")
+	&& (arr[k].toLowerCase() === 'usdt' || arr[k].toLowerCase() ==='btc' || arr[k].toLowerCase() === 'ltc' || arr[k].toLowerCase() ==='doge' || arr[k].toLowerCase() === 'bch')){
+		if(  (!((arr[j].toLowerCase() === 'btc') && (arr[k].toLowerCase() === 'ltc' || arr[k].toLowerCase() ==='doge' || arr[k].toLowerCase() === 'bch'))) ){
+			return true;
+		}
 	}
 	else if((market.toLowerCase() === 'cryptopia')  && (arr[i].toLowerCase() !== 'usdt') &&
 		(arr[j].toLowerCase() ==="btc"  || arr[j].toLowerCase() ==="nzdt")

@@ -24,7 +24,8 @@ const cryptopiaOptions = {
 };
 cryptopiaService.setOptions(cryptopiaOptions);
 
-let NUMBER_SLAVES = 7;
+let NUMBER_SLAVES_SATOSHI = 15;
+let NUMBER_SLAVES_CRYPTOPIA = 8;
 
 let successLog = bunyan.createLogger({
 	name: "myapp",
@@ -35,15 +36,25 @@ let successLog = bunyan.createLogger({
 		}
 	]
 });
-let profitLog = bunyan.createLogger({
+let profitLogSatoshi = bunyan.createLogger({
 	name: "myapp",
 	streams: [
 		{
 			level: 'info',
-			path: './profitable.log'
+			path: './profitableSatoshi.log'
 		}
 	]
 });
+let profitLogCryptopia = bunyan.createLogger({
+	name: "myapp",
+	streams: [
+		{
+			level: 'info',
+			path: './profitableCryptopia.log'
+		}
+	]
+});
+
 let errorLog = bunyan.createLogger({
 	name: "myapp",
 	streams: [
@@ -55,49 +66,38 @@ let errorLog = bunyan.createLogger({
 });
 
 (async function () {
-	//await  TradeSatoshiCurrencies.setBalances(tradeSatoshiService);
-	let cryptopiaCurrencies = new CryptopiaCurrencies(cryptopiaService);
-	await cryptopiaCurrencies.setBalances(); // Setting up our cryptopia balances for first time..
-	//console.log(cryptopiaCurrencies);
-	console.log(cryptopiaCurrencies.getBalances());
 	let production = true;
 	
-	let cryptopiaTradeMaster = new TradeMaster(successLog, errorLog);
+	let cryptopiaCurrencies = new CryptopiaCurrencies(cryptopiaService);
+	await cryptopiaCurrencies.setBalances(); // Setting up our cryptopia balances for first time..
+	console.log(cryptopiaCurrencies.getBalances());
+	
+	let satoshiCurrencies = new TradeSatoshiCurrencies(tradeSatoshiService);
+	await satoshiCurrencies.setBalances();
+	console.log(satoshiCurrencies.getBalances());
+	
 	let cryptopiaMiddleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies );
-	//let cryptopiaMiddleware = new 
-	// let balance = await cryptopiaCurrencies.getBalances();
-	// console.log(balance);
+	let satoshiMiddleware = new SatoshiMiddleware('satoshi',  tradeSatoshiService, satoshiCurrencies );
 	
-	// let balance = await SatoshiTrader.getBalances()
-	// console.log(balance);
-	// console.log(marketPairings.length);
+	let tradeMasterCryptopia = new TradeMaster(successLog, errorLog);
 	
-	/*
-	Market pairings Documentation
-	@Param 1 = market to earn profit with.
-	@Param 2 = market to incure losses with
-	@Param 3 = Market to manipulate.
-	 */
-
-	
-//Initialize our TradeScout
-	
+	let tradeMasterSatoshi = new TradeMaster(successLog, errorLog);
 	const utilities = new Utilities();
+
+	 let satoshiTradeScout = new TradeScout(NUMBER_SLAVES_SATOSHI, satoshiMarkets);
+	let cryptopiaTradeScout = new TradeScout(NUMBER_SLAVES_CRYPTOPIA, cryptopiaMarkets);
+
+	for(let i=0; i<NUMBER_SLAVES_SATOSHI; i++){
+		new TradeSeeker(profitLogSatoshi, errorLog, i, satoshiTradeScout, utilities, production, tradeMasterSatoshi,
+			satoshiMiddleware);
+	}
 	
-	 let satoshiTradeScout = new TradeScout(NUMBER_SLAVES, satoshiMarkets);
-
-	 let cryptopiaTradeScout = new TradeScout(NUMBER_SLAVES, cryptopiaMarkets);
-
-	for(let i=0; i<NUMBER_SLAVES; i++){
-		// new TradeSeeker(profitLog, errorLog, i, satoshiTradeScout, utilities, production
-		// 	new SatoshiMiddleware('satoshi', TRADE_SATOSHI_TRADE_FEE, tradeSatoshiService ));
-
-		new TradeSeeker(profitLog, errorLog, i, cryptopiaTradeScout, utilities, production, cryptopiaTradeMaster,
+	
+	for(let i=0; i<NUMBER_SLAVES_CRYPTOPIA; i++){
+		new TradeSeeker(profitLogCryptopia, errorLog, i, cryptopiaTradeScout, utilities, production, tradeMasterCryptopia,
 			cryptopiaMiddleware);
 	}
+	
+	
+	
 })();
-
-
-
-
-

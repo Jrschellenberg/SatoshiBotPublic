@@ -79,6 +79,12 @@ describe('Trade - calculateProfitEarned', () => {
 	it('should properly calculate profit when supplied with proper input', () => {
 		expect(trade.calculateProfitEarned(trade.completedTrade1.rate, trade.completedTrade1.quantity, trade.middleware.marketFee))
 			.to.be.equal(42.08704766524869);
+		
+		let trade1Rate = 0.00000085;
+		let trade1Quantity = 1100;
+		let marketFee = 0.002;
+		expect(trade.calculateProfitEarned(trade1Rate, trade1Quantity, marketFee)).to.be.equal(0.0009331300000000001);
+		
 	});
 });
 
@@ -87,6 +93,15 @@ describe('Trade - calculateAmountSpent', () => {
 		expect(trade.calculateAmountSpent(trade.completedTrade3.quantity, trade.completedTrade3.rate,
 			trade.completedTrade2.rate, trade.middleware.marketFee))
 			.to.be.equal(42.89516998941422);
+		
+		
+		let trade2Rate = 0.00000072;
+		let trade3Rate = 1.10000012;
+		let trade3Quantity = 1100;
+		let marketFee = 0.002;
+		
+		
+		expect(trade.calculateAmountSpent(trade3Quantity, trade3Rate, trade2Rate, marketFee)).to.be.equal(0.0008746848954201601);
 	});
 });
 
@@ -94,6 +109,40 @@ describe('Trade - calculateProfit', () => {
 	it('should properly calculate profit and in which currency when supplied with correct input', () => {
 		expect(trade.calculateProfit()).to.be.equal(-0.80812232);
 	});
+	
+	it('should still work when given a different set of completed trades.', () => {
+		
+		let newMarket1 = {
+			"quantity": 17878.23204164,
+			"rate": 8.7e-7
+		};
+		let	newMarket2 = {
+			"quantity": 190363.54720677,
+			"rate": 7.0e-7
+		};
+		let newMarket3= {
+			"quantity": 1100,
+			"rate": 1.1000001
+		};
+		
+		let newTradeListing1 = new TradeListing(newMarket1, "BTCZ_BTC", 'buy');
+		let newTradeListing2 = new TradeListing(newMarket2, "DOGE_BTC", 'sell');
+		let newTradeListing3 = new TradeListing(newMarket3, "BTCZ_DOGE", 'sell');
+		let newCurrencies = [
+			"BTCZ",
+			"DOGE",
+			"BTC"
+		];
+		
+		
+		
+		let newTrade = new Trade(newTradeListing1, newTradeListing2, newTradeListing3, currencies, utilities, middleware);
+		
+		
+		expect(newTrade.calculateProfit()).to.be.equal(0.00005845);
+		
+	});
+	
 });
 
 describe('Trade - ComputeTrade', () => {
@@ -193,12 +242,12 @@ describe('Trade - determineEnoughFundsTwoTrades', () => {
 	});
 });
 describe('Trade - isProfitable', () => {
-	it('should return false if profit is less than 0', () => {
+	it('should return false if profit is less than or equal to 0', () => {
+		expect(trade.isProfitable()).to.be.false;
+		trade.profit = 0;
 		expect(trade.isProfitable()).to.be.false;
 	});
-	it('should return true if profit is greater or equal than 0', () => {
-		trade.profit = 0;
-		expect(trade.isProfitable()).to.be.true;
+	it('should return true if profit is greater than 0', () => {
 		trade.profit = 0.30;
 		expect(trade.isProfitable()).to.be.true;
 	});

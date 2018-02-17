@@ -1,7 +1,17 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+
+
+## [0.2.0] - 2018-02-17
+
+### Added
+- TradeSatoshi Middleware
+- Tests for TradeSatoshi middleware
+
+### Changed
+- refactored Tradeseeker logicflow
+- Added code to set variables to null after Trade has been seeked, to work out bug that occurs.
 
 ## [0.1.0] - 2018-02-15
 ### Added
@@ -34,3 +44,5 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 ### Removed 
+
+## [Unreleased]
