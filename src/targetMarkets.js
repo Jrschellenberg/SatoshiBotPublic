@@ -1,10 +1,6 @@
 let fs = require('fs');
 
 let targetMarketsSatoshi = [
-	'1337',
-	'808',
-	'ATOM',
-	'BCC',
 	'BCH',
 	'BLK',
 	'BOLI',
