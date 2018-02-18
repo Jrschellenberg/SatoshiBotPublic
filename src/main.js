@@ -24,7 +24,7 @@ const cryptopiaOptions = {
 };
 cryptopiaService.setOptions(cryptopiaOptions);
 
-let NUMBER_SLAVES_SATOSHI = 15;
+let NUMBER_SLAVES_SATOSHI = 25;
 let NUMBER_SLAVES_CRYPTOPIA = 8;
 
 let successLog = bunyan.createLogger({
@@ -68,24 +68,24 @@ let errorLog = bunyan.createLogger({
 (async function () {
 	let production = true;
 	
-	let cryptopiaCurrencies = new CryptopiaCurrencies(cryptopiaService);
-	await cryptopiaCurrencies.setBalances(); // Setting up our cryptopia balances for first time..
-	console.log(cryptopiaCurrencies.getBalances());
+	// let cryptopiaCurrencies = new CryptopiaCurrencies(cryptopiaService);
+	// await cryptopiaCurrencies.setBalances(); // Setting up our cryptopia balances for first time..
+	// console.log(cryptopiaCurrencies.getBalances());
 	
 	let satoshiCurrencies = new TradeSatoshiCurrencies(tradeSatoshiService);
 	await satoshiCurrencies.setBalances();
 	console.log(satoshiCurrencies.getBalances());
 	
-	let cryptopiaMiddleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies );
+	// let cryptopiaMiddleware = new CryptopiaMiddleware('cryptopia', cryptopiaService, cryptopiaCurrencies );
 	let satoshiMiddleware = new SatoshiMiddleware('satoshi',  tradeSatoshiService, satoshiCurrencies );
 	
-	let tradeMasterCryptopia = new TradeMaster(successLog, errorLog);
+	// let tradeMasterCryptopia = new TradeMaster(successLog, errorLog);
 	
 	let tradeMasterSatoshi = new TradeMaster(successLog, errorLog);
 	const utilities = new Utilities();
 
 	 let satoshiTradeScout = new TradeScout(NUMBER_SLAVES_SATOSHI, satoshiMarkets);
-	let cryptopiaTradeScout = new TradeScout(NUMBER_SLAVES_CRYPTOPIA, cryptopiaMarkets);
+	// let cryptopiaTradeScout = new TradeScout(NUMBER_SLAVES_CRYPTOPIA, cryptopiaMarkets);
 
 	for(let i=0; i<NUMBER_SLAVES_SATOSHI; i++){
 		new TradeSeeker(profitLogSatoshi, errorLog, i, satoshiTradeScout, utilities, production, tradeMasterSatoshi,
@@ -93,10 +93,10 @@ let errorLog = bunyan.createLogger({
 	}
 	
 	
-	for(let i=0; i<NUMBER_SLAVES_CRYPTOPIA; i++){
-		new TradeSeeker(profitLogCryptopia, errorLog, i, cryptopiaTradeScout, utilities, production, tradeMasterCryptopia,
-			cryptopiaMiddleware);
-	}
+	// for(let i=0; i<NUMBER_SLAVES_CRYPTOPIA; i++){
+	// 	new TradeSeeker(profitLogCryptopia, errorLog, i, cryptopiaTradeScout, utilities, production, tradeMasterCryptopia,
+	// 		cryptopiaMiddleware);
+	// }
 	
 	
 	
