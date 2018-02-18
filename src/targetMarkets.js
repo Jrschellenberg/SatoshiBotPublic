@@ -1,6 +1,7 @@
 let fs = require('fs');
 
 let targetMarketsSatoshi = [
+	'1337',
 	'BCH',
 	'BLK',
 	'BOLI',
@@ -28,7 +29,19 @@ let targetMarketsSatoshi = [
 	'SFI',
 	'DOGE',
 	'USDT',
-	'XP'
+	'XP',
+	'JEW',
+	'SIB',
+	'XZC',
+	'VSX',
+	'SPK',
+	'BRO',
+	'DIN',
+	'SUCR',
+	'BWK',
+	'ENT',
+	'TRC',
+	'CRAVE'
 ];
 
 
