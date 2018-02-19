@@ -53,7 +53,7 @@ export default class TradeMaster {
 				}
 			});
 			
-		})
+		});
 	}
 	
 	isTradeComplete(order, trade) {

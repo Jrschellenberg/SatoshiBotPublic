@@ -4,8 +4,6 @@ let targetMarketsSatoshi = [
 	'BCH',
 	'BLK',
 	'BTC',
-	'BTCD',
-	'BTCS',
 	'BTCZ',
 	'DASH',
 	'LTC',
