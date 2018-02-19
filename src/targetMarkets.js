@@ -1,31 +1,21 @@
 let fs = require('fs');
 
 let targetMarketsSatoshi = [
-	'1337',
 	'BCH',
 	'BLK',
-	'BOLI',
-	'BOSS',
 	'BTC',
 	'BTCD',
 	'BTCS',
 	'BTCZ',
 	'DASH',
 	'LTC',
-	'ZEC',
 	'ZEN',
 	'STRAT',
 	'GRLC',
 	'XVG',
-	'HSR',
 	'DGB',
 	'ZCL',
-	'ONION',
-	'BTM',
-	'XZC',
-	'MONA',
 	'RDD',
-	'EMC2',
 	'SFI',
 	'DOGE',
 	'USDT',
@@ -38,10 +28,11 @@ let targetMarketsSatoshi = [
 	'BRO',
 	'DIN',
 	'SUCR',
-	'BWK',
-	'ENT',
-	'TRC',
-	'CRAVE'
+	'NDC',
+	'$PAC',
+	'CEO',
+	'VSX',
+	'BCC'
 ];
 
 

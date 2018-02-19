@@ -20,7 +20,7 @@ let Cryptopia = () => {
 				'Content-Type': 'application/json; charset=utf-8'
 			},
 			body: JSON.stringify(params),
-			maxAttempts: 10,
+			maxAttempts: 200,
 			retryDelay: 3000
 		};
 		//Need to put in retries here.....

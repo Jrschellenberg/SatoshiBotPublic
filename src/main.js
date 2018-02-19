@@ -24,7 +24,7 @@ const cryptopiaOptions = {
 };
 cryptopiaService.setOptions(cryptopiaOptions);
 
-let NUMBER_SLAVES_SATOSHI = 25;
+let NUMBER_SLAVES_SATOSHI = 17;
 let NUMBER_SLAVES_CRYPTOPIA = 8;
 
 let successLog = bunyan.createLogger({
