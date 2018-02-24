@@ -10,7 +10,6 @@ let Cryptopia = () => {
 		HOST_URL: HOST_URL,
 		API_PATH: null
 	};
-	
 	//HTTPS Private Request
 	async function privateRequest(params) {
 		let reqOpts = {
