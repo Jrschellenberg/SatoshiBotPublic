@@ -21,7 +21,7 @@ let TradeSatoshi = () => {
 			    'Content-Type': 'application/json; charset=utf-8'
 		    },
 		    body: JSON.stringify(params),
-        maxAttempts: 20,
+        maxAttempts: 200,
         retryDelay: 3000
 	    };
 	    //Need to put in retries here.....

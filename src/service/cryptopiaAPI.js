@@ -10,7 +10,6 @@ let Cryptopia = () => {
 		HOST_URL: HOST_URL,
 		API_PATH: null
 	};
-	
 	//HTTPS Private Request
 	async function privateRequest(params) {
 		let reqOpts = {
@@ -20,7 +19,7 @@ let Cryptopia = () => {
 				'Content-Type': 'application/json; charset=utf-8'
 			},
 			body: JSON.stringify(params),
-			maxAttempts: 10,
+			maxAttempts: 200,
 			retryDelay: 3000
 		};
 		//Need to put in retries here.....
