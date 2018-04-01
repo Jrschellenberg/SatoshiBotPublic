@@ -104,26 +104,26 @@ describe('Cryptopia Middleware - reformatTypeString', () => {
 
 
 
-describe('Cryptopia Middleware - checkOpenOrder', () => {
-
-	it('should throw Error if given incorrect values', async () => {
-
-		//let param = 355355352;
-		let param = "ETN_USDT";
-
-		const openOrder = await middleware.checkOpenOrder(param);
-		let anyOrder;
-		if(openOrder.length === 0 ){
-			anyOrder = false
-		}
-		else{
-			anyOrder = true;
-		}
-		console.log(openOrder[0]);
-
-
-		expect(openOrder).to.throw(Error);
-
-	});
-
-});
+// describe('Cryptopia Middleware - checkOpenOrder', () => {
+//
+// 	it('should throw Error if given incorrect values', async () => {
+//
+// 		//let param = 355355352;
+// 		let param = "ETN_USDT";
+//
+// 		const openOrder = await middleware.checkOpenOrder(param);
+// 		let anyOrder;
+// 		if(openOrder.length === 0 ){
+// 			anyOrder = false
+// 		}
+// 		else{
+// 			anyOrder = true;
+// 		}
+// 		console.log(openOrder[0]);
+//
+//
+// 		expect(openOrder).to.throw(Error);
+//
+// 	});
+//
+// });

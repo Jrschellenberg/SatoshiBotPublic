@@ -9,3 +9,4 @@ Success.log
 markets.js
 profitableCryptopia.log
 profitableSatoshi.log
+coverage/*
