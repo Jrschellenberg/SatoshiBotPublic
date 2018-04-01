@@ -10,3 +10,4 @@ markets.js
 profitableCryptopia.log
 profitableSatoshi.log
 coverage/*
+.nyc_output/
