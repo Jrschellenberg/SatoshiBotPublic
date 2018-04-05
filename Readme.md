@@ -21,6 +21,6 @@ With that being said, However, Heed warning to the following two points:
  
 ## Installation
 - Clone the project
--  Visit [Here](https://github.com/Jrschellenberg/SatoshiBot/blob/master/src/service/secretHere.js) and fill in the keys appropriately from prerequesites.
+-  Visit [Here](https://github.com/Jrschellenberg/SatoshiBotPublic/blob/master/src/service/secretHere.js) and fill in the keys appropriately from prerequesites.
 - run ``npm install``
 - run ``npm start``
