@@ -15,7 +15,9 @@
     "quickTest": "mocha --compilers js:babel-core/register",
     "build": "./node_modules/.bin/babel src -d lib",
     "start": "node src/targetMarkets.js && npm run build && node lib/main.js",
-    "crypt": "npm run build && node lib/examples/cryptopiaExamples.js"
+    "crypt": "npm run build && node lib/examples/cryptopiaExamples.js",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "async": "^2.6.0",
@@ -29,7 +31,8 @@
     "request-promise": "^4.2.2",
     "requestretry": "^1.13.0",
     "underscore": "~1.7.0",
-    "verror": "~1.6.0"
+    "verror": "~1.6.0",
+    "snyk": "^1.189.0"
   },
   "author": "Justin Schellenberg",
   "license": "ISC",
@@ -48,5 +51,6 @@
     "mocha": "^5.0.0",
     "nyc": "^11.4.1",
     "sinon": "^4.3.0"
-  }
+  },
+  "snyk": true
 }
