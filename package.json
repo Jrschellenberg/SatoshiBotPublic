@@ -28,7 +28,7 @@
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
     "requestretry": "^1.13.0",
-    "underscore": "~1.7.0",
+    "underscore": "~1.12.1",
     "verror": "~1.6.0"
   },
   "author": "Justin Schellenberg",
