@@ -22,7 +22,7 @@
     "async-es": "^2.6.0",
     "bunyan": "^1.8.12",
     "crypto": "~0.0.3",
-    "crypto-js": "^3.1.9-1",
+    "crypto-js": "^4.0.0",
     "microtime": "^2.1.7",
     "nonce": "^1.0.4",
     "request": "^2.83.0",
