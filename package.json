@@ -18,7 +18,7 @@
     "crypt": "npm run build && node lib/examples/cryptopiaExamples.js"
   },
   "dependencies": {
-    "async": "^2.6.0",
+    "async": "^3.2.2",
     "async-es": "^2.6.0",
     "bunyan": "^1.8.12",
     "crypto": "~0.0.3",
