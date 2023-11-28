@@ -27,7 +27,7 @@
     "nonce": "^1.0.4",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
-    "requestretry": "^1.13.0",
+    "requestretry": "^2.0.0",
     "underscore": "~1.7.0",
     "verror": "~1.6.0"
   },
